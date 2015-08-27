@@ -1,0 +1,458 @@
+@import "vendor/bootstrap.min.css";
+@import "vendor/bootstrap-responsive.min.css";
+/* Static CSS from Vendors*/
+/* Global level less*/
+html,
+body {
+  height: 100%;
+  background-color: #F8F8F8;
+}
+.row {
+  float: left;
+  clear: both;
+  width: 100%;
+  padding: 0;
+}
+.columns {
+  float: left;
+  margin: 0;
+  text-align: center;
+  list-style-type: none;
+}
+.one {
+  width: 6.25%;
+}
+.two {
+  width: 12.5%;
+}
+.three {
+  width: 18.75%;
+}
+.four {
+  width: 25%;
+}
+.five {
+  width: 31.25%;
+}
+.six {
+  width: 37.5%;
+}
+.seven {
+  width: 43.75%;
+}
+.eight {
+  width: 50%;
+}
+.nine {
+  width: 56.25%;
+}
+.ten {
+  width: 62.5%;
+}
+.eleven {
+  width: 68.75%;
+}
+.twelve {
+  width: 75%;
+}
+.thirteen {
+  width: 81.25%;
+}
+.fourteen {
+  width: 87.5%;
+}
+.fifteen {
+  width: 93.75%;
+}
+.sixteen {
+  width: 100%;
+}
+.marginZero {
+  margin: 0;
+}
+.navBar {
+  height: 71px;
+}
+.navBar .homeBox {
+  height: 40px;
+}
+.navBar .homeBox .homeLogoFont {
+  height: 40px;
+}
+.navBar .headerSearch {
+  margin-left: 100px;
+}
+.navBar .headerSearch .queryBox {
+  width: 300px;
+  height: 40px;
+  float: left;
+}
+.navBar .headerSearch .querySubmit {
+  height: 40px;
+  float: right;
+}
+.navBar .addNode {
+  height: 40px;
+}
+.navBar .statusBoxAddNode {
+  height: 40px;
+}
+.navBar .statusBoxProfile {
+  height: 40px;
+  border-radius: 20px;
+}
+.mainBody .homeIconBox {
+  text-align: center;
+}
+.mainBody .homeIconBox .textLogo {
+  padding: 0px;
+  margin-top: 20px;
+}
+.mainBody .homeIconBox .fontLogo {
+  padding: 0px;
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+.mainBody .homeSearch {
+  border-radius: 0px;
+  height: 45px;
+}
+.mainBody .homeFeeds {
+  margin-top: 75px;
+}
+.mainBody .homeFeeds .recentConnections {
+  background-color: beige;
+  border: solid 1px #ccc;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+.mainBody .homeFeeds .recentConnections .recentConnectionsDiv {
+  border: solid 1px #ccc;
+  background-color: white;
+  height: 120px;
+  margin-bottom: 5px;
+}
+.mainBody .homeFeeds .recentConnections .recentConnectionsDiv :hover {
+  background-color: beige;
+}
+.mainBody .homeFeeds .recentConnections .siteRow {
+  margin: 0px;
+  height: 40px;
+  background-color: white;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  position: relative;
+}
+.mainBody .homeFeeds .recentConnections .edgeUsername {
+  padding: 0;
+  margin: 0;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  height: 15px;
+  text-align: right;
+  float: bottom;
+}
+.mainBody .homeFeeds .recentConnections .faviconBox {
+  width: 9%;
+  float: left;
+  margin-top: 2px;
+  margin-left: 2px;
+  padding: 2px;
+}
+.mainBody .homeFeeds .recentConnections .faviconBox .faviconImg {
+  width: 30px;
+}
+.mainBody .homeFeeds .recentConnections .textHolder {
+  max-width: 90%;
+  float: left;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.mainBody .homeFeeds .recentConnections .siteTitle {
+  float: left;
+  padding-left: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.mainBody .homeFeeds .recentConnections .siteURL {
+  margin-top: 20px;
+  padding-left: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.mainBody .homeFeeds .recentConnections .siteCount {
+  position: absolute;
+  background-color: #eee;
+  padding: 3px;
+  right: 0px;
+  top: 0px;
+}
+.mainBody .homeFeeds .recentConnections .separator {
+  height: 20px;
+  padding: 0px;
+  margin: 0px;
+}
+.mainBody .homeFeeds .recentConnections .separator .verticalBand {
+  background-color: red;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+  margin-left: 15px;
+  width: 6px;
+}
+.mainBody .homeFeeds .leaderBoard {
+  text-align: center;
+  background-color: beige;
+  height: 300px;
+  border: solid 1px #ccc;
+}
+.searchResultHeader {
+  font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;
+  margin: 0px;
+  padding: 0px;
+  margin-top: 20px;
+}
+.searchResultHeader .resultItemBox {
+  border: solid 1px #ccc;
+  border-bottom: none;
+  padding: 0px;
+  padding-top: 5px;
+  margin: 0px;
+  background-color: beige;
+}
+.searchResultHeader .resultItemBox .searchItemImgBox {
+  float: left;
+  padding-top: 5px;
+  padding-left: 10px;
+  width: 9%;
+}
+.searchResultHeader .resultItemBox .searchItemImgBox .searchItemImg {
+  height: 30px;
+}
+.searchResultHeader .resultItemBox .searchItemText {
+  max-width: 90%;
+  float: left;
+  font-size: 16px;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.searchResultHeader .resultItemBox .searchItemText .searchItemURL {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.searchResultHeader .resultItemBox .searchItemText .searchItemTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.searchResultHeader .searchResultBox .searchResult {
+  height: 100px;
+  border: 1px solid rgba(1, 0, 0, 0.05);
+}
+.searchResultHeader .searchResultBox .searchResult .searchResultImg {
+  width: 30px;
+  margin-top: 25px;
+  height: auto;
+}
+.searchResultHeader .searchResultBox .searchResult .searchResultText {
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.searchResultHeader .searchResultBox .searchResult .userSubmission {
+  border-left: 1px solid rgba(1, 0, 0, 0.05);
+  margin-left: -1px;
+  height: 100px;
+  text-align: center;
+}
+.searchResultHeader .searchResultBox .searchResult .userSubmission .userSubmissionImg {
+  border-radius: 25px;
+  margin-top: 8px;
+  width: 40%;
+}
+.searchResultHeader .connectNodeRow {
+  padding: 0px;
+  padding-bottom: 15px;
+  margin: 0px;
+}
+.searchResultHeader .connectNodeRow .connectNodeBox {
+  background-color: beige;
+  border: solid 1px #ccc;
+  border-top: none;
+  padding: 0px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  margin: 0px;
+}
+.searchResultHeader .connectNodeRow .connectNodeBox .inputBox {
+  float: left;
+}
+.searchResultHeader .connectNodeRow .connectNodeBox .inputBox .addURLInput {
+  margin-top: 5px;
+  width: 330px;
+}
+.searchResultHeader .connectNodeRow .connectNodeBox .autoCompleteResults {
+  padding: 0px;
+  margin: 0px;
+}
+.searchResultHeader .connectNodeRow .connectNodeBox .connectButton {
+  float: left;
+  padding-left: 10px;
+  margin-left: 15px;
+  width: 80px;
+  background-color: orange;
+}
+.addPageContainer {
+  font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;
+  margin: 0;
+}
+.addPageContainer .url-submit {
+  height: 100%;
+}
+.addPageContainer .url-submit a {
+  line-height: 60px;
+}
+.addPageContainer .url-submit a ul {
+  cursor: default;
+  opacity: .3;
+  padding: 10px;
+  height: 60px;
+  background-color: #eee;
+}
+.addPageContainer .url-submit a ul.active {
+  opacity: 1;
+  cursor: pointer;
+}
+.connectionBox {
+  margin-top: 20px;
+}
+.connectionBox .inputBox {
+  border: 1px solid #eee;
+}
+.connectionBox .inputBox input {
+  width: 250px;
+  margin: 20px 10px 20px 10px;
+}
+.connectionBox .loader {
+  margin-top: 30px;
+}
+.connectionBox .connection {
+  min-width: 900px !important;
+}
+.connectionBox .connectMetaphor {
+  width: 200px;
+  margin: 30px;
+  min-width: 130px;
+}
+.connectionBox .connect {
+  opacity: .5;
+  cursor: pointer;
+}
+.connectionBox .connect.enabled {
+  opacity: 1;
+  cursor: pointer;
+}
+.connectionBox .leftBox {
+  min-width: 330px;
+  border: 1px solid rgba(1, 0, 0, 0.05);
+  height: 55px;
+}
+.connectionBox .rightBox {
+  min-width: 330px;
+  border: 1px solid rgba(1, 0, 0, 0.05);
+  height: 55px;
+}
+.connectionBox .nodeTitleBox {
+  height: 55px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  float: left;
+}
+.connectionBox .nodeTitleBox .nodeTitle {
+  text-align: left;
+  font-size: 20px;
+  padding-left: 10px;
+  padding-top: 5px;
+}
+.connectionBox .nodeTitleBox .nodeUrl {
+  text-align: left;
+  padding-left: 10px;
+}
+.connectionBox .url-input {
+  margin: 25px;
+}
+.connectionBox .url-input input {
+  width: 280px;
+}
+.connectionBox .addIconBox {
+  height: 55px;
+  min-width: 40px;
+  border-right: 1px solid rgba(1, 0, 0, 0.05);
+  margin-right: -1px;
+}
+.connectionBox .addIconBox .addIcon {
+  height: 25px;
+  margin-top: 10px;
+}
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.siteConnection {
+  margin: 0px;
+  padding: 0px;
+}
+.siteConnection .midCol {
+  margin: 0px;
+  padding: 0px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(1, 0, 0, 0.05);
+}
+.siteConnection .resultRow {
+  margin: 0px;
+  padding: 0px;
+}
+.siteConnection .searchResultImgBox {
+  margin: 0px;
+  padding: 0px;
+  width: 9%;
+  float: left;
+}
+.siteConnection .searchResultImgBox .searchResultImg {
+  margin-top: 10px;
+  margin-left: 5px;
+  height: 30px;
+}
+.siteConnection .searchResultText {
+  margin: 0px;
+  padding: 0px;
+  max-width: 90%;
+  float: left;
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.siteConnection .searchResultText .searchResultTitle {
+  padding-top: 5px;
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.siteConnection .userNameBox {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+}
+.siteConnection .userNameBox .userName {
+  float: right;
+  padding-right: 10px;
+}
+/* App Specific less import*/
