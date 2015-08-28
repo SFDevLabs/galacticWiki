@@ -14,24 +14,22 @@ var NavItemLink = require('react-router-bootstrap').NavItemLink;
 var NavItem = require('react-bootstrap').NavItem;
 var MenuItem = require('react-bootstrap').MenuItem;
 var DropdownButton = require('react-bootstrap').DropdownButton;
+var CollapsibleNav = require('react-bootstrap').CollapsibleNav;
+
 
 
 var Header = React.createClass({
 
   render: function () {
-    return <Navbar className="navBar" brand='' toggleNavKey={0}>
-      <Nav left>
-        <NavItemLink className="homeBox" to="home"></NavItemLink>
-      </Nav>
-      <Nav middle>
-        <NavItem className = "headerSearch">
-
-          </NavItem>
+    var jsx = (
+    <Navbar brand={<Link to="home">React-Bootstrap</Link>} toggleNavKey={0}>
+      <CollapsibleNav eventKey={0}>
+        <Nav right eventKey={1}>
+          <NavItem eventKey={2} href='login'>Login</NavItem>
         </Nav>
-      <Nav right eventKey={0}> {/* This is the eventKey referenced */}
-        <NavItem eventKey={1} href='login'><img className="statusBoxProfile" title="profile" /></NavItem>
-      </Nav>
-    </Navbar>
+      </CollapsibleNav>
+    </Navbar>);
+    return jsx;
   }
 });
 module.exports = Header;
