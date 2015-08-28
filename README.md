@@ -1,4 +1,4 @@
-Clustr
+Galactic
 
 1. npm install [install modules]
 2. mongod (or sudo mongod) [start server]

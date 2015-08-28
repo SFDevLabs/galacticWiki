@@ -42,7 +42,7 @@ module.exports = function (app, passport) {
   }
 
   app.use('/',express.static(config.root + '/public'));
-  
+
   // Static files middleware
 
   // Use winston on production
@@ -72,7 +72,7 @@ module.exports = function (app, passport) {
 
   // set views path, template engine and default layout
   app.engine('html', swig.renderFile);
-  app.set('views', config.root + '/app/');
+  app.set('views', config.root + '/app/views');
   app.set('view engine', 'html');
 
   // expose package.json to views

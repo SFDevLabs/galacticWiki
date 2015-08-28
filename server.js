@@ -6,8 +6,8 @@
 /**
  * Module dependencies
  */
-var glob = require("glob")
 var fs = require('fs');
+var join = require('path').join;
 var express = require('express');
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -26,9 +26,10 @@ connect();
 
 mongoose.connection.on('error', console.log);
 mongoose.connection.on('disconnected', connect);
+
 //get all the models
-glob.sync(__dirname + '/app/*/models/*', {}).forEach(function (file) {
-  if (~file.indexOf('.js')) require(file);
+fs.readdirSync(join(__dirname, 'app/models')).forEach(function (file) {
+  if (~file.indexOf('.js')) require(join(__dirname, 'app/models', file));
 });
 
 // Bootstrap passport config
@@ -38,14 +39,15 @@ require('./config/passport')(passport, config);
 require('./config/express')(app, passport);
 
 // Bootstrap routes
-require(__dirname + '/app/users/routes/index.js')(app, passport, auth); //always do user routes first
-glob.sync(__dirname + '/app/*/routes/*', {}).forEach(function (file) {
-  if (file.indexOf('app/main/routes'||'app/users/routes')===-1 && ~file.indexOf('.js')) require(file)(app, passport, auth);
-});
-require(__dirname + '/app/main/routes/index.js')(app, passport, auth); //always do main routes last
+require(__dirname + '/app/routes/index.js')(app, passport, auth); //always do main routes last
 
 app.listen(port);
 console.log('Express app started on port ' + port);
+
+
+livereload = require('livereload');
+server = livereload.createServer();
+server.watch(__dirname + "/app");
 
 /**
  * Expose
