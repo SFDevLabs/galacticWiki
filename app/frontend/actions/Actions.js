@@ -14,23 +14,22 @@ var Constants = require('../constants/Constants');
 
 var Actions = {
 
-  /**
-   * @param  {string} text
-   */
-  create: function(text) {
-    AppDispatcher.dispatch({
-      actionType: Constants.TODO_CREATE,
-      text: text
-    });
-  },
+    /**
+     * @param  {string} text
+     */
+    create: function(text) {
+        AppDispatcher.dispatch({
+            actionType: Constants.TODO_CREATE,
+            text: text
+        });
+    },
 
-
-  goToHistory: function (index) {
-    AppDispatcher.dispatch({
-      actionType: Constants.TODO_HISTORY_SET,
-      index : index
-    });
-  }
+    goToHistory: function (index) {
+        AppDispatcher.dispatch({
+            actionType: Constants.TODO_HISTORY_SET,
+            index : index
+        });
+    }
 
 };
 

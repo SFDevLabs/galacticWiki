@@ -10,12 +10,13 @@ var RouteHandler = require('react-router').RouteHandler;
 // Execute the app
 var App = React.createClass({
   render:function() {
-    return (
+  	var jsx = (
       <div>
         <Header/>
         <RouteHandler/>
       </div>
     )
+    return jsx;
   }
 });
 module.exports = App;

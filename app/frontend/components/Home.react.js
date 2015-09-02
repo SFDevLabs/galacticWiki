@@ -19,9 +19,9 @@ var Home = React.createClass({
 		var multilineJsx = (
 			<div>
 				<Input
-			        type='text'
-			        value={this.state.value}
-			        onChange={this.handleChange} />
+				    type='text'
+				    value={this.state.value}
+				    onChange={this.handleChange} />
 
 			</div>
 		);

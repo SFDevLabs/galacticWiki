@@ -12,19 +12,19 @@ var utils = require('../../lib/utils')
  */
 
 exports.create = function (req, res) {
-  var user = new User(req.body);
-  user.provider = 'local';
-  user.save(function (err) {
-    if (err) {
-      req.flash('error', utils.errors(err.errors));
-      return res.redirect('/signup')
-    }
-    // manually login the user once successfully signed up
-    req.logIn(user, function(err) {
-      if (err) req.flash('info', 'Sorry! We are not able to log you in!');
-      return res.redirect('/login');
+    var user = new User(req.body);
+    user.provider = 'local';
+    user.save(function (err) {
+        if (err) {
+            req.flash('error', utils.errors(err.errors));
+            return res.redirect('/signup')
+        }
+        // manually login the user once successfully signed up
+        req.logIn(user, function(err) {
+            if (err) req.flash('info', 'Sorry! We are not able to log you in!');
+            return res.redirect('/login');
+        });
     });
-  });
 };
 
 /**
@@ -32,11 +32,11 @@ exports.create = function (req, res) {
  */
 
 exports.show = function (req, res) {
-  var user = req.profile;
-  res.render('show', {
-    title: user.name,
-    user: user
-  });
+    var user = req.profile;
+    res.render('show', {
+        title: user.name,
+        user: user
+    });
 };
 
 exports.signin = function (req, res) {};
@@ -52,9 +52,14 @@ exports.authCallback = login;
  */
 
 exports.login = function (req, res) {
-  res.render('login', {
-    title: 'Login'
-  });
+    var user = req.user;
+    if (user) {
+        res.redirect('/');
+    } else {
+        res.render('login', {
+            title: 'Login'
+        });
+    }
 };
 
 /**
@@ -62,10 +67,10 @@ exports.login = function (req, res) {
  */
 
 exports.signup = function (req, res) {
-  res.render('signup', {
-    title: 'Sign up',
-    user: new User()
-  });
+    res.render('signup', {
+        title: 'Sign up',
+        user: new User()
+    });
 };
 
 /**
@@ -73,8 +78,8 @@ exports.signup = function (req, res) {
  */
 
 exports.logout = function (req, res) {
-  req.logout();
-  res.redirect('/login');
+    req.logout();
+    res.redirect('/login');
 };
 
 /**
@@ -88,30 +93,29 @@ exports.session = login;
  */
 
 function login (req, res) {
-  var redirectTo = req.session.returnTo ? req.session.returnTo : '/';
-  delete req.session.returnTo;
-  res.redirect(redirectTo);
+    var redirectTo = req.session.returnTo ? req.session.returnTo : '/';
+    delete req.session.returnTo;
+    res.redirect(redirectTo);
 };
-
 
 /**
  *  Show profile
  */
 exports.userapi = function (req, res, next) {
-  res.send(req.profile._id)
+    res.send(req.profile._id)
 };
 
 /**
  * Load
  */
 exports.load = function (req, res, next, id) {
-  var options = {
-    criteria: { username : id }
-  };
-  User.load(options, function (err, user) {
-    if (err) return next(err);
-    if (!user) return next(new Error('Failed to load User ' + id));
-    req.profile = user;
-    next();
-  });
+    var options = {
+        criteria: {username : id}
+    };
+    User.load(options, function (err, user) {
+        if (err) return next(err);
+        if (!user) return next(new Error('Failed to load User ' + id));
+        req.profile = user;
+        next();
+    });
 };

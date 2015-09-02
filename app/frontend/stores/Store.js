@@ -21,9 +21,9 @@ var _history = [],
   _sites = Immutable.OrderedMap();
 
 var SiteRecord = Immutable.Record({
-  id : null,
-  complete : false,
-  text : 'A brand new thing to do!'
+    id : null,
+    complete : false,
+    text : 'A brand new thing to do!'
 });
 
 /**
@@ -31,21 +31,21 @@ var SiteRecord = Immutable.Record({
  * @param  {string} text The content of the TODO
  */
 function create(text) {
-  // Hand waving here -- not showing how this interacts with XHR or persistent
-  // server-side storage.
-  // Using the current timestamp + random number in place of a real id.
-  var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
+    // Hand waving here -- not showing how this interacts with XHR or persistent
+    // server-side storage.
+    // Using the current timestamp + random number in place of a real id.
+    var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
 
-  addHistoryEntry();
-  _sites = _sites.set(id, new SiteRecord({id : id, text : text}));
+    addHistoryEntry();
+    _sites = _sites.set(id, new SiteRecord({id : id, text : text}));
 }
 
 function addHistoryEntry() {
-  _history.push(_sites);
+    _history.push(_sites);
 }
 
 function goToHistory(index) {
-  _sites = _history[index];
+    _sites = _history[index];
 }
 
 /**
@@ -55,12 +55,12 @@ function goToHistory(index) {
  *     updated.
  */
 function update(id, updates) {
-  _sites = _sites.set(id, _sites.get(id).merge(updates));
+    _sites = _sites.set(id, _sites.get(id).merge(updates));
 }
 
 function updateWithHistory(id, updates) {
-  addHistoryEntry();
-  update(id, updates);
+    addHistoryEntry();
+    update(id, updates);
 }
 
 /**
@@ -71,10 +71,10 @@ function updateWithHistory(id, updates) {
 
  */
 function updateAll(updates) {
-  addHistoryEntry();
-  for (var id in _sites.toObject()) {
-    update(id, updates);
-  }
+    addHistoryEntry();
+    for (var id in _sites.toObject()) {
+        update(id, updates);
+    }
 }
 
 /**
@@ -82,88 +82,88 @@ function updateAll(updates) {
  * @param  {string} id
  */
 function destroy(id) {
-  _sites = _sites.delete(id);
+    _sites = _sites.delete(id);
 }
 
 function destroyWithHistory(id) {
-  addHistoryEntry();
-  destroy(id);
+    addHistoryEntry();
+    destroy(id);
 }
 
 /**
  * Delete all the completed TODO items.
  */
 function destroyCompleted() {
-  addHistoryEntry();
-  for (var id in _sites.toObject()) {
-    if (_sites.getIn([id, 'complete'])) {
-      destroy(id);
+    addHistoryEntry();
+    for (var id in _sites.toObject()) {
+        if (_sites.getIn([id, 'complete'])) {
+            destroy(id);
+        }
     }
-  }
 }
 
 var TodoStore = assign({}, EventEmitter.prototype, {
 
-  /**
-   * Tests whether all the remaining TODO items are marked as completed.
-   * @return {boolean}
-   */
-  areAllComplete: function() {
-    for (var id in _sites) {
-      if (!_sites.getIn([id, 'complete'])) {
-        return false;
-      }
+    /**
+     * Tests whether all the remaining TODO items are marked as completed.
+     * @return {boolean}
+     */
+    areAllComplete: function() {
+        for (var id in _sites) {
+            if (!_sites.getIn([id, 'complete'])) {
+                return false;
+            }
+        }
+        return true;
+    },
+
+    /**
+     * Get the entire collection of TODOs.
+     * @return {object}
+     */
+    getAll: function() {
+        return _sites.toObject();
+    },
+
+    getHistory : function () {
+        return _history;
+    },
+
+    emitChange: function() {
+        this.emit(CHANGE_EVENT);
+    },
+
+    /**
+     * @param {function} callback
+     */
+    addChangeListener: function(callback) {
+        this.on(CHANGE_EVENT, callback);
+    },
+
+    /**
+     * @param {function} callback
+     */
+    removeChangeListener: function(callback) {
+        this.removeListener(CHANGE_EVENT, callback);
     }
-    return true;
-  },
-
-  /**
-   * Get the entire collection of TODOs.
-   * @return {object}
-   */
-  getAll: function() {
-    return _sites.toObject();
-  },
-
-  getHistory : function () {
-    return _history;
-  },
-
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  }
 });
 
 // Register callback to handle all updates
 AppDispatcher.register(function(action) {
-  var text;
+    var text;
 
-  switch(action.actionType) {
-    case TodoConstants.TODO_CREATE:
-      text = action.text.trim();
-      if (text !== '') {
-        create(text);
-      }
-      Store.emitChange();
-      break;
+    switch (action.actionType) {
+        case TodoConstants.TODO_CREATE:
+            text = action.text.trim();
+            if (text !== '') {
+                create(text);
+            }
+            Store.emitChange();
+            break;
 
-    default:
-      // no op
-  }
+        default:
+        // no op
+    }
 });
 
 module.exports = TodoStore;

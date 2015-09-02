@@ -19,8 +19,8 @@ var auth = require('./config/middlewares/authorization');
 
 // Connect to mongodb
 var connect = function () {
-  var options = { server: { socketOptions: { keepAlive: 1 } } };
-  mongoose.connect(config.db, options);
+    var options = {server: {socketOptions: {keepAlive: 1}}};
+    mongoose.connect(config.db, options);
 };
 connect();
 
@@ -29,7 +29,7 @@ mongoose.connection.on('disconnected', connect);
 
 //get all the models
 fs.readdirSync(join(__dirname, 'app/models')).forEach(function (file) {
-  if (~file.indexOf('.js')) require(join(__dirname, 'app/models', file));
+    if (~file.indexOf('.js')) require(join(__dirname, 'app/models', file));
 });
 
 // Bootstrap passport config
@@ -43,7 +43,6 @@ require(__dirname + '/app/routes/index.js')(app, passport, auth); //always do ma
 
 app.listen(port);
 console.log('Express app started on port ' + port);
-
 
 livereload = require('livereload');
 server = livereload.createServer();

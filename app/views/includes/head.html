@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-  <head prefix="og: http://ogp.me/ns# nodejsexpressdemo: http://ogp.me/ns/apps/nodejsexpressdemo#">
+  <head prefix="og: {{pkg.name}}">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -14,10 +14,9 @@
     <meta property="fb:app_id" content="">
     <meta property="og:title" content=pkg.name + ' - ' + title>
     <meta property="og:description" content=pkg.description>
-    <meta property="og:url" content="http://sfdevlabs.com">
-    <meta property="og:site_name" content="Clustr">
+    <meta property="og:url" content="{{pkg.site}}">
+    <meta property="og:site_name" content="{{pkg.name}}">
     <meta id="user" data-name="{{user.username}}" data-auth="{{req.isAuthenticated()}}">
-
 
     {% block head %}
       {# Styles #}

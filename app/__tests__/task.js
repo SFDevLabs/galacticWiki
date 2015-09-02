@@ -13,7 +13,6 @@ var TestUtils = React.addons.TestUtils;
 //     expect(span.getDOMNode().textContent).toEqual('1: hi');
 //  });
 
-
 // });
 
 // describe('task when clicked fires on destroy event', function() {
