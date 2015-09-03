@@ -5,7 +5,7 @@
 
 // Note: We can require users, articles and other cotrollers because we have
 
-  var main = require('../controllers/index');
+var main = require('../controllers/index');
 var express = require('express');
 var users = require('../controllers/users');
 /**
@@ -17,12 +17,13 @@ module.exports = function (app, passport, auth) {
     /**
      * Route middlewares
      */
-     
+
     // home route
     var articleAuth = [auth.requiresLogin, auth.article.hasAuthorization];
     var commentAuth = [auth.requiresLogin, auth.comment.hasAuthorization];
 
     app.get('/', main.index);
+    app.get('/api/page', main.getPages);
 
     //Resets the session return to controller
     app.post('/returnto', main.returnTo);

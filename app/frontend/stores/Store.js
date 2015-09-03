@@ -18,12 +18,26 @@ var Immutable = require('immutable');
 var CHANGE_EVENT = 'change';
 
 var _history = [],
-  _sites = Immutable.OrderedMap();
+    _sites = Immutable.OrderedMap();
 
 var SiteRecord = Immutable.Record({
     id : null,
-    complete : false,
-    text : 'A brand new thing to do!'
+    title: null,
+    text: '',
+    hrefs:[]
+});
+
+var ConceptRecord = Immutable.Record({
+    id : null,
+    name: '',
+    hrefs:[]
+});
+
+var EdgeRecord = Immutable.Record({
+    id : null,
+    description : '',
+    fromConcept: null,
+    toConcept: null
 });
 
 /**

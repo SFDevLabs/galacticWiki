@@ -19,6 +19,7 @@ var Home = React.createClass({
 		var multilineJsx = (
 			<div className="container">
 				<Input
+					autoFocus='true'
 					type='text'
 					value={this.state.value}
 					onChange={this.handleChange} />
