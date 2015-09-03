@@ -1,7 +1,7 @@
 /**
  * @jsx Home.react
  */
-"use strict";
+'use strict';
 
 var React = require('react');
 var Input = require('react-bootstrap').Input;
@@ -17,12 +17,11 @@ var Home = React.createClass({
 	componentWillUnmount : function() {},
 	render: function () {
 		var multilineJsx = (
-			<div>
+			<div className="container">
 				<Input
-				    type='text'
-				    value={this.state.value}
-				    onChange={this.handleChange} />
-
+					type='text'
+					value={this.state.value}
+					onChange={this.handleChange} />
 			</div>
 		);
 		return multilineJsx;

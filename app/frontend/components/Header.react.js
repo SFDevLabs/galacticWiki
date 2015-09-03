@@ -1,7 +1,7 @@
 /**
  * @jsx Header.react
  */
-"use strict";
+'use strict';
 
 var React = require('react');
 var Link = require('react-router').Link;
@@ -12,26 +12,29 @@ var Navbar = require('react-bootstrap').Navbar;
 var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
 var CollapsibleNav = require('react-bootstrap').CollapsibleNav;
-
+var NavDropdown = require('react-bootstrap').NavDropdown;
 
 var Header = React.createClass({
-
   render: function () {
-
     var navbarHtml = '';
       if (true) {
         navbarHtml = (
-         <Nav navbar right >
-              <NavItem eventKey={2} href='login'>Login</NavItem>
+          <Nav navbar right >
+            <NavDropdown eventKey={1} title={userName} >
               <NavItem eventKey={3} href='logout'>Logout</NavItem>
+            </NavDropdown>
           </Nav>
         );
       } else {
-
+        navbarHtml = (
+          <Nav navbar right >
+            <NavItem eventKey={2} href='login'>Login</NavItem>
+          </Nav>
+        );
       }
 
     var jsx = (
-      <Navbar brand={<Link to="home">React-Bootstrap</Link>} toggleNavKey={0}>
+      <Navbar brand={<Link to="home">Galactic</Link>} toggleNavKey={0}>
         <CollapsibleNav eventKey={0}>
           {navbarHtml}
         </CollapsibleNav>
