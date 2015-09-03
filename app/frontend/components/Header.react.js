@@ -13,6 +13,7 @@ var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
 var CollapsibleNav = require('react-bootstrap').CollapsibleNav;
 var NavDropdown = require('react-bootstrap').NavDropdown;
+var MenuItem = require('react-bootstrap').MenuItem
 
 var Header = React.createClass({
   render: function () {
@@ -21,7 +22,7 @@ var Header = React.createClass({
         navbarHtml = (
           <Nav navbar right >
             <NavDropdown eventKey={1} title={userName} >
-              <NavItem eventKey={3} href='logout'>Logout</NavItem>
+              <MenuItem eventKey={3} href='logout'>Logout</MenuItem>
             </NavDropdown>
           </Nav>
         );
