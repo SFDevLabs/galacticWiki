@@ -14,8 +14,11 @@ var EventEmitter = require('events').EventEmitter;
 var TodoConstants = require('../constants/Constants');
 var assign = require('object-assign');
 var Immutable = require('immutable');
+var request = require('superagent');
 
 var CHANGE_EVENT = 'change';
+
+var LOADING_TOKEN = {};
 
 var _history = [],
     _sites = Immutable.OrderedMap();
@@ -40,19 +43,19 @@ var EdgeRecord = Immutable.Record({
     toConcept: null
 });
 
-/**
- * Create a TODO item.
- * @param  {string} text The content of the TODO
- */
-function create(text) {
-    // Hand waving here -- not showing how this interacts with XHR or persistent
-    // server-side storage.
-    // Using the current timestamp + random number in place of a real id.
-    var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
+// /**
+//  * Create a TODO item.
+//  * @param  {string} text The content of the TODO
+//  */
+// function create(text) {
+//     // Hand waving here -- not showing how this interacts with XHR or persistent
+//     // server-side storage.
+//     // Using the current timestamp + random number in place of a real id.
+//     var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
 
-    addHistoryEntry();
-    _sites = _sites.set(id, new SiteRecord({id : id, text : text}));
-}
+//     addHistoryEntry();
+//     _sites = _sites.set(id, new SiteRecord({id : id, text : text}));
+// }
 
 function addHistoryEntry() {
     _history.push(_sites);
@@ -78,20 +81,6 @@ function updateWithHistory(id, updates) {
 }
 
 /**
- * Update all of the TODO items with the same object.
- *     the data to be updated.  Used to mark all TODOs as completed.
- * @param  {object} updates An object literal containing only the data to be
- *     updated.
-
- */
-function updateAll(updates) {
-    addHistoryEntry();
-    for (var id in _sites.toObject()) {
-        update(id, updates);
-    }
-}
-
-/**
  * Delete a TODO item.
  * @param  {string} id
  */
@@ -104,33 +93,34 @@ function destroyWithHistory(id) {
     destroy(id);
 }
 
-/**
- * Delete all the completed TODO items.
- */
-function destroyCompleted() {
-    addHistoryEntry();
-    for (var id in _sites.toObject()) {
-        if (_sites.getIn([id, 'complete'])) {
-            destroy(id);
-        }
-    }
-}
-
 var TodoStore = assign({}, EventEmitter.prototype, {
 
     /**
-     * Tests whether all the remaining TODO items are marked as completed.
-     * @return {boolean}
+     * @name   getPageData
+     * @desc   return the URL
+     * @param  {string}  url of the page to return
      */
-    areAllComplete: function() {
-        for (var id in _sites) {
-            if (!_sites.getIn([id, 'complete'])) {
-                return false;
-            }
-        }
-        return true;
+    getPageData: function(url) {
+        request
+          .get(url)
+          .end(this.updateFromServer);
     },
-
+    /**
+     * @name   updateFromServer
+     * @desc   callback from getPageData
+     * @param  {[type]}      url [description]
+     * @return {[type]}          [description]
+     */
+    updatePageDataFromServer: function(response) {
+        AppDispatcher.dispatch({
+          type: 'PAGE_DATA_FROM_SERVER',
+          payload: {id: response.id, data: response}
+      });
+    },
+    handleDataFromServer: function(action) {
+        _sites[1] = action.payload.data;
+        this.emit('change'); // or whatever you do to re-render your app
+    },
     /**
      * Get the entire collection of TODOs.
      * @return {object}
@@ -167,6 +157,14 @@ AppDispatcher.register(function(action) {
     var text;
 
     switch (action.actionType) {
+        case TodoConstants.PAGE_DATA_FROM_SERVER:
+            text = action.text.trim();
+            if (text !== '') {
+                create(text);
+            }
+            Store.emitChange();
+            break;
+
         case TodoConstants.TODO_CREATE:
             text = action.text.trim();
             if (text !== '') {

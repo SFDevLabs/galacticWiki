@@ -21,15 +21,15 @@ var Header = React.createClass({
       if (true) {
         navbarHtml = (
           <Nav navbar right >
-            <NavDropdown eventKey={1} title={userName} >
-              <MenuItem eventKey={3} href='logout'>Logout</MenuItem>
+            <NavDropdown id="main-nav-dropdown" eventKey={1} title={userName} >
+              <MenuItem eventKey={2} href='logout'>Logout</MenuItem>
             </NavDropdown>
           </Nav>
         );
       } else {
         navbarHtml = (
           <Nav navbar right >
-            <NavItem eventKey={2} href='login'>Login</NavItem>
+            <NavItem eventKey={1} href='login'>Login</NavItem>
           </Nav>
         );
       }
