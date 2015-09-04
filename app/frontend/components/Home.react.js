@@ -11,7 +11,7 @@ var _ = require('lodash');
 var searchDelay = 1000;
 
 var Home = React.createClass({
-	displayName : '',
+	displayName : 'Home',
 	propTypes: {},
 	mixins : [],
 	getInitialState : function() {
