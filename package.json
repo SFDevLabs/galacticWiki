@@ -84,7 +84,10 @@
   },
   "jest": {
     "scriptPreprocessor": "./app/tests/preprocessor.js",
-    "unmockedModulePathPatterns": ["./node_modules/react"]
+    "unmockedModulePathPatterns": ["./node_modules"],
+    "globals": {
+      "__DEV__":true
+    }
   },
   "browserify": {
     "transform": [

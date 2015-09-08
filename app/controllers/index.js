@@ -19,12 +19,7 @@ exports.index = function (req, res) {
 };
 
 exports.getPages = function (req, res) {
-    var user = req.user;
-    if (user) {
-        res.json({});
-    } else {
-        res.status(401).json({status:'Not Authorized'});
-    }
+    res.json({});
 };
 
 /**

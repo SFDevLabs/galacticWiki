@@ -5,6 +5,8 @@
 
 var React = require('react');
 var Header = require('./Header.react');
+var Item = require('./Item.react');
+
 var RouteHandler = require('react-router').RouteHandler;
 
 // Execute the app
@@ -14,6 +16,7 @@ var App = React.createClass({
       <div>
         <Header/>
         <RouteHandler/>
+        <Item />
       </div>
     )
     return jsx;

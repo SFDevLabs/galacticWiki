@@ -18,7 +18,7 @@ var MenuItem = require('react-bootstrap').MenuItem
 var Header = React.createClass({
   render: function () {
     var navbarHtml = '';
-      if (true) {
+      if (userName) {
         navbarHtml = (
           <Nav navbar right >
             <NavDropdown id="main-nav-dropdown" eventKey={1} title={userName} >

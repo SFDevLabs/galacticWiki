@@ -102,12 +102,13 @@ var TodoStore = assign({}, EventEmitter.prototype, {
      */
     getPageData: function(url) {
         request
-          .get(url)
+          .get('/api/page')
+          .query({q: url})
           .end(this.updateFromServer);
     },
     /**
      * @name   updateFromServer
-     * @desc   callback from getPageData
+     * @desc   Callback from getPageData
      * @param  {[type]}      url [description]
      * @return {[type]}          [description]
      */
@@ -117,6 +118,12 @@ var TodoStore = assign({}, EventEmitter.prototype, {
           payload: {id: response.id, data: response}
       });
     },
+    /**
+     * @name   handleDataFromServer
+     * @desc   [description]
+     * @param  {[type]}      action [description]
+     * @return {[type]}             [description]
+     */
     handleDataFromServer: function(action) {
         _sites[1] = action.payload.data;
         this.emit('change'); // or whatever you do to re-render your app
