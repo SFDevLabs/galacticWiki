@@ -165,7 +165,7 @@ AppDispatcher.register(function(action) {
 
     switch (action.actionType) {
         case TodoConstants.PAGE_DATA_FROM_SERVER:
-            text = action.text.trim();
+            text = action.payload.data.trim();
             if (text !== '') {
                 create(text);
             }

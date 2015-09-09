@@ -28,7 +28,7 @@ var Home = React.createClass({
 					autoFocus='true'
 					type='text'
 					value={this.state.value}
-					onChange={this.onChange} />
+					onChange={this.onChangeSetState} />
 			</div>
 		);
 		return multilineJsx;
@@ -48,7 +48,7 @@ var Home = React.createClass({
 	 * @param  {obj}      event
 	 */
 	onChangeSetState: function (event) {
-	       this.setState({value: Store.getPageData(event.target.value)});
+	    this.setState({value: Store.getPageData(event.target.value)});
 	}
 
 });

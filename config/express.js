@@ -32,103 +32,109 @@ var env = process.env.NODE_ENV;
 
 module.exports = function (app, passport) {
 
-  // Compression middleware (should be placed before express.static)
-  app.use(compression({
-    threshold: 512
-  }));
+    // Compression middleware (should be placed before express.static)
+    app.use(compression({
+        threshold: 512
+    }));
 
-  if (env !== 'production') {
-    app.use('/', expressLess(config.root + '/public', { debug: true }));
-  }
-
-  app.use('/',express.static(config.root + '/public'));
-
-  // Static files middleware
-
-  // Use winston on production
-  var log;
-  if (env !== 'development') {
-    log = {
-      stream: {
-        write: function (message, encoding) {
-          winston.info(message);
-        }
-      }
-    };
-  } else {
-    log = 'dev';
-  }
-
-  // Don't log during tests
-  // Logging middleware
-  if (env !== 'test') app.use(morgan(log));
-
-  // Swig templating engine settings
-  if (env === 'development' || env === 'test') {
-    swig.setDefaults({
-      cache: false
-    });
-  }
-
-  // set views path, template engine and default layout
-  app.engine('html', swig.renderFile);
-  app.set('views', config.root + '/app/views');
-  app.set('view engine', 'html');
-
-  // expose package.json to views
-  app.use(function (req, res, next) {
-    res.locals.pkg = pkg;
-    res.locals.env = env;
-    next();
-  });
-
-  // bodyParser should be above methodOverride
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(multer());
-  app.use(methodOverride(function (req, res) {
-    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-      // look in urlencoded POST bodies and delete it
-      var method = req.body._method;
-      delete req.body._method;
-      return method;
+    if (env !== 'production') {
+        app.use('/', expressLess(config.root + '/public', {debug: true}));
     }
-  }));
 
-  // CookieParser should be above session
-  app.use(cookieParser());
-  app.use(cookieSession({ secret: 'secret' }));
-  app.use(session({
-    resave: true,
-    saveUninitialized: true,
-    secret: pkg.name,
-    store: new mongoStore({
-      url: config.db,
-      collection : 'sessions'
-    })
-  }));
+    app.use('/', express.static(config.root + '/public'));
 
-  // use passport session
-  app.use(passport.initialize());
-  app.use(passport.session());
+    // Static files middleware
 
-  // connect flash for flash messages - should be declared after sessions
-  app.use(flash());
+    // Use winston on production
+    var log;
+    if (env !== 'development') {
+        log = {
+            stream: {
+                write: function (message, encoding) {
+                    winston.info(message);
+                }
+            }
+        };
+    } else {
+        log = 'dev';
+    }
 
-  // should be declared after session and flash
-  app.use(helpers(pkg.name));
+    // Don't log during tests
+    // Logging middleware
+    if (env !== 'test') app.use(morgan(log));
 
-  // adds CSRF support
-  if (process.env.NODE_ENV !== 'test') {
-    app.use(csrf());
-    // This could be moved to view-helpers :-)
+    // Swig templating engine settings
+    if (env === 'development' || env === 'test') {
+        swig.setDefaults({
+            cache: false
+        });
+    }
+
+    // set views path, template engine and default layout
+    app.engine('html', swig.renderFile);
+    app.set('views', config.root + '/app/views');
+    app.set('view engine', 'html');
+
+    // expose package.json to views
     app.use(function (req, res, next) {
-      res.locals.user = req.user;
-      res.locals.csrf_token = req.csrfToken();
-      res.locals.bundlejs = config.bundlejs
-      res.locals.bundlecss = config.bundlecss
-      res.locals.env = env
-      next();
+        res.locals.pkg = pkg;
+        res.locals.env = env;
+        next();
     });
-  }
+
+    // bodyParser should be above methodOverride
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(multer());
+    app.use(methodOverride(function (req, res) {
+        if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+            // look in urlencoded POST bodies and delete it
+            var method = req.body._method;
+            delete req.body._method;
+            return method;
+        }
+    }));
+
+    // CookieParser should be above session
+    app.use(cookieParser());
+    app.use(cookieSession({secret: 'secret'}));
+    app.use(session({
+        resave: true,
+        saveUninitialized: true,
+        secret: pkg.name,
+        store: new mongoStore({
+            url: config.db,
+            collection : 'sessions'
+        })
+    }));
+
+    // use passport session
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    // connect flash for flash messages - should be declared after sessions
+    app.use(flash());
+
+    // should be declared after session and flash
+    app.use(helpers(pkg.name));
+
+    if (env === 'development') {
+        livereload = require('livereload');
+        server = livereload.createServer();
+        server.watch(config.root + '/app');
+    }
+    // adds CSRF support
+    if (process.env.NODE_ENV !== 'test') {
+        app.use(csrf());
+        // This could be moved to view-helpers :-)
+        app.use(function (req, res, next) {
+            res.locals.user = req.user;
+            res.locals.csrf_token = req.csrfToken();
+            res.locals.bundlejs = config.bundlejs
+            res.locals.bundlecss = config.bundlecss
+            res.locals.env = env
+            res.locals.livereload  = (env === 'development') ? '<script src="http://0.0.0.0:35729/livereload.js"></script>' : '';
+            next();
+        });
+    }
 };

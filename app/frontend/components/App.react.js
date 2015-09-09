@@ -16,7 +16,6 @@ var App = React.createClass({
       <div>
         <Header/>
         <RouteHandler/>
-        <Item />
       </div>
     )
     return jsx;

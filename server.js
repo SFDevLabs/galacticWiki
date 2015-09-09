@@ -44,10 +44,6 @@ require(__dirname + '/app/routes/index.js')(app, passport, auth); //always do ma
 app.listen(port);
 console.log('Express app started on port ' + port);
 
-livereload = require('livereload');
-server = livereload.createServer();
-server.watch(__dirname + "/app");
-
 /**
  * Expose
  */
