@@ -11,10 +11,9 @@
 
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('events').EventEmitter;
-var TodoConstants = require('../constants/Constants');
+var constants = require('../constants/Constants');
 var assign = require('object-assign');
 var Immutable = require('immutable');
-var request = require('superagent');
 
 var CHANGE_EVENT = 'change';
 
@@ -101,10 +100,7 @@ var TodoStore = assign({}, EventEmitter.prototype, {
      * @param  {string}  url of the page to return
      */
     getPageData: function(url) {
-        request
-          .get('/api/page')
-          .query({q: url})
-          .end(this.updateFromServer);
+
     },
     /**
      * @name   updateFromServer
@@ -161,24 +157,24 @@ var TodoStore = assign({}, EventEmitter.prototype, {
 
 // Register callback to handle all updates
 AppDispatcher.register(function(action) {
-    var text;
+    var url;
 
     switch (action.actionType) {
-        case TodoConstants.PAGE_DATA_FROM_SERVER:
-            text = action.payload.data.trim();
-            if (text !== '') {
-                create(text);
-            }
+        case constants.PAGE_DATA_FROM_SERVER:
+            // url = action.payload.data.trim();
+            // if (text !== '') {
+            //     create(text);
+            // }
             Store.emitChange();
             break;
 
-        case TodoConstants.TODO_CREATE:
-            text = action.text.trim();
-            if (text !== '') {
-                create(text);
-            }
-            Store.emitChange();
-            break;
+        // case constants.URL_SEARCH:
+        //     url = action.url.trim();
+        //     if (text !== '') {
+        //         TodoStore(url);
+        //     }
+        //     Store.emitChange();
+        //     break;
 
         default:
         // no op

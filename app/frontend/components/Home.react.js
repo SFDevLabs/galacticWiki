@@ -6,6 +6,7 @@
 var React = require('react');
 var Input = require('react-bootstrap').Input;
 var Store = require('../stores/Store');
+var actions = require('../actions/Actions');
 var Utils = require('../utils');
 var _ = require('lodash');
 var searchDelay = 1000;
@@ -18,9 +19,15 @@ var Home = React.createClass({
 		return {};
 	},
 	componentWillMount : function() {
-	    this.delayedCallback = _.debounce(this.onChangeSetState, searchDelay);
+	    this.delayedCallback = _.debounce(this.delayedKeyDown, searchDelay);
     },
-	componentWillUnmount : function() {},
+	componentDidMount: function() {
+		Store.addChangeListener(this._onChange);
+	},
+
+	componentWillUnmount: function() {
+		Store.removeChangeListener(this._onChange);
+	},
 	render: function () {
 		var multilineJsx = (
 			<div className="container">
@@ -28,7 +35,7 @@ var Home = React.createClass({
 					autoFocus='true'
 					type='text'
 					value={this.state.value}
-					onChange={this.onChangeSetState} />
+					onChange={this.keyDown} />
 			</div>
 		);
 		return multilineJsx;
@@ -38,7 +45,7 @@ var Home = React.createClass({
 	 * @desc   Calls a debounced function
 	 * Refrence -> http://stackoverflow.com/questions/23123138/perform-debounce-in-react-js/24679479#24679479
 	 */
-	onChange: function (event) {
+	keyDown: function (event) {
 	    event.persist();
 	    this.delayedCallback(event);
 	},
@@ -47,8 +54,12 @@ var Home = React.createClass({
 	 * @desc   Sets the state from the debounce created in componentWillMount
 	 * @param  {obj}      event
 	 */
-	onChangeSetState: function (event) {
-	    this.setState({value: Store.getPageData(event.target.value)});
+	delayedKeyDown: function (event) {
+		actions
+	},
+
+	_onChange:function(){
+		this.setState({response: Store.getPageData(event.target.value)});
 	}
 
 });

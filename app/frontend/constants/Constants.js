@@ -12,4 +12,5 @@
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
+    PAGE_DATA_FROM_SERVER:null
 });

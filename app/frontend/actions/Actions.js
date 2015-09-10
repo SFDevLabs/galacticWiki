@@ -11,16 +11,21 @@
 
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var Constants = require('../constants/Constants');
+var searchApi = require('../api/urlSearch');
 
 var Actions = {
 
     /**
      * @param  {string} text
      */
-    create: function(text) {
+    search: function(url) {
+        searchApi.getURLData(url);
+    },
+
+    handleRequestSuccess:function(payload) {
         AppDispatcher.dispatch({
-            actionType: Constants.TODO_CREATE,
-            text: text
+            actionType: Constants.PAGE_DATA_FROM_SERVER,
+            payload : payload
         });
     },
 
