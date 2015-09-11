@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * TodoStore
+ * Store
  */
 
 var AppDispatcher = require('../dispatcher/AppDispatcher');
@@ -14,6 +14,7 @@ var EventEmitter = require('events').EventEmitter;
 var constants = require('../constants/Constants');
 var assign = require('object-assign');
 var Immutable = require('immutable');
+var _ = require('lodash');
 
 var CHANGE_EVENT = 'change';
 
@@ -21,6 +22,8 @@ var LOADING_TOKEN = {};
 
 var _history = [],
     _sites = Immutable.OrderedMap();
+
+var pending = false;
 
 var SiteRecord = Immutable.Record({
     id : null,
@@ -46,15 +49,14 @@ var EdgeRecord = Immutable.Record({
 //  * Create a TODO item.
 //  * @param  {string} text The content of the TODO
 //  */
-// function create(text) {
-//     // Hand waving here -- not showing how this interacts with XHR or persistent
-//     // server-side storage.
-//     // Using the current timestamp + random number in place of a real id.
-//     var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
+function handleSearchResult(result) {
+    addHistoryEntry();
 
-//     addHistoryEntry();
-//     _sites = _sites.set(id, new SiteRecord({id : id, text : text}));
-// }
+    var array = _.map(result, function(res) {
+        return [res.canonicalLink, res];
+    });
+    _sites = Immutable.OrderedMap(array);
+}
 
 function addHistoryEntry() {
     _history.push(_sites);
@@ -92,7 +94,7 @@ function destroyWithHistory(id) {
     destroy(id);
 }
 
-var TodoStore = assign({}, EventEmitter.prototype, {
+var Store = assign({}, EventEmitter.prototype, {
 
     /**
      * @name   getPageData
@@ -100,19 +102,15 @@ var TodoStore = assign({}, EventEmitter.prototype, {
      * @param  {string}  url of the page to return
      */
     getPageData: function(url) {
-
+        return _sites.toArray();
     },
     /**
-     * @name   updateFromServer
-     * @desc   Callback from getPageData
-     * @param  {[type]}      url [description]
-     * @return {[type]}          [description]
+     * @name   getPageData
+     * @desc   return the URL
+     * @param  {boolean}  Pending status
      */
-    updatePageDataFromServer: function(response) {
-        AppDispatcher.dispatch({
-          type: 'PAGE_DATA_FROM_SERVER',
-          payload: {id: response.id, data: response}
-      });
+    getSearchPendingStatus: function() {
+        return pending;
     },
     /**
      * @name   handleDataFromServer
@@ -161,24 +159,23 @@ AppDispatcher.register(function(action) {
 
     switch (action.actionType) {
         case constants.PAGE_DATA_FROM_SERVER:
-            // url = action.payload.data.trim();
-            // if (text !== '') {
-            //     create(text);
-            // }
+            pending = false;
+
+            var result = action.results;
+            if (result != undefined) {
+                handleSearchResult(result);
+            }
             Store.emitChange();
             break;
 
-        // case constants.URL_SEARCH:
-        //     url = action.url.trim();
-        //     if (text !== '') {
-        //         TodoStore(url);
-        //     }
-        //     Store.emitChange();
-        //     break;
+        case constants.PAGE_DATA_PENDING:
+            pending = true;
+            Store.emitChange();
+            break;
 
         default:
         // no op
     }
 });
 
-module.exports = TodoStore;
+module.exports = Store;

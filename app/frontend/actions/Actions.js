@@ -20,12 +20,9 @@ var Actions = {
      */
     search: function(url) {
         searchApi.getURLData(url);
-    },
-
-    handleRequestSuccess:function(payload) {
         AppDispatcher.dispatch({
-            actionType: Constants.PAGE_DATA_FROM_SERVER,
-            payload : payload
+            actionType: Constants.PAGE_DATA_PENDING,
+            payload : {pending:true}
         });
     },
 

@@ -1,8 +1,9 @@
-var API_URL = '/api/v2';
+var API_URL = '/api/page';
 var TIMEOUT = 10000;
 var request = require('superagent');
-var AppDispatcher = require('../actions/Actions');
+var AppDispatcher = require('../dispatcher/AppDispatcher');
 var _pendingRequests = {};
+var Constants = require('../constants/Constants');
 
 function abortPendingRequests(key) {
     if (_pendingRequests[key]) {
@@ -31,11 +32,11 @@ function makeUrl(part) {
 // return successful response, else return request Constants
 function makeDigestFun(err, res) {
     if (err && err.timeout === TIMEOUT) {
-        AppDispatcher.handleRequestTimeout(res, params);
+        AppDispatcher.dispatch({actionType: Constants.TIMEOUT_FROM_SERVER});
     } else if (!res.ok) {
-        AppDispatcher.handleRequestError(res, params);
+        AppDispatcher.dispatch({actionType: Constants.PAGE_ERROR_FROM_SERVER});
     } else {
-        AppDispatcher.handleRequestSuccess(res, params);
+        AppDispatcher.dispatch({actionType: Constants.PAGE_DATA_FROM_SERVER, results : res.body.results});
     }
 };
 
@@ -45,15 +46,14 @@ function get(url, q) {
         .get(url)
         .query(q)
         .timeout(TIMEOUT)
-        .query({authtoken: token()});
 }
 
 var Api = {
     getURLData: function(searchURLString) {
-        var url = makeUrl('/entities/' + entityId);
+        var url = makeUrl('');
         var params = {q:searchURLString}
+        var key = searchURLString;
         abortPendingRequests(key);
-        AppDispatcher.handleRequestPending(searchURLString);
         _pendingRequests[searchURLString] = get(url, params).end(
             makeDigestFun
         );

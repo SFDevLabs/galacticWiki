@@ -3,10 +3,14 @@
  */
 'use strict';
 var React = require('react');
+var ReactPropTypes = React.PropTypes;
 
 var Item = React.createClass({
     displayName : 'Item',
-    propTypes: {},
+    propTypes: {
+        title: ReactPropTypes.string.isRequired,
+        text: ReactPropTypes.string.isRequired
+    },
     mixins : [],
     getInitialState : function() {
     	return {};
@@ -15,7 +19,11 @@ var Item = React.createClass({
     componentWillUnmount : function() {},
     render : function() {
     	var item =  (
-    		<div>Love</div>
+            <div>
+        		<div>{this.props.title}</div>
+                <hr />
+                <div>{this.props.text}</div>
+            </div>
     		)
     	return item;
     }

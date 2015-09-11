@@ -10,6 +10,7 @@ var actions = require('../actions/Actions');
 var Utils = require('../utils');
 var _ = require('lodash');
 var searchDelay = 1000;
+var Item = require('./Item.react');
 
 var Home = React.createClass({
 	displayName : 'Home',
@@ -29,6 +30,9 @@ var Home = React.createClass({
 		Store.removeChangeListener(this._onChange);
 	},
 	render: function () {
+		var results = _.map(this.state.pages, function(page){
+			return <Item title={page.title} text={page.text} />
+		})
 		var multilineJsx = (
 			<div className="container">
 				<Input
@@ -36,6 +40,7 @@ var Home = React.createClass({
 					type='text'
 					value={this.state.value}
 					onChange={this.keyDown} />
+				{results}
 			</div>
 		);
 		return multilineJsx;
@@ -55,11 +60,11 @@ var Home = React.createClass({
 	 * @param  {obj}      event
 	 */
 	delayedKeyDown: function (event) {
-		actions
+		actions.search(event.target.value);
 	},
 
 	_onChange:function(){
-		this.setState({response: Store.getPageData(event.target.value)});
+		this.setState({pages: Store.getPageData(), pending:Store.getSearchPendingStatus()});
 	}
 
 });
