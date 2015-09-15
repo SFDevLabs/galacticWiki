@@ -22,7 +22,7 @@ var Item = React.createClass({
             <div>
         		<div>{this.props.title}</div>
                 <hr />
-                <div>{this.props.text}</div>
+                <div dangerouslySetInnerHTML={{__html: this.props.text}}></div>
             </div>
     		)
     	return item;
