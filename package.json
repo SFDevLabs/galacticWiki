@@ -71,7 +71,7 @@
     "async":"1.4.2",
     "node-readability":"2.0.0",
     "cheerio":"0.19.0",
-    "lunr":"0.5.12"
+    "livereload": "0.3.7"
   },
   "devDependencies": {
     "less": "2.3.1",

@@ -21,7 +21,6 @@ var winston = require('winston');
 var helpers = require('view-helpers');
 var config = require('./config');
 var pkg = require('../package.json');
-var glob = require('glob');
 var expressLess = require('express-less');
 
 var env = process.env.NODE_ENV;

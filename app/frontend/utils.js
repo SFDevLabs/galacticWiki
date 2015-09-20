@@ -3,7 +3,6 @@
 
 var userNameDiv = document.getElementById('user');
 var csrfTag = document.getElementById('csrf-token');
-var fetch = require('whatwg-fetch');
 
 var utils = {}
 
