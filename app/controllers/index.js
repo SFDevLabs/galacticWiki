@@ -15,6 +15,15 @@ var utils = require('../../lib/utils')
  * List
  */
 
+/**
+Name: index
+Describe: renders the main page
+Parameters:
+  - req: node request object
+  - res: node response object
+Return: there is no return on this function.
+**/
+
 exports.index = function (req, res) {
     res.render('index', {
         title: 'Articles'

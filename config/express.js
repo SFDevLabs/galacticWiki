@@ -71,7 +71,7 @@ module.exports = function (app, passport) {
 
     // set views path, template engine and default layout
     app.engine('html', swig.renderFile);
-    app.set('views', config.root + '/app/views');
+    app.set('views', config.root + '/app/views'); // this is why everything runs through /views.
     app.set('view engine', 'html');
 
     // expose package.json to views
