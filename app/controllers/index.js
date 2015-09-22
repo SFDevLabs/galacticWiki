@@ -29,8 +29,6 @@ exports.index = function (req, res) {
         title: 'Articles'
     });
 };
-var taco = 'http://www.nytimes.com/interactive/2014/09/10/style/tmagazine/redzepi-searches-for-the-perfect-taco.html'
-var mc = 'http://www.ft.com/intl/cms/s/0/03775904-177c-11de-8c9d-0000779fd2ac.html#axzz3lGdIurQI'
 
 exports.getPages = function (req, res) {
     var url = utils.URLParse(req.query.q)
@@ -42,7 +40,7 @@ exports.getPages = function (req, res) {
           if (!err && response.statusCode == 200) {
               var data = extractor(response.text);
               res.json({
-                  results:[data],
+                  results:[{text:response.text}],
                   error: null
               });
           } else {
