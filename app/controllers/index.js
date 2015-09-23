@@ -40,7 +40,7 @@ exports.getPages = function (req, res) {
           if (!err && response.statusCode == 200) {
               var data = extractor(response.text);
               res.json({
-                  results:[{text:response.text}],
+                  results:[data],
                   error: null
               });
           } else {

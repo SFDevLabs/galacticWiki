@@ -4,6 +4,7 @@
 'use strict';
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
+var _ = require('lodash');
 
 var Item = React.createClass({
     displayName : 'Item',
@@ -18,11 +19,15 @@ var Item = React.createClass({
     componentWillMount : function() {},
     componentWillUnmount : function() {},
     render : function() {
+
+        var paragraphs = _.map(this.props.text, function(textItem){
+            return (<p>{textItem}</p>)
+        });
     	var item =  (
             <div>
         		<div>{this.props.title}</div>
                 <hr />
-                <div dangerouslySetInnerHTML={{__html: this.props.text}}></div>
+                {paragraphs}
             </div>
     		)
     	return item;
