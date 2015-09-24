@@ -16,6 +16,9 @@ var divStyle = {
     "position":"absolute",
     "right":"-30px"
 };
+var descriptionStyle = {
+    "color":"#ddd"
+}
 var parent = {
     "position":"relative"
 }
@@ -24,6 +27,7 @@ var Item = React.createClass({
     displayName : 'Item',
     propTypes: {
         title: ReactPropTypes.string.isRequired,
+        description: ReactPropTypes.string.isRequired,
         text: ReactPropTypes.string.isRequired
     },
     mixins : [],
@@ -44,6 +48,8 @@ var Item = React.createClass({
     	var item =  (
             <div>
         		<div>{this.props.title}</div>
+                <br />
+                <div style={descriptionStyle} >{this.props.description}</div>
                 <hr />
                 {paragraphs}
             </div>

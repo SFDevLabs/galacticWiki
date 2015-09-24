@@ -31,7 +31,7 @@ var Home = React.createClass({
 	},
 	render: function () {
 		var results = _.map(this.state.pages, function(page){
-			return <Item title={page.title} text={page.text} />
+			return <Item title={page.title} text={page.text} description={page.description} />
 		})
 		var multilineJsx = (
 			<div className="container">

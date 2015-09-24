@@ -45,33 +45,68 @@ exports.getPages = function (req, res) {
   if (!url || !utils.urlValidate(url)) { return res.status(200).json({error:'No Query or Valid URL', results:[]}) };
   async.waterfall([
       function(cb){cb(null,url)},
+      pageDBSearch,
       pageRequester,
   ], function (err, data) {
-      res.json({
-          results:[data],
-          error: null
-      });
+      if (err){
+        log.log("Error", err);
+        res.status(200).json(err);
+      }else{
+        res.json({
+            results:[data],
+            error: null
+        });
+      }
+
   });
 
 };
 
-var pageRequester = function(url, cb) {
-  request
-    .get(utils.URLParse(url))
-    .set('Cookie', utils.getCookie(url))
-    .end(function(err, response) {
-      if (!err && response.statusCode == 200) {
-        var data = extractor(response.text);
-        var site = new Site(data);
-        data = _.assign(data, { 'queryLink': url });
-        site.save(function(err){
-          if(err){log.log("Error", err)}
-        });
-        cb(null, data);
-      } else {
-          res.status(200).json(err);
-      }
+
+
+
+var pageDBSearch = function(url, cb) {
+  Site
+    .findOne({'$or':[{ canonicalLink: url }, { queryLink: url }]})
+    .exec(function(err, result){
+        if (err){
+          cb(err)
+        } else if (result!==null) {
+            console.log('db')
+          cb(null, result);
+        } else {
+            console.log('parse')
+          cb(null, url);
+        }
     });
+}
+
+
+var pageRequester = function(input, cb) {
+  if (typeof input === 'string'){
+    var url = input;
+    request
+      .get(utils.URLParse(url))
+      .set('Cookie', utils.getCookie(url))
+      .end(function(err, response) {
+        if (!err && response.statusCode == 200) {
+          var data = extractor(response.text);
+          data = _.assign(data, { 'queryLink': url, 'canonicalLink':url });
+          var site = new Site(data);
+          site.save(function(err){
+            cb(null, site);
+            if(err){log.log("Error", err)}
+          });
+
+        } else {
+          cb(err);
+        }
+      });
+    } else{
+      var data = input;
+      cb(null, data);
+    }
+
 }
 
 
