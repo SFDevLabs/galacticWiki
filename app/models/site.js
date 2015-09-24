@@ -24,7 +24,12 @@ var getTags = function (tags) {
  */
 
 var setTags = function (tags) {
-    return tags.split(',');
+    if (tags.length){
+        return tags.split(',');
+    } else{
+        return []
+    }
+
 };
 
 /**
@@ -33,15 +38,18 @@ var setTags = function (tags) {
 
 var SiteSchema = new Schema({
     title: {type : String, default : '', trim : true},
-    body: {type : String, default : '', trim : true},
+    description:{type : String, default : '', trim : true},
+    text: [{type : String, default : '', trim : true}],
     user: {type : Schema.ObjectId, ref : 'User'},
     connections: [],
     tags: {type: [], get: getTags, set: setTags},
     favicon: {type : String, default : '', trim : true},
     lang: {type : String, default : '', trim : true},
     canonicalLink: {type : String, default : '', trim : true},
+    queryLink: {type : String, default : '', trim : true},
     videos:[{type : String, default : '', trim : true}],
-    image: {
+    image: {type : String, default : '', trim : true},
+    imageUploaded:{
         cdnUri: String,
         files: []
     },
@@ -53,7 +61,7 @@ var SiteSchema = new Schema({
  */
 
 SiteSchema.path('title').required(true, 'Article title cannot be blank');
-SiteSchema.path('body').required(true, 'Article body cannot be blank');
+SiteSchema.path('text').required(true, 'Article body cannot be blank');
 
 /**
  * Pre-remove hook
