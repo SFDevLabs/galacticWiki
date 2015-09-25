@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 var request = require('superagent');
-var extractor = require('unfluff');
+var extractor = require('../../lib/node-unfluff/lib/unfluff');
 var utils = require('../../lib/utils')
 var async = require('async');
 var logentries = require('node-logentries');
