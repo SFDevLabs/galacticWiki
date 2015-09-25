@@ -1,2 +1,2 @@
 node_modules/*
-!lib/node-unfluff/node_module
+!lib/node-unfluff/node_module/*
