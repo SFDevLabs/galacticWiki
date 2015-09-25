@@ -63,8 +63,6 @@ exports.getPages = function (req, res) {
 };
 
 
-
-
 var pageDBSearch = function(url, cb) {
   Site
     .findOne({'$or':[{ canonicalLink: url }, { queryLink: url }]})

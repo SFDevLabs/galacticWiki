@@ -15,6 +15,19 @@ var CollapsibleNav = require('react-bootstrap').CollapsibleNav;
 var NavDropdown = require('react-bootstrap').NavDropdown;
 var MenuItem = require('react-bootstrap').MenuItem
 
+var colorsHex = require('../constants/colorsHex')
+
+const navBarStyle = {
+    backgroundColor: colorsHex.backgroundColor,
+    borderBottomColor: colorsHex.deepSpacePurple
+}
+
+const navBarBrandStyle = {
+    fontFamily: '"Galactic", Fallback, sans-serif',
+    fontSize: '32px !important',
+    color: colorsHex.deepSpacePurpleLogo+'!important'
+}
+
 var Header = React.createClass({
   render: function () {
     var navbarHtml = '';
@@ -35,7 +48,7 @@ var Header = React.createClass({
       }
 
     var jsx = (
-      <Navbar brand={<Link to="home">Galactic</Link>} toggleNavKey={0}>
+      <Navbar style={navBarStyle} brand={<Link style={navBarBrandStyle} to="home">Galactic</Link>} toggleNavKey={0}>
         <CollapsibleNav eventKey={0}>
           {navbarHtml}
         </CollapsibleNav>

@@ -7,20 +7,20 @@ var ReactPropTypes = React.PropTypes;
 var _ = require('lodash');
 
 var divStyle = {
-    width: "25px;",
-    height: "25px;",
-    background: "red;",
-    "-moz-border-radius": "50px / 50px;",
-    "-webkit-border-radius": "50px / 50px;",
-    "border-radius": "50px / 50px;",
-    "position":"absolute",
-    "right":"-30px"
+    width: '10px;',
+    height: '10px;',
+    background: '#4700B2;',
+    mozBorderTadius: '50px / 50px;',
+    webkitBordeRadius: '50px / 50px;',
+    borderRadius: '50px / 50px;',
+    position:'absolute',
+    right:'-30px'
 };
 var descriptionStyle = {
-    "color":"#ddd"
+    color:'#ddd'
 }
 var parent = {
-    "position":"relative"
+    position:'relative'
 }
 
 var Item = React.createClass({

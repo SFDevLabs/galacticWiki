@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta id="csrf-token" data-csrf={{csrf_token}}></meta>
-
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <title>{{ title }} | {{ pkg.name }}</title>
     <meta name="keywords" content="{{ pkg.keywords.join(',') }}">
     <meta name="description" content="{{ pkg.description }}">
@@ -20,7 +20,7 @@
 
     {% block head %}
       {# Styles #}
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+      <link rel="stylesheet" href="/css/vendor/bootstrap.min.css">
       <link rel="stylesheet" href="{{bundlecss}}">
     {% endblock %}
   </head>
