@@ -2,9 +2,9 @@
 @import "vendor/bootstrap.min.css";
 /* Global level less*/
 html,
-body {
+body,
+#app {
   height: 100%;
-  background-color: #F8F8F8;
 }
 @media only screen and (max-width: 480px) {
   .dropdown-menu {
@@ -26,5 +26,10 @@ body {
   .navbar-default .navbar-nav .dropdown-menu > li > a {
     color: #777;
   }
+}
+@font-face {
+  font-family: 'Galactic';
+  src: url('galactic.ttf');
+  /* IE9 Compat Modes */
 }
 /* App Specific less import*/
