@@ -42,7 +42,7 @@ exports.index = function (req, res) {
 
 exports.getPages = function (req, res) {
   var url = utils.URLParse(req.query.q)
-  if (!url || !utils.urlValidate(url)) { return res.status(200).json({error:'No Query or Valid URL', results:[]}) };
+  if (!url || !utils.urlValidate(url)) { return res.status(200).json({error:'No Query or Valid URL', results:[]}) };// here we should do a title search.
   async.waterfall([
       function(cb){cb(null,url)},
       pageDBSearch,
@@ -62,7 +62,12 @@ exports.getPages = function (req, res) {
 
 };
 
-
+/**
+ * @name   pageDBSearch
+ * @desc   Searches the DB for the page.
+ * @param  {string}      url
+ * @param  {Function}    cb  a callback for the data.
+ */
 var pageDBSearch = function(url, cb) {
   Site
     .findOne({'$or':[{ canonicalLink: url }, { queryLink: url }]})
@@ -79,7 +84,13 @@ var pageDBSearch = function(url, cb) {
     });
 }
 
-
+/**
+ * @name   pageRequester
+ * @desc   scrape the page
+ * @param  {string || obj}     String to make request
+ * @param  {Function}    cb    function to return data
+ * @return {[type]}            [description]
+ */
 var pageRequester = function(input, cb) {
   if (typeof input === 'string'){
     var url = input;

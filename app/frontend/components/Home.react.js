@@ -27,6 +27,10 @@ var mainInputFormStyle = {
 var mainInputStyle = {
 	borderColor: colorsHex.deepSpacePurple
 }
+
+var mainResultStyle = {
+	borderColor: colorsHex.deepSpacePurple
+}
 const innerButton = <Button style={mainInputStyle} ><Glyphicon glyph="search" /></Button>;
 
 
@@ -49,7 +53,7 @@ var Home = React.createClass({
 	},
 	render: function () {
 		var results = _.map(this.state.pages, function(page){
-			return <Item title={page.title} text={page.text} description={page.description} />
+			return <Item key={page._id} title={page.title} text={page.text} description={page.description} />
 		});
 		var inputAddonsInstance = (
 		  <form id='mainInput' style={mainInputFormStyle}>
@@ -59,24 +63,24 @@ var Home = React.createClass({
 				type='text'
 				value={this.state.value}
 				onChange={this.keyDown}
-
 			    buttonAfter={innerButton} />
 		  </form>
 		);
+
+		var image = this.state.pages?"": <div className="row text-center"><img className="text-center" src='img/logo.png'/></div>;
 		var multilineJsx = (
 			<div className="container">
-				<div className="row text-center">
-					<img className="text-center" src='img/logo.png'/>
-				</div>
-				<div className="row">
-					<div className="col-md-2" />
-					<div className="col-md-8">
+				{image}
+				<section className="col-md-3"/>
+				<section className="col-md-6">
+					<div className="row">
 						{inputAddonsInstance}
 					</div>
-					<div className="col-md-2" />
-				</div>
+					<div className="row">
+						{results}
+					</div>
+				</section>
 
-				{results}
 			</div>
 		);
 		return multilineJsx;
