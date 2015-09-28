@@ -27,7 +27,7 @@ var mainInputFormStyle = {
 var mainInputStyle = {
 	borderColor: colorsHex.deepSpacePurple
 }
-const innerButton = <Button style={mainInputStyle} ><Glyphicon glyph="search" /> | <Glyphicon glyph="link" /></Button>;
+const innerButton = <Button style={mainInputStyle} ><Glyphicon glyph="search" /></Button>;
 
 
 var Home = React.createClass({
