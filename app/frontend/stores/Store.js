@@ -26,14 +26,24 @@ var _history = [],
 var pending = false;
 
 var SiteRecord = Immutable.Record({
-    id : null,
+    _id: null,
+    description: null,
+    canonicalLink: null,
+    connections: [],
+    createdAt: null,
+    image: null,
+    imageUploaded: {files: []},
+    lang: null,
+    queryLink: null,
+    tags: [],
+    text: [],
     title: null,
-    text: '',
-    hrefs:[]
+    videos: []
 });
 
 var ConceptRecord = Immutable.Record({
     id : null,
+    siteRecord: null,
     name: '',
     hrefs:[]
 });
@@ -41,8 +51,16 @@ var ConceptRecord = Immutable.Record({
 var EdgeRecord = Immutable.Record({
     id : null,
     description : '',
-    fromConcept: null,
-    toConcept: null
+    fromConcept: {
+        site : null,
+        textIndex:null,
+        highlight:null
+    },
+    toConcept: {
+        site : null,
+        textIndex:null,
+        highlight:null
+    }
 });
 
 // /**
@@ -53,7 +71,7 @@ function handleSearchResult(result) {
     addHistoryEntry();
 
     var array = _.map(result, function(res) {
-        return [res.canonicalLink, res];
+        return [res._id, new SiteRecord(res)];
     });
     _sites = Immutable.OrderedMap(array);
 }

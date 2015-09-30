@@ -8,22 +8,74 @@ var _ = require('lodash');
 var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Popover = require('react-bootstrap').Popover;
 
+
 var divCircleStyle = {
-    width: '10px',
-    height: '10px',
-    background: '#4700B2',
-    MozBorderRadius: '50px / 50px',
-    WebkitBordeRadius: '50px / 50px',
-    borderRadius: '50px / 50px',
+
+    borderRadius: '50%',
+
+    width: '29px',
+    height: '29px',
+    padding: '4px',
+    marginRight:'3px',
+
+    border: '2px solid',
+    borderColor:'#666',
+    color: '#666',
+    textAlign: 'center',
+    font: '14px Arial, sans-serif',
+
     position:'absolute',
-    right:'-30px'
+    right:'-10px'
 };
-var descriptionStyle = {
-    color:'#ddd'
+
+var paddingRight =  {
+    paddingRight:'24px'
 }
+
+
 var parent = {
     position:'relative'
 }
+var popoverSection = {
+    borderBottom: '1px solid #eee'
+}
+
+var descriptionStyle = {
+    color:'#ddd',
+    fontSize: '24px'
+}
+_.assign(descriptionStyle, paddingRight)
+var titleStyle = {
+}
+_.assign(titleStyle, paddingRight)
+
+var paragraphStyle = {
+    fontFamily: 'Georgia, Times, \'Times New Roman\', serif',
+    fontSize: '17px',
+}
+_.assign(paragraphStyle, paddingRight)
+
+
+
+var overlayMaker = function(i){
+
+    var overlay =(
+        <Popover id={i?i:""}>
+                <div style={popoverSection}>
+                    <h4 style={{fontSize:"16px",color:'#666'}}>Business Schools Breed Unethical Businessmen</h4>
+                    <p>Info</p>
+                </div>
+                <div>
+                    <h4 style={{fontSize:"16px",color:'#666'}}>Business Schools Breed Unethical Businessmen</h4>
+                    <p>Info</p>
+                </div>
+               </Popover>
+               )
+    return (<OverlayTrigger  trigger="click" rootClose placement="right" overlay={overlay}>
+                    <a href="javascript:void(null)" style={divCircleStyle}>1</a>
+            </OverlayTrigger>)
+}
+
 
 var Item = React.createClass({
     displayName : 'Item',
@@ -41,18 +93,26 @@ var Item = React.createClass({
     render : function() {
 
         var paragraphs = _.map(this.props.text, function(textItem, i){
-            return (<div key={i} style={parent}>
-                        <div style={divCircleStyle}></div>
-                        <p>{textItem}</p>
-                    </div>)
+
+            var paragraph = (<div  key={i} style={parent}>
+                                {overlayMaker()}
+                                <p style={paragraphStyle}>{textItem}</p>
+                             </div>)
+            return paragraph;
         });
     	var item =  (
             <div>
-        		<h1>{this.props.title}</h1>
-                <br />
-                <h2 style={descriptionStyle} >{this.props.description}</h2>
-                <hr />
-                {paragraphs}
+                <div style={parent}>
+                    {overlayMaker()}
+            		<h1>{this.props.title}</h1>
+                </div>
+                 <br />
+                <div style={parent}>
+                    {overlayMaker()}
+                    <h2 style={descriptionStyle} >{this.props.description}</h2>
+                    <hr />
+                    {paragraphs}
+                </div>
             </div>
     		)
     	return item;
