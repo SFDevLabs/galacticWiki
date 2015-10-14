@@ -23,19 +23,24 @@ var divCircleStyle = {
     color: '#666',
     textAlign: 'center',
     font: '14px Arial, sans-serif',
+    textDecoration: 'none',
 
     position:'absolute',
-    right:'-10px'
+    right:'0px'
 };
 
+var marginRightStyle =  {
+    marginRight:'33px'
+}
 var paddingRight =  {
-    paddingRight:'24px'
+    paddingRight:'33px'
 }
 
 
 var parent = {
     position:'relative'
 }
+
 var popoverSection = {
     borderBottom: '1px solid #eee'
 }
@@ -82,7 +87,8 @@ var Item = React.createClass({
     propTypes: {
         title: ReactPropTypes.string.isRequired,
         description: ReactPropTypes.string.isRequired,
-        text: ReactPropTypes.array.isRequired
+        text: ReactPropTypes.array.isRequired,
+        newClick: ReactPropTypes.func.isRequired
     },
     mixins : [],
     getInitialState : function() {
@@ -91,26 +97,24 @@ var Item = React.createClass({
     componentWillMount : function() {},
     componentWillUnmount : function() {},
     render : function() {
-
+        var that = this;
         var paragraphs = _.map(this.props.text, function(textItem, i){
-
-            var paragraph = (<div  key={i} style={parent}>
+            var paragraph = (<div  key={i} style={parent} >
                                 {overlayMaker()}
-                                <p style={paragraphStyle}>{textItem}</p>
+                                <p onClick={that.props.newClick} style={paragraphStyle}>{textItem}</p>
                              </div>)
             return paragraph;
         });
     	var item =  (
             <div>
                 <div style={parent}>
-                    {overlayMaker()}
             		<h1>{this.props.title}</h1>
                 </div>
-                 <br />
+                <br />
                 <div style={parent}>
                     {overlayMaker()}
                     <h2 style={descriptionStyle} >{this.props.description}</h2>
-                    <hr />
+                    <hr style={marginRightStyle} />
                     {paragraphs}
                 </div>
             </div>

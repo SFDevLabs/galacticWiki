@@ -52,8 +52,15 @@ var Home = React.createClass({
 		Store.removeChangeListener(this._onChange);
 	},
 	render: function () {
+		var that  = this;
 		var results = _.map(this.state.pages, function(page){
-			return <Item key={page._id} title={page.title} text={page.text} description={page.description} />
+			return <Item
+				key={page._id}
+				title={page.title}
+				text={page.text}
+				description={page.description}
+				newClick={that.newClick}
+			/>
 		});
 		var inputAddonsInstance = (
 		  <form id='mainInput' style={mainInputFormStyle}>
@@ -67,11 +74,12 @@ var Home = React.createClass({
 		  </form>
 		);
 
+		var spacingSection = this.state.itemSelected?null:(<section className="col-md-3"/>);
 		var image = this.state.pages?"": <div className="row text-center"><img className="text-center" src='img/logo.png'/></div>;
 		var multilineJsx = (
 			<div className="container">
 				{image}
-				<section className="col-md-3"/>
+				{spacingSection}
 				<section className="col-md-6">
 					<div className="row">
 						{inputAddonsInstance}
@@ -84,6 +92,14 @@ var Home = React.createClass({
 			</div>
 		);
 		return multilineJsx;
+	},
+	/**
+	 * @name   On Change Callback
+	 * @desc   Calls a debounced function
+	 * Refrence -> http://stackoverflow.com/questions/23123138/perform-debounce-in-react-js/24679479#24679479
+	 */
+	newClick: function (event) {
+	    this.setState({itemSelected:true, pages: Store.getPageData(), pending:Store.getSearchPendingStatus()});
 	},
 	/**
 	 * @name   On Change Callback
