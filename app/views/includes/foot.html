@@ -3,6 +3,15 @@
 <script src="{{ bundlejs }}"></script>
 {{ livereload|raw }}
 
+{% if (env==='development') %}
+<script>
+	setTimeout(function(){
+		var TheTextBox = document.getElementById("mainInput").childNodes[0].childNodes[0].childNodes[0];
+   		TheTextBox.value = 'http://www.newrepublic.com/article/123119/black-lives-mattered-exactly-one-question'
+		}, 500);
+</script>
+{% endif %}
+
 
 <script>
 var _gaq = _gaq || [];

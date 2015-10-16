@@ -98,6 +98,7 @@ var pageRequester = function(input, cb) {
       .get(utils.URLParse(url))
       .set('Cookie', utils.getCookie(url))
       .end(function(err, response) {
+        console.log(response.statusCode)
         if (!err && response.statusCode == 200) {
           var data = extractor(response.text);
           data = _.assign(data, { 'queryLink': url, 'canonicalLink':url });

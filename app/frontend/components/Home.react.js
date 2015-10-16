@@ -22,8 +22,12 @@ var mainLogoStyle = {
 }
 
 var mainInputFormStyle = {
-	margin:'30px auto',
+	margin:'30px auto'
 }
+var sectionIndentStyle = {
+	paddingRight:'30px'
+}
+
 var mainInputStyle = {
 	borderColor: colorsHex.deepSpacePurple
 }
@@ -60,6 +64,7 @@ var Home = React.createClass({
 				text={page.text}
 				description={page.description}
 				newClick={that.newClick}
+				conceptCircle={true}
 			/>
 		});
 		var inputAddonsInstance = (
@@ -70,25 +75,35 @@ var Home = React.createClass({
 				type='text'
 				value={this.state.value}
 				onChange={this.keyDown}
-			    buttonAfter={innerButton} />
+			    buttonAfter={innerButton}
+			/>
 		  </form>
 		);
 
 		var spacingSection = this.state.itemSelected?null:(<section className="col-md-3"/>);
 		var image = this.state.pages?"": <div className="row text-center"><img className="text-center" src='img/logo.png'/></div>;
 		var multilineJsx = (
-			<div className="container">
-				{image}
-				{spacingSection}
-				<section className="col-md-6">
-					<div className="row">
+			<div>
+				<div className="container">
+					{image}
+					<div className="col-md-3"/>
+					<div className="row col-md-6">
 						{inputAddonsInstance}
 					</div>
-					<div className="row">
-						{results}
-					</div>
-				</section>
-
+				</div>
+				<div className="container">
+					{spacingSection}
+					<section style={sectionIndentStyle} className="col-md-6">
+						<div className="row">
+							{results[0]}
+						</div>
+					</section>
+					<section style={sectionIndentStyle} className="col-md-6">
+						<div className="row">
+							{results[0]}
+						</div>
+					</section>
+				</div>
 			</div>
 		);
 		return multilineJsx;
@@ -124,4 +139,5 @@ var Home = React.createClass({
 	}
 
 });
+
 module.exports = Home;
