@@ -1,23 +1,24 @@
+'use strict';
 
 /*!
  * Module dependencies.
  */
 
-// Note: We can require users, articles and other cotrollers because we have
-// set the NODE_PATH to be ./app/controllers (package.json # scripts # start)
+const users = require('../app/controllers/users');
 
-var users = require('../app/users/controllers/users');
-var articles = require('../app/controllers/articles');
-var comments = require('../app/controllers/comments');
-var tags = require('../app/controllers/tags');
-var auth = require('./middlewares/authorization');
+const mongoose = require('mongoose')
+const articleCrud = require('../app/api/articleCrud');
+const userCrud = require('../app/api/userCrud');
+
+
+const auth = require('./middlewares/authorization');
 
 /**
  * Route middlewares
  */
 
-var articleAuth = [auth.requiresLogin, auth.article.hasAuthorization];
-var commentAuth = [auth.requiresLogin, auth.comment.hasAuthorization];
+const articleAuth = [auth.requiresLogin, auth.article.hasAuthorization];
+const commentAuth = [auth.requiresLogin, auth.comment.hasAuthorization];
 
 /**
  * Expose routes
@@ -35,7 +36,6 @@ module.exports = function (app, passport) {
       failureRedirect: '/login',
       failureFlash: 'Invalid email or password.'
     }), users.session);
-  app.get('/users/:userId', users.show);
   app.get('/auth/facebook',
     passport.authenticate('facebook', {
       scope: [ 'email', 'user_about_me'],
@@ -85,7 +85,46 @@ module.exports = function (app, passport) {
       failureRedirect: '/login'
     }), users.authCallback);
 
-  app.param('userId', users.load);
+
+  // home route
+  app.get('/', function (req, res) {
+    res.render('index',{
+      title: 'Home'
+    })
+  });
+
+  // reset
+  app.get('/pwreset', users.pwReset);
+  app.post('/pwreset', users.pwResetSubmit);
+  app.get('/pwreset/:token', users.pwResetLink);
+  app.post('/pwreset/:token', users.pwResetLinkSumbmit);
+
+
+  // API Routes
+  const path = '/api/articles'
+  const pathWithId = path + '/:id';
+
+  app.param('id', articleCrud.load);
+  app.get(path, articleCrud.getListController);
+  app.post(path, auth.requiresLogin, articleCrud.getCreateController);
+
+  app.get(pathWithId, articleCrud.getReadController);
+  app.put(pathWithId, articleAuth, articleCrud.getUpdateController);
+  app.delete(pathWithId, articleAuth, articleCrud.getDeleteController); 
+  
+  //API comments
+  app.param('commentId', articleCrud.loadComment);  
+  app.post(pathWithId+'/comments', auth.requiresLogin, articleCrud.getCreateCommentController);
+  app.delete(pathWithId+'/comments/:commentId', commentAuth, articleCrud.getDeleteCommentController);
+
+  // API User
+  const userPath = '/api/users'
+  const userPathWithId = userPath + '/:userId';
+  const profilePath = userPath + '/profile';
+
+  app.param('userId', userCrud.load);
+  app.get(profilePath, userCrud.getReadControllerProfile);
+  app.get(userPathWithId, userCrud.getReadController);
 
   /**
    * Error handling
@@ -100,15 +139,17 @@ module.exports = function (app, passport) {
     }
     console.error(err.stack);
     // error page
-    
-    res.status(500).render('main/views/500', { error: err.stack });
+    res.status(500).render('500',{ 
+      error: err.message
+    });
   });
 
   // assume 404 since no middleware responded
-  app.use(function (req, res, next) {
+  app.use(function (req, res) {
     res.status(404).render('404', {
       url: req.originalUrl,
       error: 'Not found'
     });
   });
-}
+
+};

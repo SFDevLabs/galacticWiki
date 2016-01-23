@@ -1,30 +1,36 @@
+'use strict';
+
+/*
+ * From nodejs-express-mongoose-demo
+ * Copyright(c) 2013 Madhusudhan Srinivasa <madhums8@gmail.com>
+ * MIT Licensed
+ */
 
 /**
  * Module dependencies.
  */
 
-var express = require('express');
-var session = require('express-session');
-var compression = require('compression');
-var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
-var cookieSession = require('cookie-session');
-var bodyParser = require('body-parser');
-var methodOverride = require('method-override');
-var csrf = require('csurf');
-var multer = require('multer');
-var swig = require('swig');
+const express = require('express');
+const session = require('express-session');
+const compression = require('compression');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
+const csrf = require('csurf');
+const swig = require('swig');
+const multer = require('multer');
+const mime = require('mime');
 
-var mongoStore = require('connect-mongo')(session);
-var flash = require('connect-flash');
-var winston = require('winston');
-var helpers = require('view-helpers');
-var config = require('./config');
-var pkg = require('../package.json');
-var glob = require('glob');
-var expressLess = require('express-less');
+const mongoStore = require('connect-mongo')(session);
+const flash = require('connect-flash');
+const winston = require('winston');
+const helpers = require('view-helpers');
+const config = require('./config');
+const pkg = require('../package.json');
 
-var env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV || 'development';
 
 /**
  * Expose
@@ -37,22 +43,17 @@ module.exports = function (app, passport) {
     threshold: 512
   }));
 
-  if (env !== 'production') {
-    app.use('/', expressLess(config.root + '/public', { debug: true }));
-  }
-
-  app.use('/',express.static(config.root + '/public'));
-  
   // Static files middleware
+  app.use(express.static(config.root + '/public'));
+  app.use(express.static(config.root + '/build'));
+
 
   // Use winston on production
-  var log;
+  let log;
   if (env !== 'development') {
     log = {
       stream: {
-        write: function (message, encoding) {
-          winston.info(message);
-        }
+        write: message => winston.info(message)
       }
     };
   } else {
@@ -72,7 +73,7 @@ module.exports = function (app, passport) {
 
   // set views path, template engine and default layout
   app.engine('html', swig.renderFile);
-  app.set('views', config.root + '/app/');
+  app.set('views', config.root + '/app/views');
   app.set('view engine', 'html');
 
   // expose package.json to views
@@ -85,8 +86,20 @@ module.exports = function (app, passport) {
   // bodyParser should be above methodOverride
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(multer());
-  app.use(methodOverride(function (req, res) {
+
+  //Storage obj for preserving file name. @jeffj
+  const storage = multer.diskStorage({
+    filename: function (req, file, cb) {
+      cb(null, Math.pow(10,18)*Math.random().toString() + '.' + mime.extension(file.mimetype));
+    }
+  });
+
+  //Where our images upload to @jeffj
+  app.use(multer({
+    storage: storage
+  }).array('image', 1));
+
+  app.use(methodOverride(function (req) {
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
       // look in urlencoded POST bodies and delete it
       var method = req.body._method;
@@ -121,13 +134,12 @@ module.exports = function (app, passport) {
   // adds CSRF support
   if (process.env.NODE_ENV !== 'test') {
     app.use(csrf());
+
     // This could be moved to view-helpers :-)
     app.use(function (req, res, next) {
-      res.locals.user = req.user;
       res.locals.csrf_token = req.csrfToken();
-      res.locals.bundlejs = config.bundlejs
-      res.locals.bundlecss = config.bundlecss
-      res.locals.env = env
+      //Our live loading bundle from webpack-dev-server @jeffj
+      res.locals.bundle_js = (env==='development')?'http://localhost:8090/app/js/bundle.js':'/js/bundle.js';
       next();
     });
   }

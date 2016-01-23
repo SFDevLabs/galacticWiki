@@ -1,12 +1,13 @@
+'use strict';
 
 /**
  * Module dependencies.
  */
 
-var mongoose = require('mongoose');
-var LinkedinStrategy = require('passport-linkedin').Strategy;
-var config = require('../../config/config');
-var User = mongoose.model('User');
+const mongoose = require('mongoose');
+const LinkedinStrategy = require('passport-linkedin').Strategy;
+const config = require('../config');
+const User = mongoose.model('User');
 
 /**
  * Expose
@@ -18,17 +19,18 @@ module.exports = new LinkedinStrategy({
     callbackURL: config.linkedin.callbackURL,
     profileFields: ['id', 'first-name', 'last-name', 'email-address']
   },
-  function(accessToken, refreshToken, profile, done) {
-    var options = {
+  function (accessToken, refreshToken, profile, done) {
+    const options = {
       criteria: { 'linkedin.id': profile.id }
     };
     User.load(options, function (err, user) {
       if (err) return done(err);
       if (!user) {
+        const username = profile.username && profile.username.length>0? profile.username : profile.displayName.replace(' ','');
         user = new User({
           name: profile.displayName,
           email: profile.emails[0].value,
-          username: profile.emails[0].value,
+          username: username,
           provider: 'linkedin',
           linkedin: profile._json
         });

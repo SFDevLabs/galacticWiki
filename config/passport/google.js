@@ -1,12 +1,13 @@
+'use strict';
 
 /**
  * Module dependencies.
  */
 
-var mongoose = require('mongoose');
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-var config = require('../../config/config');
-var User = mongoose.model('User');
+const mongoose = require('mongoose');
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const config = require('../config');
+const User = mongoose.model('User');
 
 /**
  * Expose
@@ -17,17 +18,18 @@ module.exports = new GoogleStrategy({
     clientSecret: config.google.clientSecret,
     callbackURL: config.google.callbackURL
   },
-  function(accessToken, refreshToken, profile, done) {
-    var options = {
+  function (accessToken, refreshToken, profile, done) {
+    const options = {
       criteria: { 'google.id': profile.id }
     };
     User.load(options, function (err, user) {
       if (err) return done(err);
       if (!user) {
+        const username = profile.username && profile.username.length>0? profile.username : profile.displayName.replace(' ','');
         user = new User({
           name: profile.displayName,
           email: profile.emails[0].value,
-          username: profile.username,
+          username: username,
           provider: 'google',
           google: profile._json
         });

@@ -1,11 +1,13 @@
+'use strict';
 
 /*!
  * Module dependencies.
  */
 
-var fs = require('fs');
-var env = {};
-var envFile = __dirname + '/env.json';
+const fs = require('fs');
+const envFile = require('path').join(__dirname, 'env.json');
+
+let env = {};
 
 // Read env.json file, if it exists, load the id's and secrets from that
 // Note that this is only in the development env
@@ -14,44 +16,39 @@ var envFile = __dirname + '/env.json';
 if (fs.existsSync(envFile)) {
   env = fs.readFileSync(envFile, 'utf-8');
   env = JSON.parse(env);
-  Object.keys(env).forEach(function (key) {
-    process.env[key] = env[key];
-  });
+  Object.keys(env).forEach(key => process.env[key] = env[key]);
 }
 
 /**
  * Expose
  */
-
+const url = 'http://localhost:3000'
 module.exports = {
-  bundlejs: '/js/bundle.js',
-  bundlecss: '/css/bundle.css',
-  db: 'mongodb://localhost/clustr',
-  graphdb:'http://localhost:7474',
-  alchemyAPIKey:'be2f7973124cb69ffab13bc66a425f9b9760dc2e',
+  url : url,
+  db: 'mongodb://localhost/reno_dev',
   facebook: {
     clientID: process.env.FACEBOOK_CLIENTID,
     clientSecret: process.env.FACEBOOK_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/callback"
+    callbackURL: url+'/auth/facebook/callback/#/'
   },
   twitter: {
     clientID: process.env.TWITTER_CLIENTID,
     clientSecret: process.env.TWITTER_SECRET,
-    callbackURL: "http://localhost:3000/auth/twitter/callback"
+    callbackURL: url+'/auth/twitter/callback'
   },
   github: {
     clientID: process.env.GITHUB_CLIENTID,
     clientSecret: process.env.GITHUB_SECRET,
-    callbackURL: 'http://localhost:3000/auth/github/callback'
+    callbackURL: url+'/auth/github/callback'
   },
   linkedin: {
     clientID: process.env.LINKEDIN_CLIENTID,
     clientSecret: process.env.LINKEDIN_SECRET,
-    callbackURL: 'http://localhost:3000/auth/linkedin/callback'
+    callbackURL: url+'/auth/linkedin/callback'
   },
   google: {
     clientID: process.env.GOOGLE_CLIENTID,
     clientSecret: process.env.GOOGLE_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/callback"
+    callbackURL: url+'/auth/google/callback'
   }
 };
