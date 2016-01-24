@@ -3,6 +3,7 @@
 
 RENO is an example of a how to set up a full stack [React.js](https://facebook.github.io/react/) app. See it live at [reno-demo.herokuapp.com](https://reno-demo.herokuapp.com).
 
+
 ## Install
 
 ```sh
@@ -33,6 +34,8 @@ You can set config variables on Heroku with [this tool](https://devcenter.heroku
 ```sh
 $ npm test
 ```
+[ ![Codeship Status for SFDevLabs/RENO](https://codeship.com/projects/b68dad30-a46c-0133-a156-726ab495672b/status?branch=master)](https://codeship.com/projects/129430)
+
 
 ## CREDIT
 
