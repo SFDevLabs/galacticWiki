@@ -5,7 +5,7 @@
  */
 const url = 'http://localhost:3000'
 module.exports = {
-  db: 'mongodb://localhost/reno_test',
+  db: 'mongodb://localhost/galactic_test',
   url:url,
   facebook: {
     clientID: process.env.FACEBOOK_CLIENTID,
