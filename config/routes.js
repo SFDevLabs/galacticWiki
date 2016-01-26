@@ -9,6 +9,8 @@ const users = require('../app/controllers/users');
 const mongoose = require('mongoose')
 const articleCrud = require('../app/api/articleCrud');
 const userCrud = require('../app/api/userCrud');
+const searchCrud = require('../app/api/searchCrud');
+
 
 
 const auth = require('./middlewares/authorization');
@@ -85,20 +87,15 @@ module.exports = function (app, passport) {
       failureRedirect: '/login'
     }), users.authCallback);
 
-
-  // home route
-  app.get('/', function (req, res) {
-    res.render('index',{
-      title: 'Home'
-    })
-  });
-
   // reset
   app.get('/pwreset', users.pwReset);
   app.post('/pwreset', users.pwResetSubmit);
   app.get('/pwreset/:token', users.pwResetLink);
   app.post('/pwreset/:token', users.pwResetLinkSumbmit);
 
+  // API Search
+  const searchPath = '/api/search'
+  app.get(searchPath, searchCrud.getListController);
 
   // API Routes
   const path = '/api/articles'
@@ -125,6 +122,13 @@ module.exports = function (app, passport) {
   app.param('userId', userCrud.load);
   app.get(profilePath, userCrud.getReadControllerProfile);
   app.get(userPathWithId, userCrud.getReadController);
+
+  // home route
+  app.get('/*', function (req, res) {
+    res.render('index',{
+      title: 'Home'
+    })
+  });
 
   /**
    * Error handling

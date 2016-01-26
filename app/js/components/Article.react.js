@@ -28,6 +28,7 @@ const ArticleSection = React.createClass({
   contextTypes:{
     router: React.PropTypes.object.isRequired
   },
+  
   getInitialState: function() {
     return getState(this.props.params.id); //Using the antipattern to pass the id from the URL
   },
