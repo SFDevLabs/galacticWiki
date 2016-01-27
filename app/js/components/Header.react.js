@@ -6,18 +6,22 @@
 const React = require('react');
 const Actions = require('../actions/UserActions');
 const UserStore = require('../stores/UserStore');
+const SearchStore = require('../stores/SearchStore');
+
 import { Link } from 'react-router';
 
 import { Navbar, MenuItem, NavItem, Nav, NavDropdown} from 'react-bootstrap'; 
 import { LinkContainer } from 'react-router-bootstrap'; 
 
 const inputCSS= {width:'350px'};
+const ENTER_KEY_CODE = 13;
 
 /**
  * Retrieve the current USER data from the UserStore
  */
 function getState() {
   return {
+    query: SearchStore.getQuery(),
     profile: UserStore.getProfile(),
     loading: false
   };
@@ -37,10 +41,12 @@ const Header = React.createClass({
   componentDidMount: function() {
     Actions.getProfile();
     UserStore.addChangeListener(this._onChange);
+    SearchStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
     UserStore.removeChangeListener(this._onChange);
+    SearchStore.addChangeListener(this._onChange);
   },
   /**
    * @return {object}
@@ -50,13 +56,19 @@ const Header = React.createClass({
     const profile = this.state.profile? this.state.profile:{};
     const isLoggedIn = !!profile._id;
     const loading = this.state.loading;
+    const query = this.state.query?this.state.query:'';
 
     const searchBar = this._activeURL('/')?null:
     <Navbar.Form pullLeft>
       <span className="input-group">
-        <input style={inputCSS}type="text" className="form-control"/>
+        <input 
+          value={query} 
+          style={inputCSS}type="text" 
+          className="form-control"
+          onKeyDown = {this._keyDown}
+          onChange={this._onChangeInput} />
         <span className="input-group-btn">
-          <button className="btn btn-default">
+          <button onClick={this._save} className="btn btn-default">
             <span className="glyphicon glyphicon-search"></span>
           </button>
         </span>
@@ -102,12 +114,44 @@ const Header = React.createClass({
       </div>
     </Navbar>
   },
+
+  /**
+   * @name   On Keydown Callback
+   * @desc   Calls a debounced function
+   */
+  _keyDown: function (event) {
+    if (event.keyCode === ENTER_KEY_CODE) {
+      this._save();
+    }
+  },
+
+  /**
+   * @name   On Change Callback
+   * @desc   Calls a debounced function
+   */
+  _onChangeInput: function (event) {
+    const val = event.target.value
+    this.setState({query:val})
+  },
+
+  /**
+   * @name   _onSave event from dom
+   * @desc   Calls a debounced function
+   */
+  _save: function (event) {
+    const val = this.state.query
+    if (val && val.length>0){
+      this.context.router.push('/search?q='+val);
+    }
+  },
+
   /**
    * Event handler for 'change' events coming from the UserStore
    */
   _onChange: function() {
     this.setState(getState());
   },
+
   /**
    * [_activeClass Is this link the active href]
    * @param  {string} path 

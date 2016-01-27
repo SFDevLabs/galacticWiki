@@ -43,13 +43,8 @@ const setTags = function (tags) {
 
 const ArticleSchema = new Schema({
   title: {type : String, default : '', trim : true},
-  body: {type : String, default : '', trim : true},
+  body: {type : Array, default : '', trim : true},
   user: {type : Schema.ObjectId, ref : 'User'},
-  comments: [{
-    body: { type : String, default : '' },
-    user: { type : Schema.ObjectId, ref : 'User' },
-    createdAt: { type : Date, default : Date.now }
-  }],
   tags: {type: [], get: getTags, set: setTags},
   image: {
     cdnUri: String,
@@ -195,17 +190,6 @@ ArticleSchema.statics = {
       .sort({'createdAt': -1}) // sort by date
       .limit(options.count)
       .skip(options.skip)
-      .exec(cb);
-  },
-  //kill me in the future
-  listOld: function (options, cb) {
-    const criteria = options.criteria || {};
-    this.find(criteria)
-      .populate('user', 'name username')
-      .populate('comments.user')
-      .sort({'createdAt': -1}) // sort by date
-      .limit(options.perPage)
-      .skip(options.perPage * options.page)
       .exec(cb);
   }
 };

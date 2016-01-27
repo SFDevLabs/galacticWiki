@@ -10,7 +10,7 @@ const ArticleStore = require('../stores/ArticleStore');
 const Loader = require('react-loader');
 
 const ArticleItem = require('./ArticleItem.react');
-const take = 20
+const take = 20;
 
 /**
  * Retrieve the current ARTICLE data from the ArticleStore

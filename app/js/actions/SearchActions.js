@@ -17,7 +17,7 @@ const Actions = {
   getList: function(count, skip, q, clearStore) {
     SearchApi.getEntityListData(count, skip, q);
     if (clearStore){
-      AppDispatcher.dispatch({actionType: Constants.CLEAR_ALL_ARTICLES_DATA})
+      AppDispatcher.dispatch({actionType: Constants.CLEAR_SEARCH_DATA})
     }
   },
 };

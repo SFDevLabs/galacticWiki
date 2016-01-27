@@ -15,15 +15,16 @@ var _total = null;
 var _didInitalGet = false;
 var _errors = [];
 var _url = null;
+var _query = null;
 /**
  * Set all ARTICLE item.
  * @param  {string} text The content of the ARTICLES
  */
-function setAll(articles) {
-  for (var i = articles.length - 1; i >= 0; i--) {
-    var article = articles[i]
-    var id = article._id
-    _results[id] = article;
+function setAll(results) {
+  for (var i = results.length - 1; i >= 0; i--) {
+    var result = results[i]
+    var id = result._id
+    _results[id] = result;
   };
 }
 
@@ -35,14 +36,22 @@ function setURL(url) {
   _url = url;
 }
 
+/**
+ * Set one ARTICLE item.
+ * @param  {string} text The content of the ARTICLES
+ */
+function setQuery(q) {
+  _query = q;
+}
+
 
 
 /**
  * Delete all ARTICLES items.
  * @param  {string} id
  */
-function destroyAll(id) {
-  _articles={};
+function destroyAll() {
+  _results={};
 }
 
 
@@ -81,6 +90,15 @@ var SearchStore = assign({}, EventEmitter.prototype, {
   getTotal: function() {
     return _total;
   },
+
+  /**
+   * Get the original Query.
+   * @return {number}
+   */
+  getQuery: function() {
+    return _query;
+  },
+
   
 
   /**
@@ -120,35 +138,35 @@ AppDispatcher.register(function(action) {
     case Constants.GET_SEARCH_DATA:
       const results = action.response.body.results
       const url = action.response.body.url
+      const q = action.params.q
       const total = action.response.body.total
       if (results) {
-        _didInitalGet = true;
         setAll(results);
+        setQuery(q);
         setTotal(total);
       } else if (url) {
         setURL(url)
       }
-      ArticleStore.emitChange();
+      SearchStore.emitChange();
       break;
 
     case Constants.CLEAR_SEARCH_DATA:
-      destroyAll(articles);
+      destroyAll();
       break;
-
 
 
     case Constants.ERROR:
       var errors = action.response.errors
       if (errors) {
         setError(errors);
-        ArticleStore.emitChange();
+        SearchStore.emitChange();
       }
       break;
       
 
     case Constants.TIMEOUT:
       setError(['The Request Timed Out']);
-      ArticleStore.emitChange();
+      SearchStore.emitChange();
       break;
 
     default:

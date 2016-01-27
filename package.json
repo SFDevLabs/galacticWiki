@@ -1,5 +1,5 @@
 {
-  "name": "RENO",
+  "name": "Galactic",
   "description": "A demo app for React-Express-Node-mOngoDB",
   "keywords": [
     "React",
@@ -78,6 +78,7 @@
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",
+    "eslint": "^1.10.3",
     "jest-cli": "^0.8.1",
     "mocha": "2.2.5",
     "nodemon": "*",

@@ -69,7 +69,7 @@ const User = React.createClass({
    */
   _onChange: function() {
     this.setState(getState(this.props.params.id));
-  },
+  }
 
 })
 

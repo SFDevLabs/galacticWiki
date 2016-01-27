@@ -5,11 +5,7 @@
 */
 
 const React = require('react');
-import { Link } from 'react-router';
-const Actions = require('../actions/SearchActions');
-const _ = require('lodash');
-const SEARCH_DELAY = 1000;
-
+const ENTER_KEY_CODE = 13;
 
 const searchHeader = {
   borderBottom:'none'
@@ -24,64 +20,73 @@ const searchButton = {
   padding: '8px 20px',
   fontSize: '1.1em'
 }
-///Move Mee to another file
+
 const About = React.createClass({
   
   contextTypes:{
     router: React.PropTypes.object.isRequired
   },
 
-  componentWillMount : function() {
-    this._delayedCallback = _.debounce(this._delayedKeyDown, SEARCH_DELAY);
+  getInitialState: function() {
+    return {};
   },
   
   render :function() {
     return <section className="container">
         <div className="page-header" style={searchHeader}>
-            <div className="col-md-2">
-            </div>
-            <div className="col-md-8">
-              <div className="row">
-                <input 
-                  type="text" 
-                  className="form-control"
-                  onChange={this._keyDown}
-                />
-              </div>
-              <div className="row text-center" style={searchRow}>
-                <button style={searchButton} type="button" className="btn btn-default">
-                  Search Galactic
-                </button>
-                <button style={searchButton} type="button" className="btn btn-default">
-                  Make A Connection
-                </button>
-              </div>
-            </div>
         </div>
         <div className="content" >
-
+          <div className="col-md-2" />
+          <div className="col-md-8">
+            <div className="row">
+              <input 
+                type="text" 
+                className="form-control"
+                onChange={this._onChange}
+                onKeyDown={this._keyDown}
+                value={this.state.value}
+              />
+            </div>
+            <div className="row text-center" style={searchRow}>
+              <button onClick={this._save} style={searchButton} type="button" className="btn btn-default">
+                Search Galactic
+              </button>
+              <button style={searchButton} type="button" className="btn btn-default">
+                Make A Connection
+              </button>
+            </div>
+          </div>  
         </div>
     </section>;
   },
   /**
-   * @name   On Change Callback
+   * @name   On Keydown Callback
    * @desc   Calls a debounced function
-   * Refrence -> http://stackoverflow.com/questions/23123138/perform-debounce-in-react-js/24679479#24679479
    */
   _keyDown: function (event) {
-      event.persist();
-      this._delayedCallback(event);
+    if (event.keyCode === ENTER_KEY_CODE) {
+      this._save();
+    }
   },
+
   /**
-   * @name   onChangeSetState
-   * @desc   Sets the state from the debounce created in componentWillMount
-   * @param  {obj}      event
+   * @name   On Change Callback
+   * @desc   Calls a debounced function
    */
-  _delayedKeyDown: function (event) {
-    
-    Actions.getList(5, 0, event.target.value)
-    //this.context.router.push('/?q=');
-  
+  _onChange: function (event) {
+    const val = event.target.value
+    this.setState({value:val})
+  },
+
+  /**
+   * @name   _onSave event from dom
+   * @desc   Calls a debounced function
+   */
+  _save: function (event) {
+    const val = this.state.value
+    if (val && val.length>0){
+      this.context.router.push('/search?q='+val);
+    }
   }
 
 })

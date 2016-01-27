@@ -3,7 +3,6 @@
  * Copyright (c) 2016, Jeff Jenkins @jeffj.
 */
 
-
 const React = require('react');
 import { Router, Route, Link, IndexRoute, browserHistory } from 'react-router';
 
@@ -11,6 +10,7 @@ const Header = require('./Header.react');
 const Articles = require('./Articles.react');
 const Article = require('./Article.react');
 const Search = require('./Search.react');
+const SearchResults = require('./SearchResults.react');
 const PostNew = require('./PostNew.react');
 const PostUpdate = require('./PostUpdate.react');
 const NotFound = require('./NotFound.react');
@@ -18,8 +18,8 @@ const User = require('./User.react');
 const AppDispatcher = require('../dispatcher/AppDispatcher');
 const Constants = require('../constants/Constants');
 
-import createBrowserHistory from 'history/lib/createBrowserHistory'
-const history = createBrowserHistory()
+import createBrowserHistory from 'history/lib/createBrowserHistory';
+const history = createBrowserHistory();
 
 const Main = React.createClass({
   render() {
@@ -29,9 +29,9 @@ const Main = React.createClass({
           <Header route={{}} />
           {this.props.children}
         </div>
-      )
+      );
   }
-})
+});
 
 const Root = React.createClass({
   /**
@@ -39,10 +39,11 @@ const Root = React.createClass({
    */
   render: function() {
     //Our React Router table
-    return <div style={{height:'100%'}} onClick={this._onClick}>
+    return <div style={{height:'100%'}}>
       <Router history={browserHistory}>
         <Route path="/" component={Main} >
           <IndexRoute component={Search} />
+          <Route path="search" component={SearchResults} />
           <Route path="articles" component={Articles} />
           <Route path="tags/:tag" component={Articles} />
           <Route path="articles/new" component={PostNew} />
@@ -53,9 +54,6 @@ const Root = React.createClass({
         </Route>
       </Router>
     </div>;
-  },
-  _onClick: function(){
-      AppDispatcher.dispatch({actionType: Constants.APP_CLICK});
   }
 
 });

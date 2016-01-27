@@ -8,6 +8,8 @@ const mongoose = require('mongoose')
 const Article = mongoose.model('Article');
 const _ = require('lodash');
 const utils = require('../../lib/utils');
+const extract = require('../../lib/extract');
+
 
 /**
  * Load
@@ -73,19 +75,36 @@ exports.getListController = function (req, res) {
  * Create
  */
 exports.getCreateController = function (req, res) {
-  var m = new Article(req.body);
-  const images = req.files[0]
-    ? [req.files[0].path]
-    : [];
+  const url = req.body.url;
+  if (!url) return res.status(422).send( utils.errsForApi('Requires a comment body'));
+  
+  extract.getPage(url, function (err, data) {
+      
+      if (err){
+        log.log("Error", err);
+        res.status(500).json(err);
+      } else {
+        res.json({
+            results:data,
+            error: null
+        });
+      }
 
-  m.user = req.user;
-  m.uploadAndSave(images, function (err) {
-    if (!err) {
-      res.send(m);
-    } else {
-      res.status(422).send(utils.errsForApi(err.errors || err));
-    }
   });
+
+  // var m = new Article(req.body);
+  // const images = req.files[0]
+  //   ? [req.files[0].path]
+  //   : [];
+
+  // m.user = req.user;
+  // m.uploadAndSave(images, function (err) {
+  //   if (!err) {
+  //     res.send(m);
+  //   } else {
+  //     res.status(422).send(utils.errsForApi(err.errors || err));
+  //   }
+  // });
 };
 
 /**

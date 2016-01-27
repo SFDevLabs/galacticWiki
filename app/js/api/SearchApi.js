@@ -19,7 +19,7 @@ function makeUrl(part) {
 var ArticleApi = {
   getEntityListData: function(count, skip, q) {
     const url = makeUrl('');
-    const key = Constants.GET_ALL_ARTICLES_DATA;
+    const key = Constants.GET_SEARCH_DATA;
     const params = {count: count, skip:skip, q:q};
     RequestAPI.abortPendingRequests(key, _pendingRequests);
     RequestAPI.dispatch(Constants.PENDING, params);

@@ -41,7 +41,7 @@ const Post = React.createClass({
 
     return <div className="row">
       {loader}
-      <div style={{opacity: opacity}} className="col-md-8">
+      <div style={ {opacity: opacity} } className="col-md-8">
         <div  className="form-horizontal">
           <div className="form-group">
             <label  className="col-sm-2 control-label">Title</label>

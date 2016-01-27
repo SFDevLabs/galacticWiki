@@ -16,33 +16,28 @@ const validator = require('validator');
 
 exports.getListController = function (req, res) {
 
-
-  //res.json({stuff:true})
   var skip = Number(req.query.skip)
   var count = Number(req.query.count)
   const q = req.query.q
-  const criteria = q?{title:q}:null;
-  
-  skip =  !isNaN(skip) ? skip : 0;
-  count =  !isNaN(count) ? count : 30;
-  
+  const isURL =validator.isURL(q);
+
   var options = {
     count: count,
     skip: skip,
   };
 
-  if (criteria){
-    options.criteria = criteria
+  if(isURL){
+    options.criteria = {url:q};
+  } else {
+    options.criteria = {title:q};
   }
-  //here is where we do the logic for loading an article or searching by title.
-  console.log(q)
-  console.log(validator.isURL(q));
 
-  Article.list(options, function (err, result) {
-    Article.count(criteria).exec(function (errCount, count) {
+  Article.list(options, function (err, results) {
+    Article.count(options.criteria).exec(function (errCount, count) {
       if (!err) {
         res.send({
-          articles:result,
+          results:results,
+          isURL: isURL,
           total: count
         });
       } else {
@@ -50,4 +45,5 @@ exports.getListController = function (req, res) {
       }
     });
   });
+
 };

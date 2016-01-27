@@ -19,5 +19,6 @@ module.exports = keyMirror({
   DELETE_ARTICLE: null,
   GET_USER_DATA: null,
   GET_PROFILE_DATA: null,
-  ERROR_NOT_FOUND:null
+  ERROR_NOT_FOUND:null,
+  GET_SEARCH_DATA: null
 });
