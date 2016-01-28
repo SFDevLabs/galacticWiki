@@ -92,6 +92,15 @@ var SearchStore = assign({}, EventEmitter.prototype, {
   },
 
   /**
+   * Get total number of ARTICLEs.
+   * @return {number}
+   */
+  getURL: function() {
+    return _url;
+  },
+
+
+  /**
    * Get the original Query.
    * @return {number}
    */
@@ -137,15 +146,15 @@ AppDispatcher.register(function(action) {
 
     case Constants.GET_SEARCH_DATA:
       const results = action.response.body.results
-      const url = action.response.body.url
+      const isURL = action.response.body.isURL
       const q = action.params.q
       const total = action.response.body.total
-      if (results) {
+      if (!results || results.length==0 && isURL){
+        setURL(q)
+      } else if (results) {
         setAll(results);
         setQuery(q);
         setTotal(total);
-      } else if (url) {
-        setURL(url)
       }
       SearchStore.emitChange();
       break;
@@ -156,7 +165,7 @@ AppDispatcher.register(function(action) {
 
 
     case Constants.ERROR:
-      var errors = action.response.errors
+      var errors = action.response?action.response.errors:null;
       if (errors) {
         setError(errors);
         SearchStore.emitChange();

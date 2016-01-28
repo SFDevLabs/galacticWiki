@@ -15,27 +15,6 @@ const notify = require('../mailer');
 
 const Schema = mongoose.Schema;
 
-/**
- * Getters
- */
-
-const getTags = function (tags) {
-  return tags.join(',');
-};
-
-/**
- * Setters
- */
-
-const setTags = function (tags) {
-  var array;
-  if (tags.length>0){
-    array = tags.split(',');
-  }else {
-    array = []
-  }
-  return array;
-};
 
 /**
  * Article Schema
@@ -43,13 +22,17 @@ const setTags = function (tags) {
 
 const ArticleSchema = new Schema({
   title: {type : String, default : '', trim : true},
-  body: {type : Array, default : '', trim : true},
+  canonicalLink: {type : String, default : '', trim : true},
+  queryLink: {type : String, default : '', trim : true},
+  favicon: {type : String, default : '', trim : true},
+  description: {type : String, default : '', trim : true},
+  keywords: {type : Array, default : '', trim : true},
+  lang: {type : String, default : '', trim : true},
+  text: {type : Array, default : []},
+  tags: {type : Array, default : []},
   user: {type : Schema.ObjectId, ref : 'User'},
-  tags: {type: [], get: getTags, set: setTags},
-  image: {
-    cdnUri: String,
-    files: []
-  },
+  image: {type : String, default : '', trim : true},
+  videos: {type : Array, default : '', trim : true},
   createdAt  : {type : Date, default : Date.now}
 });
 
@@ -58,7 +41,7 @@ const ArticleSchema = new Schema({
  */
 
 ArticleSchema.path('title').required(true, 'Article title cannot be blank');
-ArticleSchema.path('body').required(true, 'Article body cannot be blank');
+ArticleSchema.path('text').required(true, 'Article text cannot be blank');
 
 /**
  * Pre-remove hook
@@ -90,24 +73,24 @@ ArticleSchema.methods = {
    * @api private
    */
 
-  uploadAndSave: function (images, cb) {
-    if (!images || !images.length) return this.save(cb);
+  // uploadAndSave: function (images, cb) {
+  //   if (!images || !images.length) return this.save(cb);
 
-    const imager = new Imager(imagerConfig, 'S3');
-    const self = this;
+  //   const imager = new Imager(imagerConfig, 'S3');
+  //   const self = this;
 
-    this.validate(function (err) {
-      if (err) return cb(err);
-      imager.upload(images, function (err, cdnUri, files) {
-        if (err) return cb(err);
-        if (files.length) {
-          console.log(err, cdnUri, files, 'cdn')
-          self.image = { cdnUri : cdnUri, files : files };
-        }
-        self.save(cb);
-      }, 'article');
-    });
-  },
+  //   this.validate(function (err) {
+  //     if (err) return cb(err);
+  //     imager.upload(images, function (err, cdnUri, files) {
+  //       if (err) return cb(err);
+  //       if (files.length) {
+  //         console.log(err, cdnUri, files, 'cdn')
+  //         self.image = { cdnUri : cdnUri, files : files };
+  //       }
+  //       self.save(cb);
+  //     }, 'article');
+  //   });
+  // },
 
   /**
    * Add comment
@@ -168,7 +151,7 @@ ArticleSchema.statics = {
    */
 
   load: function (id, cb) {
-    this.findOne({ _id : id }, 'title body tags comments createdAt image _id user')
+    this.findOne({ _id : id })
       .populate('user', 'name email username')
       .populate('comments.user', 'name email username')
       .exec(cb);
@@ -184,7 +167,7 @@ ArticleSchema.statics = {
 
   list: function (options, cb) {
     const criteria = options.criteria || {};
-    this.find(criteria, 'title body tags comments createdAt image _id user')
+    this.find(criteria)
       .populate('user', 'name username')
       .populate('comments.user')
       .sort({'createdAt': -1}) // sort by date

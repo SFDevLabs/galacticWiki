@@ -20,53 +20,22 @@ const ArticleItem = React.createClass({
     const article = this.props.article;
     const overflow = {overflow: 'hidden', textOverflow: 'ellipsis'};
 
-    const tags = _.map(article.tags, function(val, key){
-      return <span key={key}>
-            <i className="muted fa fa-tag"></i>&nbsp;
-            <Link to={"/tags/"+encodeURIComponent(val)} className="tag">{val}</Link>
-            &nbsp; 
-        </span>;
-    });
+    var parser = document.createElement('a');// Stripping the protocol from the link for proper link structure
+    parser.href = article.canonicalLink;
+    const host = parser.host
 
-    const imageBadge = (article.image && article.image.files && article.image.files.length)?
-      <span>
-        <span>
-          &nbsp;
-          -
-          &nbsp;
-        </span>
-        <span title="Post has a picture!"className="glyphicon glyphicon-picture" aria-hidden="true"></span>
-      </span>:
-      null;
-
-    const tagTitle = article.tags.length > 0 ?//Spacer and tag title if we have 1 or more tags
-      <span>
-        &nbsp;
-        -
-        &nbsp;
-        Tags:
-      </span>
-    :null;
-    const dateString = new Date(article.createdAt).toLocaleString();
     return <div className="article" >
       <h3 style={overflow} >
         <Link to={"/articles/"+article._id}>
           {article.title}
         </Link>
       </h3>
-      <p style={overflow}>{article.body}</p>
+      <img src={article.favicon}/>
+      &nbsp;
+      <a href={article.canonicalLink} >{host}</a>
 
-      <span className="muted">{dateString}</span>
-      &nbsp;
-      -
-      &nbsp;
-      <span>Author: </span>
-      <Link to={"/users/"+article.user._id}> 
-        {article.user.username} 
-      </Link>
-      {tagTitle}
-      {tags}
-      {imageBadge}
+      <p style={overflow}>{article.description}</p>
+
     </div>;
   }
 

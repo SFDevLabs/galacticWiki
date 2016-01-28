@@ -40,10 +40,10 @@ var ArticleApi = {
       );            
     }
   },
-  postEntityData: function(data) {
+  postEntityData: function(q) {
     const url = makeUrl('');
-    const key = Constants.POST_ARTICLE_DATA;
-    const params = data;
+    const key = Constants.POST_ARTICLE_URL_DATA;
+    const params = {url:q};
     RequestAPI.abortPendingRequests(key, _pendingRequests);
     RequestAPI.dispatch(Constants.PENDING, params);
     _pendingRequests[key] = RequestAPI.post(url, params).end(

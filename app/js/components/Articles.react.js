@@ -81,7 +81,7 @@ const ArticleSection = React.createClass({
       .filter(null) //filtering our null values we use as 404 placeholders.
       .sortBy(function(n){return -new Date(n.createdAt);}) //reverse cronological by creation
       .map(function(val, key){
-        return <ArticleItem key={key} article={val} />
+        return JSON.stringify(val)
       })
       .value();
 

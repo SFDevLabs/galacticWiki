@@ -65,28 +65,21 @@ const ArticleSection = React.createClass({
       <Messages messages={this.state._messages} type="warning" />
       ) : null; //Rendering a warning message.
 
-    const tags = _.map(article.tags, function(val, key){
-      return (
-          <span key={key}>
-            <i className="muted fa fa-tag"></i>&nbsp;
-            <Link to={"/tags/"+val} className="tag">{val}</Link>
-         </span>
-         )
-    });
+
 
     //Logic create image
     var img 
-    if (article.image && article.image.files && article.image.files.length){
-      var parser = document.createElement('a');// Stripping the protocol from the link for proper link structure
-      parser.href = article.image.cdnUri;
-      const cdnUri = parser.host + parser.pathname
-      img =
-        <a href={article.image.cdnUri + '/detail_' + article.image.files[0]} target="_blank" >
-          <img src = {'//' + cdnUri + 'mini_' + article.image.files[0]} alt="" />
-        </a>
-    }else{
-      img = null;
-    }
+    // if (article.image ){
+    //   var parser = document.createElement('a');// Stripping the protocol from the link for proper link structure
+    //   parser.href = article.image;
+    //   const imageUri = parser.host + parser.pathname
+    //   img =
+    //     <a href={'//' + imageUri} target="_blank" >
+    //       <img src = {'//' + imageUri} alt="" />
+    //     </a>
+    // }else{
+    //   img = null;
+    // }
 
     return <section className="container">
       <div className="page-header">
@@ -102,31 +95,18 @@ const ArticleSection = React.createClass({
           <div style={overflow} className="col-md-8">
             <p>{ article.body }</p>
             <div className="meta">
-                Author: &nbsp;
-                <Link to={"/users/"+article.user._id}>
-                  {article.user.username}
-                </Link>
-                <p>
-                  Tags: &nbsp;
-                    {tags}
-                    &nbsp;&nbsp;
-                </p>
-              <span className="muted">{dateString}</span>
+
             </div>
           </div>
           <div className="col-md-4">
             {img}
           </div>
+          <div className="col-md-8">
+            {article.text}
+          </div>
         </div>
         <div>
-          <br />
-          <Link  to={"/articles/"+article._id+"/edit"} title="edit" className="btn btn-default">
-            Edit
-          </Link>
-          &nbsp;&nbsp;
-          <button onClick={this._delete} className="btn btn-danger" type="submit">Delete</button>
         </div>
-        <Comments comments={article.comments} id={article._id} />
       </div>
     </section>;
   },
@@ -148,18 +128,7 @@ const ArticleSection = React.createClass({
       this.setState(state);
     }
   },
-  /**
-   * Event handler for 'change' events coming from the DOM
-   */
-  _delete: function() {
-    this.setState({
-      _deleting: true
-    });
-    Actions.destroy(this.state.article._id); //Fire the destroy event
-  },
-  /**
-   * Event handler for 'refresh' button coming from the DOM
-   */
+
   _onRefresh:function(){
     Actions.getById(this.props.params.id);
     this.setState({

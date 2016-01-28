@@ -25,11 +25,12 @@ exports.getListController = function (req, res) {
     count: count,
     skip: skip,
   };
+  console.log(isURL)
 
   if(isURL){
-    options.criteria = {url:q};
+    options.criteria = {canonicalLink:q};
   } else {
-    options.criteria = {title:q};
+    options.criteria = {title: new RegExp(q, 'i') };
   }
 
   Article.list(options, function (err, results) {

@@ -8,7 +8,11 @@ const mongoose = require('mongoose')
 const Article = mongoose.model('Article');
 const _ = require('lodash');
 const utils = require('../../lib/utils');
-const extract = require('../../lib/extract');
+const extract = require('../../lib/extract')
+const pageRequester = extract.pageRequester;
+const URLParse =extract.URLParse
+const URL = require('url-parse');
+const async = require('async');
 
 
 /**
@@ -75,37 +79,66 @@ exports.getListController = function (req, res) {
  * Create
  */
 exports.getCreateController = function (req, res) {
-  const url = req.body.url;
-  if (!url) return res.status(422).send( utils.errsForApi('Requires a comment body'));
-  
-  extract.getPage(url, function (err, data) {
-      
+  const q = req.body.url
+  if (!q) return res.status(422).send({errors:utils.errsForApi('No Query or Valid URL')});
+
+  async.waterfall([
+      function(cb){
+        var url = URLParse(q)
+        if (url){
+           cb(null, url)
+        } else {
+          cb({
+            status:422,
+            errors:utils.errsForApi('No Query or Valid URL'), 
+            results:[]
+          })
+        }       
+      },
+      pageDBSearch,
+      pageRequester,
+  ], function(err, result){
+      console.log(err, result, 'end')
       if (err){
-        log.log("Error", err);
-        res.status(500).json(err);
+        const status = err.status || 500;
+        res.status(err.status).send({errors:utils.errsForApi(err.errors || err)});
       } else {
-        res.json({
-            results:data,
-            error: null
+        var article = new Article(result);
+        article.save(function(err){
+          if(err)res.status(500).send({errors:utils.errsForApi(err.errors || err)});
+          res.send(article);
         });
       }
 
+
+
   });
-
-  // var m = new Article(req.body);
-  // const images = req.files[0]
-  //   ? [req.files[0].path]
-  //   : [];
-
-  // m.user = req.user;
-  // m.uploadAndSave(images, function (err) {
-  //   if (!err) {
-  //     res.send(m);
-  //   } else {
-  //     res.status(422).send(utils.errsForApi(err.errors || err));
-  //   }
-  // });
 };
+
+/**
+ * @name   pageDBSearch
+ * @desc   Searches the DB for the page.
+ * @param  {string}      url
+ * @param  {Function}    cb  a callback for the data.
+ */
+function pageDBSearch(url, cb) {
+  console.log(url,3)
+  Article
+    .findOne({'$or':[{ canonicalLink: url }, { queryLink: url }]})
+    .exec(function(err, result){
+        if (err){
+          cb(err)
+        } else if (result!==null) {
+          cb(null, result);
+        } else {
+          cb(null, url);
+        }
+    });
+}
+
+/**
+/ End page Loader helpers
+*/
 
 /**
  * Load

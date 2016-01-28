@@ -41,8 +41,8 @@ const Actions = {
   /**
    * @param  {obj} article data
    */
-  create: function(obj) {
-    ArticleApi.postEntityData(obj);
+  create: function(url) {
+    ArticleApi.postEntityData(url);
   },
 
   /**

@@ -81,22 +81,6 @@ function setTotal(num) {
   _total = num;
 }
 
-/**
- * decrementTotal
- * @param  {number} the total number of articles
- */
-function decrementTotal() {
-  _total = --_total;
-}
-
-/**
- * incrementTotal
- * @param  {number} the total number of articles
- */
-function incrementTotal() {
-  _total = ++_total;
-}
-
 
 /**
  * Set error message
@@ -213,17 +197,15 @@ AppDispatcher.register(function(action) {
       var article = action.response.body;
       if (article) {
         destroy(article._id);
-        decrementTotal();
         ArticleStore.emitChange();
       }
       break;
 
-    case Constants.POST_ARTICLE_DATA:
+    case Constants.POST_ARTICLE_URL_DATA:
       var article = action.response.body
       if (article) {
         setNewArticleId(article._id)
         set(article);
-        incrementTotal();
         ArticleStore.emitChange();
       }
       break;
