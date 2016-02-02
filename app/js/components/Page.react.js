@@ -6,7 +6,6 @@
 const React = require('react');
 const Actions = require('../actions/ArticleActions');
 const ArticleStore = require('../stores/ArticleStore');
-const Comments = require('./Comments.react');
 const NotFound = require('./NotFound.react');
 const Messages = require('./Messages.react');
 
@@ -54,55 +53,29 @@ const ArticleSection = React.createClass({
     const article = this.state.article;
     const dateString = new Date(article.createdAt).toLocaleString();             
     const deleting = this.state._deleting ? <Loader options={{top:'10%'}} />:null; //The loader itself.
-    const overflow = {overflow: 'hidden', textOverflow: 'ellipsis'};
 
-    const mainArticleRow = {
-      opacity: this.state._deleting ? .2 : 1, //The opacity for the items behind the loader.
-      minHeight:'210px' //Min height besed on image size for the articles.
-    }
 
     const errorMessage = this.state._messages? (
-      <Messages messages={this.state._messages} type="warning" />
-      ) : null; //Rendering a warning message.
+     <Messages messages={this.state._messages} type="warning" />
+    ) : null; //Rendering a warning message.
 
+    const text = _.map(article.text,function(val, i){
+      return <p key={i} >{val}</p>
+    });
 
-
-    //Logic create image
-    var img 
-    // if (article.image ){
-    //   var parser = document.createElement('a');// Stripping the protocol from the link for proper link structure
-    //   parser.href = article.image;
-    //   const imageUri = parser.host + parser.pathname
-    //   img =
-    //     <a href={'//' + imageUri} target="_blank" >
-    //       <img src = {'//' + imageUri} alt="" />
-    //     </a>
-    // }else{
-    //   img = null;
-    // }
 
     return <section className="container">
       <div className="page-header">
         <button onClick={this._onRefresh} className="pull-right btn btn-default">
           <span className="glyphicon glyphicon-refresh"></span>
         </button>
-        <h1 style={overflow} >{article.title}</h1>
+        <h1>{article.title}</h1>
       </div>
       {errorMessage}
-      <div className="content" style={{position:'relative'}}>
-        {deleting}
-        <div className="row" style={mainArticleRow}>
-          <div style={overflow} className="col-md-8">
-            <p>{ article.body }</p>
-            <div className="meta">
-
-            </div>
-          </div>
-          <div className="col-md-4">
-            {img}
-          </div>
-          <div className="col-md-8">
-            {article.text}
+      <div className="content">
+        <div className="row">
+          <div className="col-md-6">
+            {text}
           </div>
         </div>
         <div>

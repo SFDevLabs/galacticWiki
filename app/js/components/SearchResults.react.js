@@ -7,7 +7,7 @@
 const React = require('react');
 const SearchActions = require('../actions/SearchActions');
 const ArticleActions = require('../actions/ArticleActions');
-const ArticleItem = require('./ArticleItem.react');
+const SearchItem = require('./SearchItem.react');
 
 const SearchStore = require('../stores/SearchStore');
 const _ = require('lodash');
@@ -70,7 +70,7 @@ const About = React.createClass({
     const length = Object.keys(data).length;
 
     const results = length>0?_.map(data, function(result, i) {
-        return <ArticleItem key={i} article={result} />
+        return <SearchItem key={i} item={result} />
     }):null;
 
     return <section className="container">
