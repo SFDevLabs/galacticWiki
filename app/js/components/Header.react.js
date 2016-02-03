@@ -15,8 +15,6 @@ import { Link } from 'react-router';
 import { Navbar, MenuItem, NavItem, Nav, NavDropdown} from 'react-bootstrap'; 
 import { LinkContainer } from 'react-router-bootstrap'; 
 
-const ENTER_KEY_CODE = 13;
-
 /**
  * Retrieve the current USER data from the UserStore
  */

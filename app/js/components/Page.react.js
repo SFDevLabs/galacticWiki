@@ -58,11 +58,6 @@ const ArticleSection = React.createClass({
     if (page===null){return <NotFound />}//null means the api gave us a 404.
     else if (!page){return <Loader />}//undefined means that no request for the article has been made.
 
-
-    const dateString = new Date(page.createdAt).toLocaleString();             
-    const deleting = this.state._deleting ? <Loader options={{top:'10%'}} />:null; //The loader itself.
-
-
     const errorMessage = this.state._messages? (
      <Messages messages={this.state._messages} type="warning" />
     ) : null; //Rendering a warning message.
