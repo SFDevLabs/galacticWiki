@@ -4,7 +4,7 @@
 */
 
 const React = require('react');
-import { Router, Route, Link, IndexRoute, browserHistory } from 'react-router';
+import { Router, Route, Link, IndexRoute, browserHistory, Location } from 'react-router';
 
 const Header = require('./Header.react');
 const Page = require('./Page.react');
@@ -12,17 +12,15 @@ const Search = require('./Search.react');
 const SearchResults = require('./SearchResults.react');
 const NotFound = require('./NotFound.react');
 const User = require('./User.react');
-const Constants = require('../constants/Constants');
 
 import createBrowserHistory from 'history/lib/createBrowserHistory';
-const history = createBrowserHistory();
 
 const Main = React.createClass({
   render() {
-    //route={'/'}
+
     return (
         <div>
-          <Header route={{}} />
+          <Header />
           {this.props.children}
         </div>
       );

@@ -18,15 +18,7 @@ const searchHeader = {
   borderBottom:'none'
 }
 
-const searchRow = {
-  paddingTop:'25px'
-}
 
-const searchButton = {
-  marginRight:'30px',
-  padding: '8px 20px',
-  fontSize: '1.1em'
-}
 ///Move Mee to another file
 const getState = function() {
   return {
@@ -71,16 +63,18 @@ const About = React.createClass({
 
     const results = length>0?_.map(data, function(result, i) {
         return <SearchItem key={i} item={result} />
-    }):null;
+    }):
+    <div clasName="row">
+      No Results Found.
+    </div>;
 
     return <section className="container">
         <div className="page-header" style={searchHeader}>
 
         </div>
-        <div className="content" >
-        {results}
-
-        <input onClick={this._onPost} value={this.state.url} />          
+        <div className="content">
+          {results}
+          <input onClick={this._onPost} value={this.state.url} />          
         </div>
     </section>;
   },

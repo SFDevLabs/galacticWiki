@@ -4,7 +4,6 @@
 */
 
 const React = require('react');
-const _ = require('lodash');
 import { Link } from 'react-router';
 
 const SearchItem = React.createClass({

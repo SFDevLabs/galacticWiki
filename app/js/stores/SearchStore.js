@@ -12,7 +12,6 @@ const CHANGE_EVENT = 'change';
 
 var _results = {};
 var _total = null;
-var _didInitalGet = false;
 var _errors = [];
 var _url = null;
 var _query = null;

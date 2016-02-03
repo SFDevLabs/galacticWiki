@@ -5,6 +5,7 @@
 */
 
 const React = require('react');
+const SearchInput = require('./SearchInput.react');
 const ENTER_KEY_CODE = 13;
 
 const searchHeader = {
@@ -39,18 +40,11 @@ const About = React.createClass({
           <div className="col-md-2" />
           <div className="col-md-8">
             <div className="row">
-              <input 
-                type="text" 
-                className="form-control"
-                onChange={this._onChange}
-                onKeyDown={this._keyDown}
-                value={this.state.value}
+              <SearchInput 
+                onSave={this._save}
               />
             </div>
             <div className="row text-center" style={searchRow}>
-              <button onClick={this._save} style={searchButton} type="button" className="btn btn-default">
-                Search Galactic
-              </button>
               <button style={searchButton} type="button" className="btn btn-default">
                 Make A Connection
               </button>
@@ -59,33 +53,14 @@ const About = React.createClass({
         </div>
     </section>;
   },
-  /**
-   * @name   On Keydown Callback
-   * @desc   Calls a debounced function
-   */
-  _keyDown: function (event) {
-    if (event.keyCode === ENTER_KEY_CODE) {
-      this._save();
-    }
-  },
-
-  /**
-   * @name   On Change Callback
-   * @desc   Calls a debounced function
-   */
-  _onChange: function (event) {
-    const val = event.target.value
-    this.setState({value:val})
-  },
 
   /**
    * @name   _onSave event from dom
    * @desc   Calls a debounced function
    */
-  _save: function (event) {
-    const val = this.state.value
-    if (val && val.length>0){
-      this.context.router.push('/search?q='+val);
+  _save: function (url) {
+    if (url && url.length>0){
+      this.context.router.push('/search?q='+url);
     }
   }
 
