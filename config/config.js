@@ -1,36 +1,35 @@
-'use strict';
 
 /**
  * Module dependencies.
  */
 
-const path = require('path');
-const extend = require('util')._extend;
+var path = require('path');
+var extend = require('util')._extend;
 
-const development = require('./env/development');
-const test = require('./env/test');
-const production = require('./env/production');
+var development = require('./env/development');
+var test = require('./env/test');
+var production = require('./env/production');
 
-const notifier = {
+var notifier = {
   service: 'postmark',
   APN: false,
   email: true, // true
-  tplType: 'html',
-  actions: ['comment', 'pwreset'],
-  tplPath: path.join(__dirname, '..', 'app/mailer/templates'),
-  key: process.env.POSTMARK_KEY || 'KEY'
+  actions: ['comment'],
+  tplPath: path.normalize(__dirname + '/../app/mailer/templates'),
+  key: 'POSTMARK_KEY'
 };
 
-const defaults = {
-  root: path.join(__dirname, '..'),
+var defaults = {
+  root: path.normalize(__dirname + '/..'),
   notifier: notifier
 };
 
 /**
  * Expose
  */
+
 module.exports = {
   development: extend(development, defaults),
   test: extend(test, defaults),
   production: extend(production, defaults)
-}[process.env.NODE_ENV || 'development'];
+}[process.env.NODE_ENV];

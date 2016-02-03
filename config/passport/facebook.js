@@ -1,13 +1,12 @@
-'use strict';
 
 /**
  * Module dependencies.
  */
 
-const mongoose = require('mongoose');
-const FacebookStrategy = require('passport-facebook').Strategy;
-const config = require('../config');
-const User = mongoose.model('User');
+var mongoose = require('mongoose');
+var FacebookStrategy = require('passport-facebook').Strategy;
+var config = require('../../config/config');
+var User = mongoose.model('User');
 
 /**
  * Expose
@@ -16,21 +15,19 @@ const User = mongoose.model('User');
 module.exports = new FacebookStrategy({
     clientID: config.facebook.clientID,
     clientSecret: config.facebook.clientSecret,
-    callbackURL: config.facebook.callbackURL,
-    profileFields: ['emails', 'displayName']
+    callbackURL: config.facebook.callbackURL
   },
-  function (accessToken, refreshToken, profile, done) {
-    const options = {
+  function(accessToken, refreshToken, profile, done) {
+    var options = {
       criteria: { 'facebook.id': profile.id }
     };
     User.load(options, function (err, user) {
       if (err) return done(err);
       if (!user) {
-        const username = profile.username && profile.username.length>0? profile.username : profile.displayName.replace(' ','');
         user = new User({
           name: profile.displayName,
           email: profile.emails[0].value,
-          username: username,
+          username: profile.username,
           provider: 'facebook',
           facebook: profile._json
         });

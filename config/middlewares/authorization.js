@@ -1,16 +1,24 @@
-'use strict';
-
-const utils = require('../../lib/utils');
 
 /*
  *  Generic require login routing middleware
  */
 
 exports.requiresLogin = function (req, res, next) {
-  if (req.isAuthenticated()) return next();
-  //if (req.method == 'GET') req.session.returnTo = req.originalUrl;  /maybe we will bring this back.
-  res.status(401).send( utils.errsForApi('Requires you to login'))
-};
+  if (req.isAuthenticated()) return next()
+  if (req.method == 'GET') req.session.returnTo = req.originalUrl
+  res.redirect('/login')
+}
+
+/*
+ *  Generic require login routing middleware
+ */
+
+exports.requiresLoginAPI = function (req, res, next) {
+  if (req.isAuthenticated()) return next()
+  req.session.returnTo = req.originalUrl
+  console.log(req.session.returnTo)
+  res.status(401).send({'error': {'message': 'Requires Authorization'},redirect:'/login' })
+}
 
 /*
  *  User authorization routing middleware
@@ -19,11 +27,12 @@ exports.requiresLogin = function (req, res, next) {
 exports.user = {
   hasAuthorization: function (req, res, next) {
     if (req.profile.id != req.user.id) {
-      return res.status(401).send( utils.errsForApi('You are not authorized'))
+      req.flash('info', 'You are not authorized')
+      return res.redirect('/users/' + req.profile.id)
     }
-    next();
+    next()
   }
-};
+}
 
 /*
  *  Article authorization routing middleware
@@ -32,11 +41,12 @@ exports.user = {
 exports.article = {
   hasAuthorization: function (req, res, next) {
     if (req.article.user.id != req.user.id) {
-      return res.status(401).send( utils.errsForApi('You are not authorized'))
+      req.flash('info', 'You are not authorized')
+      return res.redirect('/articles/' + req.article.id)
     }
-    next();
+    next()
   }
-};
+}
 
 /**
  * Comment authorization routing middleware
@@ -47,9 +57,10 @@ exports.comment = {
     // if the current user is comment owner or article owner
     // give them authority to delete
     if (req.user.id === req.comment.user.id || req.user.id === req.article.user.id) {
-      next();
+      next()
     } else {
-      res.status(401).send( utils.errsForApi('You are not authorized'))
+      req.flash('info', 'You are not authorized')
+      res.redirect('/articles/' + req.article.id)
     }
   }
-};
+}

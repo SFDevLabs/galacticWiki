@@ -1,40 +1,45 @@
-'use strict';
 
 /**
  * Module dependencies.
  */
 
-const mongoose = require('mongoose');
-const User = mongoose.model('User');
-const utils = require('../../lib/utils');
+var mongoose = require('mongoose');
+var User = mongoose.model('User');
+var utils = require('../../lib/utils')
 
 /**
  * Create user
  */
 
 exports.create = function (req, res) {
-  const user = new User(req.body);
-  user.provider = 'local';
-  user.save(function (err) {
-    if (err) {
-      res.status(422)
-      return res.render('users/signup', {
-        errors: utils.errors(err.errors || err.message),
-        user: user,
-        title: 'Sign up'
-      });
-    }
-
-    // manually login the user once successfully signed up
-    req.logIn(user, function (err) {
-      if (err) req.flash('info', 'Sorry! We are not able to log you in!');
-      return res.redirect('/');
+    var user = new User(req.body);
+    user.provider = 'local';
+    user.save(function (err) {
+        if (err) {
+            req.flash('error', utils.errors(err.errors));
+            return res.redirect('/signup')
+        }
+        // manually login the user once successfully signed up
+        req.logIn(user, function(err) {
+            if (err) req.flash('info', 'Sorry! We are not able to log you in!');
+            return res.redirect('/login');
+        });
     });
-  });
 };
 
+/**
+ *  Show profile
+ */
 
-exports.signin = function () {};
+exports.show = function (req, res) {
+    var user = req.profile;
+    res.render('show', {
+        title: user.name,
+        user: user
+    });
+};
+
+exports.signin = function (req, res) {};
 
 /**
  * Auth callback
@@ -47,9 +52,14 @@ exports.authCallback = login;
  */
 
 exports.login = function (req, res) {
-  res.render('users/login', {
-    title: 'Login'
-  });
+    var user = req.user;
+    if (user) {
+        res.redirect('/');
+    } else {
+        res.render('login', {
+            title: 'Login'
+        });
+    }
 };
 
 /**
@@ -57,10 +67,10 @@ exports.login = function (req, res) {
  */
 
 exports.signup = function (req, res) {
-  res.render('users/signup', {
-    title: 'Sign up',
-    user: new User()
-  });
+    res.render('signup', {
+        title: 'Sign up',
+        user: new User()
+    });
 };
 
 /**
@@ -68,10 +78,9 @@ exports.signup = function (req, res) {
  */
 
 exports.logout = function (req, res) {
-  req.logout();
-  res.redirect('/login');
+    req.logout();
+    res.redirect('/login');
 };
-
 
 /**
  * Session
@@ -84,119 +93,29 @@ exports.session = login;
  */
 
 function login (req, res) {
-  const redirectTo = req.session.returnTo
-    ? req.session.returnTo
-    : '/';
-  delete req.session.returnTo;
-  res.redirect('/');
-}
-
-/**
- * Reset
- */
-
-exports.pwReset = function (req, res) {
-  res.render('users/reset', {
-    title: 'Password Reset',
-  });
-};
-
-
-/**
- * Post Reset
- */
-
-exports.pwResetSubmit = function (req, res) {
-  const email = req.body.email;
-  const options = {select:'name username email'};
-  if (email){
-    options.criteria ={email:email}
-    User.load(options, function(err, user){
-      if(!user){
-        res.render('users/reset', {
-          title: 'Password Reset',
-          errors: utils.errors('Sorry! We cannot find that email.')
-        });
-      } else {
-        user.resetPassword(function(err){
-          if (err){ 
-           res.render('users/reset', {
-              title: 'Password Reset',
-              errors: utils.errors(err.errors || err.message)
-            });
-          } else {
-            res.render('users/reset', {
-              title: 'Password Reset',
-              success: utils.errors('Check your email for a password reset link')
-            });
-          }
-        })
-      }
-    })
-  }else{
-    res.render('users/reset', {
-      errors: utils.errors('Please enter an email.'),
-      title: 'Password Reset'
-    });
-  }
+    var redirectTo = req.session.returnTo ? req.session.returnTo : '/';
+    delete req.session.returnTo;
+    res.redirect(redirectTo);
 };
 
 /**
- * Reset Link
+ *  Show profile
  */
-
-exports.pwResetLink = function (req, res) {
-  const token = req.params.token;
-  const options = {select:'name username email resetPasswordExpires'};
-
-  options.criteria ={resetPasswordToken:token}
-  
-  User.load(options, function(err, user){
-    if (!user || user.resetPasswordExpires < new Date() ){
-      req.flash('error', 'Link is not valid or expired')
-      res.redirect('/pwreset')
-    } else{
-      res.render('users/resetlink', {
-        title: 'Set New Password',
-        token: token
-      });      
-    }
-
-  });
-
+exports.userapi = function (req, res, next) {
+    res.send(req.profile._id)
 };
 
 /**
- * Post Reset Link
+ * Load
  */
-
-exports.pwResetLinkSumbmit = function (req, res) {
-  const password = req.body.password
-  const token = req.params.token;
-
-  if (password) {
-    const options = {select:'name username email resetPasswordExpires'};
-    options.criteria ={resetPasswordToken:token}
-    User.load(options, function(err, user){
-      if (!user){
-        req.flash('error', 'We found an error, please try agian');
-        return res.redirect('/pwreset')
-      } 
-      user.setPassword(password, function(err){
-        if (err) {
-          req.flash('error', err.message);
-          res.redirect('/pwreset')
-        }else{
-          req.flash('success', 'Your password has been reset')
-          res.redirect('/login')
-        }
-      })
+exports.load = function (req, res, next, id) {
+    var options = {
+        criteria: {username : id}
+    };
+    User.load(options, function (err, user) {
+        if (err) return next(err);
+        if (!user) return next(new Error('Failed to load User ' + id));
+        req.profile = user;
+        next();
     });
-  } else {
-    res.render('users/resetlink', {
-        title: 'Set New Password',
-        token: token,
-        errors: utils.errors('Please enter a password')
-    });
-  }
 };
