@@ -9,8 +9,9 @@ const ArticleStore = require('../stores/ArticleStore');
 const NotFound = require('./NotFound.react');
 const Messages = require('./Messages.react');
 const SearchInput = require('./SearchInput.react');
-
 const parse = require('url-parse');
+const Markdown = require('react-remarkable');
+
 
 const Loader = require('react-loader');
 const _ = require('lodash');
@@ -63,16 +64,17 @@ const ArticleSection = React.createClass({
     ) : null; //Rendering a warning message.
 
     const text = _.map(page.text,function(val, i){
-      return <p onClick={that._onClick} key={i} >{val}</p>
+        return <Markdown key={i} source={val} />
     });
 
-    const pageClass = linkedPage?"col-md-6":"col-md-8"
+    const pageClass = linkedPage?"col-md-8":"col-md-9"
 
     var colTwo;
 
     if (linkedPage) {
       const textLinked = _.map(linkedPage.text,function(val, i){
-        return <p key={i} >{val}</p>
+        
+        return marked(val)
       });
       colTwo = (
       <div className="col-md-6">
@@ -87,29 +89,25 @@ const ArticleSection = React.createClass({
       </div>)
     }
 
-        // <div className="nav nav-stacked affix" style={{backgroundColor:"red", right:"5px", top:"15px"}}>top</div>
-        // <div className="nav nav-stacked affix" style={{backgroundColor:"red", right:"5px", bottom:"15px"}}>bottom</div>
-
+     
     const url = parse(page.canonicalLink, true);
     const prettyLink = url.host+url.pathname;
 
     return <section className="container">
-      <div className="page-header">
-        <button onClick={this._onRefresh} className="pull-right btn btn-default">
-          <span className="glyphicon glyphicon-refresh"></span>
-        </button>
-        <h1>{page.title}</h1>
-        <div>
-          <img style={{height:"16px", marginBottom: '2px'}} src={page.favicon}/>
-          &nbsp;
-          <a href={page.canonicalLink} target="_blank">{prettyLink}</a>
-        </div>
-      </div>
       {errorMessage}
       <div className="content">
         <div className="row">
-          <div className={pageClass}>
-            <p style={{color:"#999", marginBottom:"24px"}}>{page.description}</p>
+ 
+          <div className="page-main">
+            <div className="page-header">
+              <h1>{page.title}</h1>
+              <div className="page-link">
+                <img style={{height:"16px", marginBottom: '2px'}} src={page.favicon}/>
+                &nbsp;
+                <a href={page.canonicalLink} target="_blank">{prettyLink}</a>
+              </div>
+              <p style={{color:"#999", marginBottom:"24px"}}>{page.description}</p>
+            </div>
             {text}
           </div>
           {colTwo}

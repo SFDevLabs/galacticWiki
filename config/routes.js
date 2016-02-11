@@ -93,6 +93,9 @@ module.exports = function (app, passport) {
   app.get('/pwreset/:token', users.pwResetLink);
   app.post('/pwreset/:token', users.pwResetLinkSumbmit);
 
+  app.get('/api/example', articleCrud.example);
+
+
   // API Search
   const searchPath = '/api/search'
   app.get(searchPath, searchCrud.getListController);
@@ -110,9 +113,9 @@ module.exports = function (app, passport) {
   app.delete(pathWithId, articleAuth, articleCrud.getDeleteController); 
   
   //API comments
-  app.param('commentId', articleCrud.loadComment);  
-  app.post(pathWithId+'/comments', auth.requiresLogin, articleCrud.getCreateCommentController);
-  app.delete(pathWithId+'/comments/:commentId', commentAuth, articleCrud.getDeleteCommentController);
+  // app.param('commentId', articleCrud.loadComment);  
+  // app.post(pathWithId+'/comments', auth.requiresLogin, articleCrud.getCreateCommentController);
+  // app.delete(pathWithId+'/comments/:commentId', commentAuth, articleCrud.getDeleteCommentController);
 
   // API User
   const userPath = '/api/users'
@@ -123,12 +126,16 @@ module.exports = function (app, passport) {
   app.get(profilePath, userCrud.getReadControllerProfile);
   app.get(userPathWithId, userCrud.getReadController);
 
+
   // home route
   app.get('/*', function (req, res) {
     res.render('index',{
       title: 'Home'
     })
   });
+
+
+  
 
   /**
    * Error handling

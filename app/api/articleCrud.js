@@ -15,6 +15,46 @@ const URL = require('url-parse');
 const async = require('async');
 
 
+// /**
+//  * Load
+//  */
+
+// exports.example = function (req, res){
+//   Article.list({},function (err, articles) {
+//     res.send(articles)
+//   });
+// };
+
+/**
+ * Load
+ */
+
+exports.example = function (req, res){
+  const q = req.param('url');
+  console.log(q)
+  if (!q) return res.status(422).send({errors:utils.errsForApi('No Query or Valid URL')});
+
+  async.waterfall([
+      function(cb){
+        var url = URLParse(q)
+        console.log(url)
+        if (url){
+           cb(null, url)
+        } else {
+          cb({
+            status:422,
+            errors:utils.errsForApi('No Query or Valid URL'), 
+            results:[]
+          })
+        }       
+      },
+      pageDBSearch,
+      pageRequester,
+  ], function(err, result){
+    res.send(result);
+  });
+};
+
 /**
  * Load
  */
@@ -24,19 +64,6 @@ exports.load = function (req, res, next, id){
     if (!article || (err && err.message==='Cast to ObjectId failed')) return  res.status(404).send(utils.errsForApi('Article not found'));
     if (err) return  res.status(500).send( utils.errsForApi(err.errors || err) );
     req.article = article;
-    next();
-  });
-};
-
-/**
- * Load comment
- */
-
-exports.loadComment = function (req, res, next, id) {
-  const article = req.article;
-  utils.findByParam(article.comments, { id: id }, function (err, comment) {
-    if (err) return next(err);
-    req.comment = comment;
     next();
   });
 };
@@ -109,9 +136,6 @@ exports.getCreateController = function (req, res) {
           res.send(article);
         });
       }
-
-
-
   });
 };
 
