@@ -9,24 +9,41 @@ const Article = mongoose.model('Article');
 const _ = require('lodash');
 const utils = require('../../lib/utils');
 const extract = require('../../lib/extract')
-const pageRequester = extract.pageRequester;
 const URLParse =extract.URLParse
 const URL = require('url-parse');
 const async = require('async');
+const validUrl = require('valid-url');
 
-
-// /**
-//  * Load
-//  */
-
-// exports.example = function (req, res){
-//   Article.list({},function (err, articles) {
-//     res.send(articles)
-//   });
-// };
+const pageRequester = function(url, article, cb){
+  if (article){
+    cb(null, url, article)
+  } else{
+    extract.pageRequester(url, function(err, extractedArticle){
+      cb(err, url, extractedArticle)
+    });
+  }
+}
 
 /**
- * Load
+ * Example
+ */
+
+// exports.example = function (req, res){
+//   const url = 'https://my.modulus.io/img/modulus-logoSmall-gray20.png';
+//   const uID=(new Date).getTime().toString();
+//   upload(url, uID, function(err, result){
+//     res.send({
+//       err:err,
+//       result: result
+//     })
+//   });
+
+// };
+
+
+
+/**
+ * Example
  */
 
 exports.example = function (req, res){
@@ -50,7 +67,8 @@ exports.example = function (req, res){
       },
       pageDBSearch,
       pageRequester,
-  ], function(err, result){
+  ], function(err, url, result){
+    console.log(url, URL(result.canonicalLink))
     res.send(result);
   });
 };
@@ -124,13 +142,18 @@ exports.getCreateController = function (req, res) {
       },
       pageDBSearch,
       pageRequester,
-  ], function(err, result){
-      console.log(err, result, 'end')
+  ], function(err, url, result){
       if (err){
         const status = err.status || 500;
         res.status(err.status).send({errors:utils.errsForApi(err.errors || err)});
       } else {
+        
         var article = new Article(result);
+        if( !validUrl.isUri(article.canonicalLink) ){
+          article.canonicalLink = 'http://'+article.queryLink;
+        }
+        extract.copyAssets(article); //this will copy the local assets
+        
         article.save(function(err){
           if(err)res.status(500).send({errors:utils.errsForApi(err.errors || err)});
           res.send(article);
@@ -146,16 +169,15 @@ exports.getCreateController = function (req, res) {
  * @param  {Function}    cb  a callback for the data.
  */
 function pageDBSearch(url, cb) {
-  console.log(url,3)
   Article
     .findOne({'$or':[{ canonicalLink: url }, { queryLink: url }]})
     .exec(function(err, result){
         if (err){
           cb(err)
         } else if (result!==null) {
-          cb(null, result);
+          cb(null, url, result);
         } else {
-          cb(null, url);
+          cb(null, url, null);
         }
     });
 }

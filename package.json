@@ -72,8 +72,9 @@
     "react-tagsinput": "^3.0.3",
     "superagent": "^1.6.1",
     "swig": "~1.4.2",
-    "unfluff": "git+ssh://git@github.com/jeffj/node-unfluff.git",
+    "unfluff": "https://github.com/jeffj/node-unfluff.git",
     "url-parse": "^1.0.5",
+    "valid-url": "^1.0.9",
     "validator": "^4.5.1",
     "view-helpers": "~0.1.5",
     "winston": "~2.1.1"

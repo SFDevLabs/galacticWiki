@@ -8,9 +8,10 @@ const Actions = require('../actions/ArticleActions');
 const ArticleStore = require('../stores/ArticleStore');
 const NotFound = require('./NotFound.react');
 const Messages = require('./Messages.react');
+const Para = require('./Para.react');
+
 const SearchInput = require('./SearchInput.react');
 const parse = require('url-parse');
-const Markdown = require('react-remarkable');
 
 
 const Loader = require('react-loader');
@@ -63,8 +64,8 @@ const ArticleSection = React.createClass({
      <Messages messages={this.state._messages} type="warning" />
     ) : null; //Rendering a warning message.
 
-    const text = _.map(page.text,function(val, i){
-        return <Markdown key={i} source={val} />
+    const text = _.map(page.text, function(val, i){
+        return <Para key={i} text={val} />
     });
 
     const pageClass = linkedPage?"col-md-8":"col-md-9"
@@ -102,11 +103,14 @@ const ArticleSection = React.createClass({
             <div className="page-header">
               <h1>{page.title}</h1>
               <div className="page-link">
-                <img style={{height:"16px", marginBottom: '2px'}} src={page.favicon}/>
-                &nbsp;
-                <a href={page.canonicalLink} target="_blank">{prettyLink}</a>
+              <img src={page.faviconCDN} style={{height:"16px", marginBottom: '2px'}} />
+              &nbsp;
+              <a href={page.canonicalLink} target="_blank">{prettyLink}</a>
               </div>
               <p style={{color:"#999", marginBottom:"24px"}}>{page.description}</p>
+              <div style={{textAlign:'center'}} >
+                <img src={page.imageCDN}  style={{maxWidth:'100%'}} />
+              </div>
             </div>
             {text}
           </div>
@@ -144,13 +148,17 @@ const ArticleSection = React.createClass({
       page:undefined
     });
   },
-  /**
-   * Event handler for 'click' events coming from the Page DOM
-   */
-  _onClick:function(e){
-    this.setState({
-      linkLocation:e.target.offsetTop
-    });
+  getSelectionText: function() {
+    var text = "";
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+        text = document.selection.createRange().text;
+    }
+    return text;
+  },
+  getTextIntergerOffset: function(ptext, text){
+
   },
   /**
    * Event handler for 'click' events coming from the Page DOM

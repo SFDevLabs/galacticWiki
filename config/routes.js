@@ -135,8 +135,6 @@ module.exports = function (app, passport) {
   });
 
 
-  
-
   /**
    * Error handling
    */

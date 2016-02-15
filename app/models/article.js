@@ -25,13 +25,15 @@ const ArticleSchema = new Schema({
   canonicalLink: {type : String, default : '', trim : true},
   queryLink: {type : String, default : '', trim : true},
   favicon: {type : String, default : '', trim : true},
+  faviconCDN: {type : String, default : null, trim : true},
   description: {type : String, default : '', trim : true},
-  keywords: {type : Array, default : '', trim : true},
+  keywords: {type : Array, default : [], trim : true},
   lang: {type : String, default : '', trim : true},
   text: {type : Array, default : []},
   tags: {type : Array, default : []},
   user: {type : Schema.ObjectId, ref : 'User'},
   image: {type : String, default : '', trim : true},
+  imageCDN: {type : String, default : null, trim : true},
   videos: {type : Array, default : '', trim : true},
   createdAt  : {type : Date, default : Date.now}
 });
