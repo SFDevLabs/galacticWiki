@@ -43,6 +43,7 @@
     "flux": "^2.1.1",
     "forever": "~0.15.1",
     "history": "^1.17.0",
+    "image-size": "^0.4.0",
     "imager": "0.4.0",
     "keymirror": "^0.1.1",
     "markdown-react-js": "^0.3.0",
@@ -77,7 +78,7 @@
     "valid-url": "^1.0.9",
     "validator": "^4.5.1",
     "view-helpers": "~0.1.5",
-    "winston": "~2.1.1"
+    "winston": "^2.1.1"
   },
   "devDependencies": {
     "babel-core": "^6.4.5",

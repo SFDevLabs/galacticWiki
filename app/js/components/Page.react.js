@@ -90,9 +90,22 @@ const ArticleSection = React.createClass({
       </div>)
     }
 
-     
     const url = parse(page.canonicalLink, true);
     const prettyLink = url.host+url.pathname;
+
+    var image;
+    if ( page.imageCDN.url ){
+      const imgHeight = 700/page.imageCDN.dimensions[0]*page.imageCDN.dimensions[1]
+      image = 
+        <div className="page-img" style={{textAlign:'center', backgroundColor: '#eee', height:imgHeight}} >
+          <img onError={this._imgError} src={page.imageCDN.url} style={{maxWidth:'100%'}} />
+        </div>
+    } else {
+      image = 
+        null
+    }
+
+    const favicon = page.faviconCDN?<img onError={this._imgError} src={page.faviconCDN} style={{width:'16px', height:"16px", marginBottom: '2px'}} />:null;
 
     return <section className="container">
       {errorMessage}
@@ -103,14 +116,12 @@ const ArticleSection = React.createClass({
             <div className="page-header">
               <h1>{page.title}</h1>
               <div className="page-link">
-              <img src={page.faviconCDN} style={{height:"16px", marginBottom: '2px'}} />
+              {favicon}
               &nbsp;
               <a href={page.canonicalLink} target="_blank">{prettyLink}</a>
               </div>
               <p style={{color:"#999", marginBottom:"24px"}}>{page.description}</p>
-              <div style={{textAlign:'center'}} >
-                <img src={page.imageCDN}  style={{maxWidth:'100%'}} />
-              </div>
+              {image}
             </div>
             {text}
           </div>
@@ -140,14 +151,14 @@ const ArticleSection = React.createClass({
     }
   },
   /**
+   * Event handler for 'imgError' events coming from the Page DOM
+   */
+  _imgError:function(e){
+    e.target.remove();//
+  },
+  /**
    * Event handler for 'click' events coming from the Page DOM
    */
-  _onRefresh:function(){
-    Actions.getById(this.props.params.id);
-    this.setState({
-      page:undefined
-    });
-  },
   getSelectionText: function() {
     var text = "";
     if (window.getSelection) {

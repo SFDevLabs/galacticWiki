@@ -13,6 +13,7 @@ const URLParse =extract.URLParse
 const URL = require('url-parse');
 const async = require('async');
 const validUrl = require('valid-url');
+const urlFix = extract.urlFix
 
 const pageRequester = function(url, article, cb){
   if (article){
@@ -51,6 +52,8 @@ exports.example = function (req, res){
   console.log(q)
   if (!q) return res.status(422).send({errors:utils.errsForApi('No Query or Valid URL')});
 
+  res.send(urlFix(q, 'newrepublic.com'))
+  return
   async.waterfall([
       function(cb){
         var url = URLParse(q)
@@ -149,13 +152,40 @@ exports.getCreateController = function (req, res) {
       } else {
         
         var article = new Article(result);
-        if( !validUrl.isUri(article.canonicalLink) ){
+        if( !article.canonicalLink || !validUrl.isUri(article.canonicalLink) ){
           article.canonicalLink = 'http://'+article.queryLink;
         }
-        extract.copyAssets(article); //this will copy the local assets
+        const url = URL(article.canonicalLink)
+
+        if (!article.favicon || article.favicon.length==0){
+          const domainLink = 'http://'+url.host;
+          article.favicon = domainLink+'/favicon.ico'
+        }
+
+        article.image = urlFix(article.image, url.host);
+        article.favicon = urlFix(article.favicon, url.host);
+
+        if (article.favicon)
+        extract.copyAssets(
+          article.favicon, 
+          article.image, 
+          article._id,
+          function(err, results){
+            article.imageCDN = results[0];
+            console.log(results, 'results results')
+            if (results[1]===null){
+              article.favicon = null
+            }
+            article.faviconCDN = results[1];
+            article.save(function(err){
+              if(err){
+                console.log(err);
+              }
+            });
+        });
         
         article.save(function(err){
-          if(err)res.status(500).send({errors:utils.errsForApi(err.errors || err)});
+          if(err) return res.status(500).send({errors:utils.errsForApi(err.errors || err)});
           res.send(article);
         });
       }

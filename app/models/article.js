@@ -22,9 +22,9 @@ const Schema = mongoose.Schema;
 
 const ArticleSchema = new Schema({
   title: {type : String, default : '', trim : true},
-  canonicalLink: {type : String, default : '', trim : true},
-  queryLink: {type : String, default : '', trim : true},
-  favicon: {type : String, default : '', trim : true},
+  canonicalLink: {type : String, trim : true},
+  queryLink: {type : String, trim : true},
+  favicon: {type : String, default : null, trim : true},
   faviconCDN: {type : String, default : null, trim : true},
   description: {type : String, default : '', trim : true},
   keywords: {type : Array, default : [], trim : true},
@@ -33,7 +33,10 @@ const ArticleSchema = new Schema({
   tags: {type : Array, default : []},
   user: {type : Schema.ObjectId, ref : 'User'},
   image: {type : String, default : '', trim : true},
-  imageCDN: {type : String, default : null, trim : true},
+  imageCDN: {
+    url:{type : String, default : null, trim : true},
+    dimensions:[{type : Number}]
+  },
   videos: {type : Array, default : '', trim : true},
   createdAt  : {type : Date, default : Date.now}
 });
