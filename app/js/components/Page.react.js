@@ -9,6 +9,8 @@ const ArticleStore = require('../stores/ArticleStore');
 const NotFound = require('./NotFound.react');
 const Messages = require('./Messages.react');
 const Para = require('./Para.react');
+const PageConnect = require('./PageConnect.react');
+
 
 const SearchInput = require('./SearchInput.react');
 const parse = require('url-parse');
@@ -24,8 +26,7 @@ import { Link } from 'react-router';
  */
 function getState(id) {
   return {
-    page: ArticleStore.getById(id),
-    linkedPage: null//ArticleStore.getById(id)
+    page: ArticleStore.getById(id)
   };
 }
 const ArticleSection = React.createClass({
@@ -43,19 +44,21 @@ const ArticleSection = React.createClass({
       Actions.getById(this.props.params.id);
     }
     ArticleStore.addChangeListener(this._onChange);
+
+    document.addEventListener("click", this._removePopup)
   },
 
   componentWillUnmount: function() {
     ArticleStore.removeChangeListener(this._onChange);
+    document.removeEventListener("click", this._removePopup)
   },
   /**
    * @return {object}
    */
   render :function() {
-    const page = this.state.page;
-    const linkedPage = this.state.linkedPage;
-    const linkLocation = this.state.linkLocation?this.state.linkLocation:null;
     const that = this;
+    const page = this.state.page;
+    const linkLocation = this.state.linkLocation?this.state.linkLocation:null;
 
     if (page===null){return <NotFound />}//null means the api gave us a 404.
     else if (!page){return <Loader />}//undefined means that no request for the article has been made.
@@ -65,30 +68,13 @@ const ArticleSection = React.createClass({
     ) : null; //Rendering a warning message.
 
     const text = _.map(page.text, function(val, i){
-        return <Para key={i} text={val} />
+        return <Para 
+          key={i} 
+          _key={i}
+          onDown={that._onDown}
+          onUp={that._onUp}
+          text={val} />
     });
-
-    const pageClass = linkedPage?"col-md-8":"col-md-9"
-
-    var colTwo;
-
-    if (linkedPage) {
-      const textLinked = _.map(linkedPage.text,function(val, i){
-        
-        return marked(val)
-      });
-      colTwo = (
-      <div className="col-md-6">
-        <div style={{marginTop:"500px"}}>{textLinked}</div>
-      </div>)
-    }else if (linkLocation){
-      colTwo = (
-      <div className="col-md-4">
-        <div style={{marginTop:linkLocation+"px"}}>
-          <SearchInput onSave={this._save} />
-        </div>
-      </div>)
-    }
 
     const url = parse(page.canonicalLink, true);
     const prettyLink = url.host+url.pathname;
@@ -104,30 +90,58 @@ const ArticleSection = React.createClass({
       image = 
         null
     }
+    const toolTipEnable = this.state.toolTipEnable
+    var toolTipStyle;
+    var toolTipClass = ''
+    if (toolTipEnable){
+      toolTipStyle = {
+        display:"block",
+        top: this.toolTipPosition?this.toolTipPosition[1]-40:null,
+        left: this.toolTipPosition?this.toolTipPosition[0]-30:null,//'calc(50% - 150px)',
+      }
+      toolTipClass += 'in'
+    } else{
+      toolTipStyle = {
+        display:'block',
+        top:'-100px'
+      }
+    }
 
     const favicon = page.faviconCDN?<img onError={this._imgError} src={page.faviconCDN} style={{width:'16px', height:"16px", marginBottom: '2px'}} />:null;
 
-    return <section className="container">
+    const transition = this.state.transition?{transform: "translateX(-200%)"}:null;
+    //style={{backgroundColor:'#D5E4F9', padding: '5px 3px 0px'}}
+    return <section className="container ease" style={transition}>
       {errorMessage}
-      <div className="content">
+      <div className="content main">
+        <PageConnect page={page} />
+        <div className="row connect-action" style={{display:'none'}}>
+          <a style={{width:'300px', margin: 'auto', fontSize:'2rem'}} className="btn btn-default" > Create Link </a>
+        </div>
         <div className="row">
- 
           <div className="page-main">
-            <div className="page-header">
+            <div className="header">
               <h1>{page.title}</h1>
               <div className="page-link">
-              {favicon}
-              &nbsp;
-              <a href={page.canonicalLink} target="_blank">{prettyLink}</a>
+                {favicon}
+                &nbsp;
+                <a href={page.canonicalLink} target="_blank">{prettyLink}</a>
               </div>
               <p style={{color:"#999", marginBottom:"24px"}}>{page.description}</p>
               {image}
             </div>
-            {text}
+            <div className="page-text">
+              {text}
+            </div>
           </div>
-          {colTwo}
-        </div>
-        <div>
+          <div style={toolTipStyle} className={"popover fade top "+toolTipClass}>
+            <div className="arrow arrow-link"></div>
+            <div className="btn-group">
+              <button onClick={this._createLink} style={{width:'100px'}} className="btn btn-primary">
+                <span className="glyphicon glyphicon-link" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>;
@@ -157,9 +171,32 @@ const ArticleSection = React.createClass({
     e.target.remove();//
   },
   /**
+   * Event handler for 'mouse up' events coming from the Page DOM
+   */
+  _onDown: function(e, key){
+    this._key=key;
+    this.toolTipPosition = [e.pageX, e.pageY]
+  },
+  /**
+   * Event handler for 'mouse up' events coming from the Page DOM
+   */
+  _onUp: function(e, key){
+    if (this._key !== key){return} //bonk out
+    const that = this;
+    if (this.toolTipPosition[1] > e.pageY){
+      this.toolTipPosition=[e.pageX, e.pageY, ]
+    }
+    setTimeout(function(){
+      const text = that._getSelectionText();
+        that.setState({
+          toolTipEnable: text.length>0
+        })
+    }, 10)
+  },
+  /**
    * Event handler for 'click' events coming from the Page DOM
    */
-  getSelectionText: function() {
+  _getSelectionText: function() {
     var text = "";
     if (window.getSelection) {
         text = window.getSelection().toString();
@@ -168,15 +205,49 @@ const ArticleSection = React.createClass({
     }
     return text;
   },
-  getTextIntergerOffset: function(ptext, text){
-
-  },
   /**
    * Event handler for 'click' events coming from the Page DOM
    */
-  _save:function(url){
-    console.log(url)
-  }
+  _removePopup: function(e){
+    const classMain = 'page-text'
+    const main = this._closest(e.target, '.'+classMain);
+    if (main===null && e.target.className.indexOf(classMain)===-1 ){
+      this.setState({
+        toolTipEnable: false
+      });
+    }
+  },
+  /**
+   * Event handler for 'link' events coming from the Page DOM
+   */
+  _createLink: function(e){
+    const text = this._getSelectionText();
+    if (text.length && this._key){
+      Actions.setHighlight(text, this._key)
+    }
+    this.context.router.push('/'+this.props.params.id+'/edit');
+  },
+
+  _closest: function(el, selector) {
+    var matchesFn;
+    // find vendor prefix
+    ['matches','webkitMatchesSelector','mozMatchesSelector','msMatchesSelector','oMatchesSelector'].some(function(fn) {
+        if (typeof document.body[fn] == 'function') {
+            matchesFn = fn;
+            return true;
+        }
+        return false;
+    })
+    // traverse parents
+    while (el!==null) {
+        parent = el.parentElement;
+        if (parent!==null && parent[matchesFn](selector)) {
+            return parent;
+        }
+        el = parent;
+    }
+    return null;
+}
 
 });
 
