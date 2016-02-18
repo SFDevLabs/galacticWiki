@@ -7,7 +7,7 @@ const React = require('react');
 import { Router, Route, Link, IndexRoute, browserHistory, Location } from 'react-router';
 
 const Header = require('./Header.react');
-const Page = require('./Page.react');
+const PageMain = require('./PageMain.react');
 const Search = require('./Search.react');
 const SearchResults = require('./SearchResults.react');
 const NotFound = require('./NotFound.react');
@@ -38,7 +38,7 @@ const Root = React.createClass({
         <Route path="/" component={Main} >
           <IndexRoute component={Search} />
           <Route path="search" component={SearchResults} />
-          <Route path=":id" component={Page}/>
+          <Route path=":id" component={PageMain}/>
           <Route path="users/:id" component={User}/>
           <Route path="*" component={NotFound}  />
         </Route>

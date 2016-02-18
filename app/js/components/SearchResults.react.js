@@ -70,7 +70,6 @@ const About = React.createClass({
 
     return <section className="container">
         <div className="page-header" style={searchHeader}>
-
         </div>
         <div className="content">
           {results}

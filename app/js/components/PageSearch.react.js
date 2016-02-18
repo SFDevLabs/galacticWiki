@@ -6,6 +6,8 @@
 
 const React = require('react');
 const SearchInput = require('./SearchInput.react');
+const SearchItem = require('./SearchItem.react');
+
 const ENTER_KEY_CODE = 13;
 
 const searchHeader = {
@@ -22,36 +24,35 @@ const searchButton = {
   fontSize: '1.1em'
 }
 
-const Search = React.createClass({
+const PageSearch = React.createClass({
   
   contextTypes:{
     router: React.PropTypes.object.isRequired
   },
 
   getInitialState: function() {
-    return {};
+    return {
+      results:[{
+        title: 'ya'
+      }]
+    };
   },
   
   render :function() {
-    return <section className="container">
-        <div className="page-header" style={searchHeader}>
-        </div>
-        <div className="content" >
-          <div className="col-md-2" />
-          <div className="col-md-8">
-            <div className="row">
-              <SearchInput 
-                onSave={this._save}
-              />
-            </div>
-            <div className="row text-center" style={searchRow}>
-              <button style={searchButton} type="button" className="btn btn-default">
-                Make A Connection
-              </button>
-            </div>
-          </div>  
-        </div>
-    </section>;
+    const data = this.state.results;
+    const length = Object.keys(data).length;
+
+    const results = length>0?_.map(data, function(result, i) {
+        return <SearchItem key={i} item={result} />
+    }):
+    <div>
+      No Results Found.
+    </div>;
+
+    return <div className="row" style={searchRow} >
+      <SearchInput onSave={this._save} />
+      {results}
+    </div>
   },
 
   /**
@@ -66,4 +67,4 @@ const Search = React.createClass({
 
 })
 
-module.exports = Search;
+module.exports = PageSearch;

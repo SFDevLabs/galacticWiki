@@ -44,24 +44,7 @@ const PageConnect = React.createClass({
         </div>
       </div>
     </div>
-  },
-  /**
-   * Event handler for 'change' events coming from the PageStore
-   */
-  _onChange: function() {
-    const state = getState(this.props.params.id)
-    const errors = ArticleStore.getErrors()
-    if (errors.length>0) { //Errors from page action need to be displayed.
-      this.setState({
-        _messages: errors,
-        _deleting: false
-      });
-    } else if (!state.article && this.state._deleting) { //A delete request was fired, we have no errors and we have no article in the store. Navigate to home.
-      this.context.router.push('/');
-    } else {
-      this.setState(state);
-    }
-  },
+  }
 })
 
 module.exports = PageConnect;
