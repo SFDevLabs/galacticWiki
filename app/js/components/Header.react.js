@@ -94,7 +94,7 @@ const Header = React.createClass({
       </Nav>
     </Navbar.Collapse>:null;
 
-    return <Navbar fluid style={{padding: "0px 15px"}} >
+    return <Navbar fixedTop fluid style={{padding: "0px 15px"}} >
       <div className="container">
         <Navbar.Header>
           <Navbar.Brand>
