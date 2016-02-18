@@ -107,7 +107,7 @@ const ArticleSection = React.createClass({
       }
     }
 
-    const favicon = page.faviconCDN?<img onError={this._imgError} src={page.faviconCDN} style={{width:'16px', height:"16px", marginBottom: '2px'}} />:null;
+    const favicon = page.faviconCDN?<img onError={this._imgError} src={page.faviconCDN} className="favicon" />:null;
 
     const transition = this.state.transition?{transform: "translateX(-200%)"}:null;
     //style={{backgroundColor:'#D5E4F9', padding: '5px 3px 0px'}}

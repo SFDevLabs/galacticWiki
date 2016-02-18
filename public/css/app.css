@@ -1,3 +1,7 @@
+#app{
+	margin-top: 30px;
+}
+
 p {
 	font-family: 'Brela', serif;
     font-size: 2rem;
@@ -7,34 +11,98 @@ p {
     font-weight: 600;
     margin-bottom: 2.5rem;
 }
-
-h1, h2 ,h3 ,h4 ,h5, h6{
+a {
+	font-family:"medium-content-sans-serif-font","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+}
+h1 {
 	font-family:"medium-content-sans-serif-font","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
 	font-weight:600;
 	font-size: 3rem;
 	color: rgba(0,0,0,0.75);
 }
+h2 {
+	font-family:"medium-content-sans-serif-font","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+	font-weight:600;
+	font-size: 1.5rem;
+	color: rgba(0,0,0,0.75);
+}
 
-.page-main{
-	margin:auto;
-	width:700px;
+.navbar-default{
+	background: rgba(255,255,255,.95);
+	border-bottom: none;
+}
 
+.navbar-brand{
+	font-weight: 500;
+}
+
+
+
+.popover {
+	padding:0;
+	border:none;
+}
+
+.popover.top > .btn-group > .btn-primary{
+    background-color: #21224E;
+    border-color: #828282;
+}
+
+.popover.top > .btn-group > .btn-primary:hover{
+    background-color: #21224E;
+    border-color: #828282;
+    opacity: .8;
+}
+
+.popover.top >.arrow-link:after{
+	border-top-color: #21224E;
+    z-index: 1;
+    bottom: 2px;
+}
+
+.main{
+	margin: 50px auto;
+	width: 700px;
+}
+
+.page-img {
+	margin-bottom: 2rem;
 }
 
 @media (max-width: 767px) {
-	.page-main {
+	.main {
 		margin-left: 20px;
 		margin-right: 20px;
 		width:auto;
 	}
 	.page-img {
 		height:auto !important;
+		margin-bottom: 2rem;
 	}
+}
+.row {
+	margin: 0;
 }
 
 .page-header{
 	border-bottom: none;
 	margin-bottom: 2.5rem;
+}
+
+.link-header{
+	border-bottom: none;
+	margin: 30px 0 20px
+}
+
+.link-text p{
+	color: #888;
+    font-weight: 100;
+    margin: 1rem 0rem;
+    padding-bottom: 2rem;
+}
+
+.link-text a{
+	font-weight: 900;
 }
 
 .page-link{
@@ -54,9 +122,28 @@ h1, h2 ,h3 ,h4 ,h5, h6{
 	text-overflow: ellipsis;
 }
 
+.favicon{
+	width: 16px;
+	height: 16px;
+	margin-bottom: 2px;
+}
+
 @font-face {
   font-family: 'Brela';
   font-style: normal;
   font-weight: normal;
   src: local('Brela'), url('./brelaregular.otf') format('truetype');
 }
+
+.ease{
+	-webkit-transition: all 300ms cubic-bezier(0.895, 0.030, 0.685, 0.220); 
+	   -moz-transition: all 300ms cubic-bezier(0.895, 0.030, 0.685, 0.220); 
+	     -o-transition: all 300ms cubic-bezier(0.895, 0.030, 0.685, 0.220); 
+	        transition: all 300ms cubic-bezier(0.895, 0.030, 0.685, 0.220); /* easeInQuart */
+
+	-webkit-transition-timing-function: cubic-bezier(0.895, 0.030, 0.685, 0.220); 
+	   -moz-transition-timing-function: cubic-bezier(0.895, 0.030, 0.685, 0.220); 
+	     -o-transition-timing-function: cubic-bezier(0.895, 0.030, 0.685, 0.220); 
+	        transition-timing-function: cubic-bezier(0.895, 0.030, 0.685, 0.220); /* easeInQuart */
+}
+
