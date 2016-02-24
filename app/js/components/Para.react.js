@@ -5,27 +5,54 @@
 */
 
 const React = require('react');
+const _ = require('lodash');
 const Markdown = require('react-remarkable');
 
+function createMarkup(text) { return {__html: text}; };
+
 const Para = React.createClass({
+  getInitialState: function() {
+    return {
+      text: this.props.text
+    }
+  },
 
   propTypes:{
-    text: React.PropTypes.string.isRequired, 
-    _key: React.PropTypes.number.isRequired, 
-    onDown: React.PropTypes.func.isRequired,
-    onUp: React.PropTypes.func.isRequired
+    text: React.PropTypes.string.isRequired,
+    _key: React.PropTypes.number.isRequired
   },
-  
+
   render: function() {
-    return <div onMouseDown={this._down} onMouseUp={this._up}>
+    return <div
+      className="page-para" 
+      onMouseDown={this._down} 
+      onMouseLeave={this._leave} 
+      onMouseUp={this._up}>
       <Markdown  source={this.props.text} />
     </div>
   },
   _down: function(e){
-    this.props.onDown(e, this.props._key)
+    this.down = true;
   },
-  _up: function(e){
-    this.props.onUp(e, this.props._key)
+  _up: function(e){    
+    if (this.down){
+
+    }
+  },
+  _leave: function(e){
+    this.down = false;
+  },
+  /**
+   * Gets the page's selected text.
+   */
+  _getSelectionText: function() {
+    var text = "";
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+        text = document.selection.createRange().text;
+    }
+    return text;
   }
 
 })

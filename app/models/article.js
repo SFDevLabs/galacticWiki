@@ -19,26 +19,33 @@ const Schema = mongoose.Schema;
 /**
  * Article Schema
  */
+const indexObj = { name: {type:String}, index: [{type:Number}], href: {type:String} }
 
 const ArticleSchema = new Schema({
   title: {type : String, default : '', trim : true},
-  canonicalLink: {type : String, trim : true},
-  queryLink: {type : String, trim : true},
-  favicon: {type : String, default : null, trim : true},
-  faviconCDN: {type : String, default : null, trim : true},
   description: {type : String, default : '', trim : true},
-  keywords: {type : Array, default : [], trim : true},
-  lang: {type : String, default : '', trim : true},
-  text: {type : Array, default : []},
-  tags: {type : Array, default : []},
+  keywords: {type : Array, default : []},
+  html: {type : Array, default : []},
+  text: [{
+    text: {type : String},
+    style: [indexObj],
+    link: [indexObj]
+  }],
   user: {type : Schema.ObjectId, ref : 'User'},
+  lang: {type : String, default : '', trim : true},
+  createdAt  : {type : Date, default : Date.now},
+  tags: {type : Array, default : []},
+  canonicalLink: {type : String, default : null},
+  queryLink: {type : String, default : null},
+  favicon: {type : String, default : null,},
+  faviconCDN: {type : String, default : null},
   image: {type : String, default : '', trim : true},
   imageCDN: {
-    url:{type : String, default : null, trim : true},
-    dimensions:[{type : Number}]
+    url:{type : String, default : null},
+    dimensions:[{type : Number, default:null}]
   },
-  videos: {type : Array, default : '', trim : true},
-  createdAt  : {type : Date, default : Date.now}
+  videos: {type : Array, default : null}
+
 });
 
 /**

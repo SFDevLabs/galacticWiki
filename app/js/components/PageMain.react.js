@@ -12,6 +12,7 @@ const Para = require('./Para.react');
 const PageConnect = require('./PageConnect.react');
 const PageSearch = require('./PageSearch.react');
 const parse = require('url-parse');
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 
 const Loader = require('react-loader');
@@ -28,6 +29,8 @@ function getState(id, lid) {
     linkedPage: ArticleStore.getById(lid)
   };
 }
+
+
 const ArticleSection = React.createClass({
   
   contextTypes:{
@@ -60,20 +63,15 @@ const ArticleSection = React.createClass({
 
     const linkLocation = this.state.linkLocation?this.state.linkLocation:null;
 
-    // if (page===null && ){return <NotFound />}//null means the api gave us a 404.
+    // if (page===null){return <NotFound />}//null means the api gave us a 404.
     // else if (!page){return <Loader />}//undefined means that no request for the article has been made.
 
     const errorMessage = this.state._messages? (
      <Messages messages={this.state._messages} type="warning" />
     ) : null; //Rendering a warning message.
 
-
-
-
-
     var mainPage
     if ( page ) {
-
       const favicon = page.faviconCDN?<img onError={this._imgError} src={page.faviconCDN} className="favicon" />:null;
       const text = _.map(page.text, function(val, i){
           return <Para 
@@ -81,7 +79,7 @@ const ArticleSection = React.createClass({
             _key={i}
             onDown={that._onDown}
             onUp={that._onUp}
-            text={val} />
+            text={val.text} />
       });
 
       const url = parse(page.canonicalLink, true);
@@ -89,31 +87,34 @@ const ArticleSection = React.createClass({
 
       var image;
       if ( page.imageCDN.url ){
-        const imgHeight = 700/page.imageCDN.dimensions[0]*page.imageCDN.dimensions[1]
+        const imgHeight = 700<page.imageCDN.dimensions[0]?
+          700/page.imageCDN.dimensions[0]*page.imageCDN.dimensions[1]:
+          page.imageCDN.dimensions[1];
+
         image = 
-          <div className="page-img" style={{textAlign:'center', backgroundColor: '#eee', height:imgHeight}} >
+          <div className="page-img" style={{height:imgHeight}} >
             <img onError={this._imgError} src={page.imageCDN.url} style={{maxWidth:'100%'}} />
           </div>
       } else {
         image = 
           null
       }
-      const toolTipEnable = this.state.toolTipEnable
-      var toolTipStyle;
-      var toolTipClass = ''
-      if (toolTipEnable){
-        toolTipStyle = {
-          display:"block",
-          top: this.toolTipPosition?this.toolTipPosition[1]-40:null,
-          left: this.toolTipPosition?this.toolTipPosition[0]-30:null,//'calc(50% - 150px)',
-        }
-        toolTipClass += 'in'
-      } else{
-        toolTipStyle = {
-          display:'block',
-          top:'-100px'
-        }
-      }
+      // const toolTipEnable = this.state.toolTipEnable
+      // var toolTipStyle;
+      // var toolTipClass = ''
+      // if (toolTipEnable){
+      //   toolTipStyle = {
+      //     display:"block",
+      //     top: this.toolTipPosition?this.toolTipPosition[1]-40:null,
+      //     left: this.toolTipPosition?this.toolTipPosition[0]-30:null,//'calc(50% - 150px)',
+      //   }
+      //   toolTipClass += 'in'
+      // } else {
+      //   toolTipStyle = {
+      //     display:'block',
+      //     top:'-100px'
+      //   }
+      // }
 
       mainPage = <div className="row">
         <div className="page-main">
@@ -131,38 +132,39 @@ const ArticleSection = React.createClass({
             {text}
           </div>
         </div>
-        <div style={toolTipStyle} className={"popover fade top "+toolTipClass}>
-          <div className="arrow arrow-link"></div>
-          <div className="btn-group">
-            <button onClick={this._createLink} style={{width:'100px'}} className="btn btn-primary">
-              <span className="glyphicon glyphicon-link" aria-hidden="true"></span>
-            </button>
-          </div>
-        </div>
       </div>
     } else {
       mainPage = <PageSearch />
     }
-
-   // <button style={searchButton} type="button" className="btn btn-default">
-  //  Make A Connection
-  //</button>
     
     const pageConnect = linkedPage?<PageConnect page={linkedPage} />:null;
+    // var stuff
+    // if (this.state.removeTrans){
+    //   stuff = 
 
-    return <section className="container ease">
-      {errorMessage}
-      <div className="content main">
-        {pageConnect}
-        <div className="row connect-action" style={{display:'none'}}>
-          <a style={{width:'300px', margin: 'auto', fontSize:'2rem'}} className="btn btn-default" > Create Link </a>
+    //     <span>Stuff Worlks</span>
+         
+
+    // } else {
+    //   stuff = null
+    // }
+
+    return <div>
+      <section className="container ease">
+        {errorMessage}
+        <div className="content main">
+          <button onClick={this._createLink} type="button" className="btn btn-default">
+          </button>
+          <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500} >
+            {pageConnect}
+          </ReactCSSTransitionGroup>
+          <div className="row connect-action" style={{display:'none'}}>
+            <a style={{width:'300px', margin: 'auto', fontSize:'2rem'}} className="btn btn-default" > Create Link </a>
+          </div>
+          {mainPage}
         </div>
-        {mainPage}
-      </div>
-    </section>
-
-
-
+      </section>
+    </div>
   },
 
   /**
@@ -265,7 +267,7 @@ const ArticleSection = React.createClass({
         el = parent;
     }
     return null;
-}
+  }
 
 });
 

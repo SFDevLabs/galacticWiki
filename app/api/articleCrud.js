@@ -162,8 +162,9 @@ exports.getCreateController = function (req, res) {
           article.favicon = domainLink+'/favicon.ico'
         }
 
-        article.image = urlFix(article.image, url.host);
-        article.favicon = urlFix(article.favicon, url.host);
+
+        article.image = article.image?urlFix(article.image, url.host):null;
+        article.favicon = article.favicon?urlFix(article.favicon, url.host):null;
 
         if (article.favicon)
         extract.copyAssets(
