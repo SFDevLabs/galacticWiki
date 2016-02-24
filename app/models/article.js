@@ -19,7 +19,9 @@ const Schema = mongoose.Schema;
 /**
  * Article Schema
  */
-const indexObj = { name: {type:String}, index: [{type:Number}], href: {type:String} }
+const indexLink = { name: {type:String}, index: [{type:Number}], href: {type:String} };
+const indexStyle = { name: {type:String}, index: [{type:Number}] };
+
 
 const ArticleSchema = new Schema({
   title: {type : String, default : '', trim : true},
@@ -28,8 +30,8 @@ const ArticleSchema = new Schema({
   html: {type : Array, default : []},
   text: [{
     text: {type : String},
-    style: [indexObj],
-    link: [indexObj]
+    style: [indexStyle],
+    links: [indexLink]
   }],
   user: {type : Schema.ObjectId, ref : 'User'},
   lang: {type : String, default : '', trim : true},
@@ -45,7 +47,6 @@ const ArticleSchema = new Schema({
     dimensions:[{type : Number, default:null}]
   },
   videos: {type : Array, default : null}
-
 });
 
 /**

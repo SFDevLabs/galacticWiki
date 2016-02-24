@@ -10,7 +10,6 @@ const _ = require('lodash');
 const utils = require('../../lib/utils');
 const extract = require('../../lib/extract')
 const URLParse =extract.URLParse
-const URL = require('url-parse');
 const async = require('async');
 const validUrl = require('valid-url');
 const urlFix = extract.urlFix
@@ -48,32 +47,7 @@ const pageRequester = function(url, article, cb){
  */
 
 exports.example = function (req, res){
-  const q = req.param('url');
-  console.log(q)
-  if (!q) return res.status(422).send({errors:utils.errsForApi('No Query or Valid URL')});
-
-  res.send(urlFix(q, 'newrepublic.com'))
-  return
-  async.waterfall([
-      function(cb){
-        var url = URLParse(q)
-        console.log(url)
-        if (url){
-           cb(null, url)
-        } else {
-          cb({
-            status:422,
-            errors:utils.errsForApi('No Query or Valid URL'), 
-            results:[]
-          })
-        }       
-      },
-      pageDBSearch,
-      pageRequester,
-  ], function(err, url, result){
-    console.log(url, URL(result.canonicalLink))
-    res.send(result);
-  });
+  const extractor = require('../../node-unfluff/');
 };
 
 /**
@@ -152,19 +126,6 @@ exports.getCreateController = function (req, res) {
       } else {
         
         var article = new Article(result);
-        if( !article.canonicalLink || !validUrl.isUri(article.canonicalLink) ){
-          article.canonicalLink = 'http://'+article.queryLink;
-        }
-        const url = URL(article.canonicalLink)
-
-        if (!article.favicon || article.favicon.length==0){
-          const domainLink = 'http://'+url.host;
-          article.favicon = domainLink+'/favicon.ico'
-        }
-
-
-        article.image = article.image?urlFix(article.image, url.host):null;
-        article.favicon = article.favicon?urlFix(article.favicon, url.host):null;
 
         if (article.favicon)
         extract.copyAssets(
@@ -184,7 +145,7 @@ exports.getCreateController = function (req, res) {
               }
             });
         });
-        
+
         article.save(function(err){
           if(err) return res.status(500).send({errors:utils.errsForApi(err.errors || err)});
           res.send(article);
@@ -200,6 +161,7 @@ exports.getCreateController = function (req, res) {
  * @param  {Function}    cb  a callback for the data.
  */
 function pageDBSearch(url, cb) {
+  console.log(url)
   Article
     .findOne({'$or':[{ canonicalLink: url }, { queryLink: url }]})
     .exec(function(err, result){
@@ -213,9 +175,6 @@ function pageDBSearch(url, cb) {
     });
 }
 
-/**
-/ End page Loader helpers
-*/
 
 /**
  * Load

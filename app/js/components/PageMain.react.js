@@ -79,7 +79,9 @@ const ArticleSection = React.createClass({
             _key={i}
             onDown={that._onDown}
             onUp={that._onUp}
-            text={val.text} />
+            text={val.text}
+            style={val.style}
+            links={val.links} />
       });
 
       const url = parse(page.canonicalLink, true);
