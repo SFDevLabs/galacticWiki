@@ -19,19 +19,17 @@ const Schema = mongoose.Schema;
 /**
  * Article Schema
  */
-const indexLink = { name: {type:String}, index: [{type:Number}], href: {type:String} };
-const indexStyle = { name: {type:String}, index: [{type:Number}] };
-
-
 const ArticleSchema = new Schema({
   title: {type : String, default : '', trim : true},
   description: {type : String, default : '', trim : true},
   keywords: {type : Array, default : []},
-  html: {type : Array, default : []},
-  text: [{
-    text: {type : String},
-    style: [indexStyle],
-    links: [indexLink]
+  html: [{type : String}],
+  text: [{type : String}],
+  links: [{ 
+    name: {type:String}, 
+    index: [{type:Number}],
+    paragraphIndex: {type:Number}, 
+    href: {type:String} 
   }],
   user: {type : Schema.ObjectId, ref : 'User'},
   lang: {type : String, default : '', trim : true},

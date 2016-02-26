@@ -10,6 +10,8 @@ const NotFound = require('./NotFound.react');
 const Messages = require('./Messages.react');
 const Para = require('./Para.react');
 const PageConnect = require('./PageConnect.react');
+const ToolTip = require('./ToolTip.react');
+
 const PageSearch = require('./PageSearch.react');
 const parse = require('url-parse');
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
@@ -79,9 +81,8 @@ const ArticleSection = React.createClass({
             _key={i}
             onDown={that._onDown}
             onUp={that._onUp}
-            text={val.text}
-            style={val.style}
-            links={val.links} />
+            text={val}
+            tags={_.filter(page.links,{paragraphIndex:i})} />
       });
 
       const url = parse(page.canonicalLink, true);
@@ -93,10 +94,10 @@ const ArticleSection = React.createClass({
           700/page.imageCDN.dimensions[0]*page.imageCDN.dimensions[1]:
           page.imageCDN.dimensions[1];
 
-        image = 
-          <div className="page-img" style={{height:imgHeight}} >
-            <img onError={this._imgError} src={page.imageCDN.url} style={{maxWidth:'100%'}} />
-          </div>
+      image = 
+        <div className="page-img" style={{height:imgHeight}} >
+          <img onError={this._imgError} src={page.imageCDN.url} style={{maxWidth:'100%'}} />
+        </div>
       } else {
         image = 
           null
@@ -118,6 +119,8 @@ const ArticleSection = React.createClass({
       //   }
       // }
 
+      const toolTip = this.state.selectionLocation?<ToolTip />:null;
+
       mainPage = <div className="row">
         <div className="page-main">
           <div className="header">
@@ -131,44 +134,50 @@ const ArticleSection = React.createClass({
             {image}
           </div>
           <div className="page-text">
+            {toolTip}
             {text}
           </div>
         </div>
       </div>
-    } else {
-      mainPage = <PageSearch />
-    }
-    
-    const pageConnect = linkedPage?<PageConnect page={linkedPage} />:null;
-    // var stuff
-    // if (this.state.removeTrans){
-    //   stuff = 
-
-    //     <span>Stuff Worlks</span>
-         
-
-    // } else {
-    //   stuff = null
-    // }
-
-    return <div>
-      <section className="container ease">
-        {errorMessage}
-        <div className="content main">
-          <button onClick={this._createLink} type="button" className="btn btn-default">
-          </button>
-          <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500} >
-            {pageConnect}
-          </ReactCSSTransitionGroup>
-          <div className="row connect-action" style={{display:'none'}}>
-            <a style={{width:'300px', margin: 'auto', fontSize:'2rem'}} className="btn btn-default" > Create Link </a>
+      } else {
+        mainPage = <PageSearch />
+      }
+      
+      const pageConnect = linkedPage?<PageConnect page={linkedPage} />:null;
+      return <div>
+        <section className="container ease">
+          {errorMessage}
+          <div className="content main">
+            <button onClick={this._createLink} type="button" className="btn btn-default">
+            </button>
+            <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500} >
+              {pageConnect}
+            </ReactCSSTransitionGroup>
+            <div className="row connect-action" style={{display:'none'}}>
+              <a style={{width:'300px', margin: 'auto', fontSize:'2rem'}} className="btn btn-default" > Create Link </a>
+            </div>
+            {mainPage}
           </div>
-          {mainPage}
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
   },
+  /**
+   * Event handler for 'change' events coming from the Paragraph
+   */
+  _onUp: function(){
 
+      const coords = this._getSelectionCoords();
+
+      this.setState({
+        selectionLocation: coords
+      })
+  },
+  _onDown: function(){
+  /**
+   * Event handler for 'change' events coming from the Paragraph
+   */
+
+  },
   /**
    * Event handler for 'change' events coming from the PageStore
    */
@@ -177,11 +186,8 @@ const ArticleSection = React.createClass({
     const errors = ArticleStore.getErrors()
     if (errors.length>0) { //Errors from page action need to be displayed.
       this.setState({
-        _messages: errors,
-        _deleting: false
+        _messages: errors
       });
-    } else if (!state.article && this.state._deleting) { //A delete request was fired, we have no errors and we have no article in the store. Navigate to home.
-      this.context.router.push('/');
     } else {
       this.setState(state);
     }
@@ -192,83 +198,52 @@ const ArticleSection = React.createClass({
   _imgError:function(e){
     e.target.remove();//
   },
-  /**
-   * Event handler for 'mouse up' events coming from the Page DOM
-   */
-  _onDown: function(e, key){
-    this._key=key;
-    this.toolTipPosition = [e.pageX, e.pageY]
-  },
-  /**
-   * Event handler for 'mouse up' events coming from the Page DOM
-   */
-  _onUp: function(e, key){
-    if (this._key !== key){return} //bonk out
-    const that = this;
-    if (this.toolTipPosition[1] > e.pageY){
-      this.toolTipPosition=[e.pageX, e.pageY, ]
-    }
-    setTimeout(function(){
-      const text = that._getSelectionText();
-        that.setState({
-          toolTipEnable: text.length>0
-        })
-    }, 10)
-  },
-  /**
-   * Event handler for 'click' events coming from the Page DOM
-   */
-  _getSelectionText: function() {
-    var text = "";
-    if (window.getSelection) {
-        text = window.getSelection().toString();
-    } else if (document.selection && document.selection.type != "Control") {
-        text = document.selection.createRange().text;
-    }
-    return text;
-  },
-  /**
-   * Event handler for 'click' events coming from the Page DOM
-   */
-  _removePopup: function(e){
-    const classMain = 'page-text'
-    const main = this._closest(e.target, '.'+classMain);
-    if (this.state.toolTipEnable && main===null && e.target.className.indexOf(classMain)===-1 ){
-      this.setState({
-        toolTipEnable: false
-      });
-    }
-  },
-  /**
-   * Event handler for 'link' events coming from the Page DOM
-   */
-  _createLink: function(e){
-    const text = this._getSelectionText();
-    if (text.length && this._key){
-      //Actions.setHighlight(text, this._key)
-    }
-    this.setState(getState(null, this.props.params.id))
-  },
+  _getSelectionCoords: function() {
+      win = win || window;
+      var doc = win.document;
+      var sel = doc.selection, range, rects, rect;
+      var x = 0, y = 0;
+      if (sel) {
+          if (sel.type != "Control") {
+              range = sel.createRange();
+              range.collapse(true);
+              x = range.boundingLeft;
+              y = range.boundingTop;
+          }
+      } else if (win.getSelection) {
+          sel = win.getSelection();
+          if (sel.rangeCount) {
+              range = sel.getRangeAt(0).cloneRange();
+              if (range.getClientRects) {
+                  range.collapse(true);
+                  rects = range.getClientRects();
+                  if (rects.length > 0) {
+                      rect = rects[0];
+                  }
+                  x = rect.left;
+                  y = rect.top;
+              }
+              // Fall back to inserting a temporary element
+              if (x == 0 && y == 0) {
+                  var span = doc.createElement("span");
+                  if (span.getClientRects) {
+                      // Ensure span has dimensions and position by
+                      // adding a zero-width space character
+                      span.appendChild( doc.createTextNode("\u200b") );
+                      range.insertNode(span);
+                      rect = span.getClientRects()[0];
+                      x = rect.left;
+                      y = rect.top;
+                      var spanParent = span.parentNode;
+                      spanParent.removeChild(span);
 
-  _closest: function(el, selector) {
-    var matchesFn;
-    // find vendor prefix
-    ['matches','webkitMatchesSelector','mozMatchesSelector','msMatchesSelector','oMatchesSelector'].some(function(fn) {
-        if (typeof document.body[fn] == 'function') {
-            matchesFn = fn;
-            return true;
-        }
-        return false;
-    })
-    // traverse parents
-    while (el!==null) {
-        parent = el.parentElement;
-        if (parent!==null && parent[matchesFn](selector)) {
-            return parent;
-        }
-        el = parent;
-    }
-    return null;
+                      // Glue any broken text nodes back together
+                      spanParent.normalize();
+                  }
+              }
+          }
+      }
+      return [x,y];
   }
 
 });
