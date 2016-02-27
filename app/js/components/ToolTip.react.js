@@ -9,6 +9,10 @@ const Markdown = require('react-remarkable');
 
 
 const ToolTip = React.createClass({
+  propTypes: {
+    location: React.PropTypes.array.isRequired,
+  },
+
   render: function() {
     // const toolTipEnable = this.state.toolTipEnable
     // var toolTipStyle;
@@ -26,7 +30,14 @@ const ToolTip = React.createClass({
     //  //   top:'-100px'
     //   }
    // }
-    return <div style={{display:'block'}} className="popover fade top in">
+
+   
+    const postionStyle = {
+      display:'block',
+      top:this.props.location[1],
+      left:this.props.location[0] 
+    };
+    return <div style={postionStyle} className="popover top">
       <div className="arrow arrow-link"></div>
       <div className="btn-group">
         <button onClick={function(){alert()}} className="btn btn-primary">

@@ -38,6 +38,8 @@ h2 {
 .popover {
 	padding:0;
 	border:none;
+	margin-top: -50px !important; 
+	margin-left: -15px !important; 
 }
 
 .popover.top > .btn-group > .btn-primary{
@@ -103,6 +105,9 @@ h2 {
 .link-text a{
 	font-weight: 900;
 }
+.page-text{
+
+}
 
 .page-link{
 	margin-bottom: 3rem;
@@ -122,7 +127,7 @@ h2 {
 }
 
 .page-para {
-	position: relative;
+	
 }
 
 .favicon{
@@ -138,41 +143,28 @@ h2 {
   src: local('Brela'), url('./brelaregular.otf') format('truetype');
 }
 
-.example-enter {
-  opacity: 0.01;
-}
 
-.example-enter.example-enter-active {
-  opacity: 1;
-  transition: opacity 500ms ease-in;
-}
-
-.example-leave {
-  opacity: 1;
-}
-
-.example-leave.example-leave-active {
-  opacity: 0.01;
-  transition: opacity 300ms ease-in;
-}
 
 .fall-enter {
-    transform: translate(0, -100%);
-    transform: translate3d(0, -100%, 0);
+	opacity: .6;
+    transform: translate(0, -20%);
+    transform: translate3d(0, -20%, 0);
 }
 .fall-enter.fall-enter-active {
+	opacity: 1;
     transform: translate(0, 0);
     transform: translate3d(0, 0, 0);
-    transition: transform 500ms ease-out;
+    transition: transform 200ms ease-out, opacity 50ms ease-out;
 }
 .fall-leave {
     index: -1;
     transform: translate(0, 0);
     transform: translate3d(0, 0, 0);
-    transition: transform 500ms ease-in;
+    transition: transform 200ms ease-in, opacity 100ms ease-in;
+
 }
 .fall-leave.fall-leave-active {
-    transform: translate(0, 100%);
-    transform: translate3d(0, 100%, 0);
+    transform: translate(0, 50%);
+    transform: translate3d(0, 50%, 0);
 }
 

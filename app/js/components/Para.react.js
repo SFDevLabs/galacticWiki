@@ -7,7 +7,6 @@
 const React = require('react');
 const _ = require('lodash');
 const Markdown = require('react-remarkable');
-const ToolTip = require('./ToolTip.react');
 
 function createMarkup(text) { return {__html: text}; };
 
@@ -35,40 +34,49 @@ const Para = React.createClass({
       {text}
     </p>
   },
+  /**
+   * Builds a Paragraphs text.
+   */
   buildParagraphs: function(tags, text){
-
     var nodes=[];
     var beforeIndex = 0;
+    //Iterate over the tags and add links to them.
     _.each(tags, function(tag, i){
-
+      // Get the text and node surrounding the tags
       const beforeText = text.slice(beforeIndex, tag.index[0]);
-
       const nodeText = text.slice(tag.index[0], tag.index[1]);
-
       const node = React.createElement(tag.name, {key: nodes.length-1, href: tag.href, target: '_blank'}, nodeText);
 
+      // Hold and index of the last node.
       beforeIndex = tag.index[1]
-
+      // Push the nodes into the nodes array
       nodes.push(beforeText);
       nodes.push(node);
       nodes.push(afterText);
-
     });
     const lastIndex = tags.length>0?tags[tags.length-1].index[1]:0;
-    const afterText = text.slice(lastIndex, text.length-1);
+    const afterText = text.slice(lastIndex, text.length-1);// Get the trailing text for the paragraph.
     nodes.push(afterText);
     return nodes;
   },
-
+  /**
+   * Gets the page's selected text.
+   */
   _down: function(e){
     this.down = true;
   },
-  _up: function(e){    
+  /**
+   * Gets the page's selected text.
+   */
+  _up: function(e){
+    const text = this._getSelectionText()  
     if (this.down){
-
-      this.props.onUp()
+      this.props.onUp(text);
     }
   },
+  /**
+   * Gets the page's selected text.
+   */
   _leave: function(e){
     this.down = false;
   },

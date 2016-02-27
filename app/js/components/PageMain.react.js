@@ -48,12 +48,12 @@ const ArticleSection = React.createClass({
       Actions.getById(this.props.params.id);
     }
     ArticleStore.addChangeListener(this._onChange);
-    document.addEventListener("click", this._removePopup)
+    document.addEventListener("mousedown", this._screenMousedown)
   },
 
   componentWillUnmount: function() {
     ArticleStore.removeChangeListener(this._onChange);
-    document.removeEventListener("click", this._removePopup)
+    document.removeEventListener("click", this._screenMousedown)
   },
   /**
    * @return {object}
@@ -102,24 +102,9 @@ const ArticleSection = React.createClass({
         image = 
           null
       }
-      // const toolTipEnable = this.state.toolTipEnable
-      // var toolTipStyle;
-      // var toolTipClass = ''
-      // if (toolTipEnable){
-      //   toolTipStyle = {
-      //     display:"block",
-      //     top: this.toolTipPosition?this.toolTipPosition[1]-40:null,
-      //     left: this.toolTipPosition?this.toolTipPosition[0]-30:null,//'calc(50% - 150px)',
-      //   }
-      //   toolTipClass += 'in'
-      // } else {
-      //   toolTipStyle = {
-      //     display:'block',
-      //     top:'-100px'
-      //   }
-      // }
 
-      const toolTip = this.state.selectionLocation?<ToolTip />:null;
+      const location = this.state.selectionLocation;
+      const toolTip = location ?<ToolTip location={location} />:null;
 
       mainPage = <div className="row">
         <div className="page-main">
@@ -134,7 +119,9 @@ const ArticleSection = React.createClass({
             {image}
           </div>
           <div className="page-text">
-            {toolTip}
+            <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={200} transitionEnterTimeout={200} transitionLeaveTimeout={1} >
+              {toolTip}
+            </ReactCSSTransitionGroup>
             {text}
           </div>
         </div>
@@ -164,19 +151,34 @@ const ArticleSection = React.createClass({
   /**
    * Event handler for 'change' events coming from the Paragraph
    */
-  _onUp: function(){
-
-      const coords = this._getSelectionCoords();
-
-      this.setState({
-        selectionLocation: coords
-      })
+  _onUp: function(selectedText){
+      const that = this;
+      setTimeout(function(){
+        if (selectedText.length){
+          const coords = that._getSelectionCoords();
+          const x = coords.x + document.body.scrollLeft;
+          const y = coords.y + document.body.scrollTop;
+          that.setState({
+            selectionLocation: [x, y]
+          })   
+        }
+      }, 1);
   },
+  /**
+   * Event handler for 'change' events coming from the Paragraph
+   */
   _onDown: function(){
+
+
+  },
   /**
    * Event handler for 'change' events coming from the Paragraph
    */
 
+  _screenMousedown: function(){
+      this.setState({
+        selectionLocation: null
+      })
   },
   /**
    * Event handler for 'change' events coming from the PageStore
@@ -198,52 +200,55 @@ const ArticleSection = React.createClass({
   _imgError:function(e){
     e.target.remove();//
   },
+   /**
+   * Event handler for 'imgError' events coming from the Page DOM
+   */ 
   _getSelectionCoords: function() {
-      win = win || window;
-      var doc = win.document;
-      var sel = doc.selection, range, rects, rect;
-      var x = 0, y = 0;
-      if (sel) {
-          if (sel.type != "Control") {
-              range = sel.createRange();
-              range.collapse(true);
-              x = range.boundingLeft;
-              y = range.boundingTop;
-          }
-      } else if (win.getSelection) {
-          sel = win.getSelection();
-          if (sel.rangeCount) {
-              range = sel.getRangeAt(0).cloneRange();
-              if (range.getClientRects) {
-                  range.collapse(true);
-                  rects = range.getClientRects();
-                  if (rects.length > 0) {
-                      rect = rects[0];
-                  }
-                  x = rect.left;
-                  y = rect.top;
-              }
-              // Fall back to inserting a temporary element
-              if (x == 0 && y == 0) {
-                  var span = doc.createElement("span");
-                  if (span.getClientRects) {
-                      // Ensure span has dimensions and position by
-                      // adding a zero-width space character
-                      span.appendChild( doc.createTextNode("\u200b") );
-                      range.insertNode(span);
-                      rect = span.getClientRects()[0];
-                      x = rect.left;
-                      y = rect.top;
-                      var spanParent = span.parentNode;
-                      spanParent.removeChild(span);
+    var win = win || window;
+    var doc = win.document;
+    var sel = doc.selection, range, rects, rect;
+    var x = 0, y = 0;
+    if (sel) {
+        if (sel.type != "Control") {
+            range = sel.createRange();
+            range.collapse(true);
+            x = range.boundingLeft;
+            y = range.boundingTop;
+        }
+    } else if (win.getSelection) {
+        sel = win.getSelection();
+        if (sel.rangeCount) {
+            range = sel.getRangeAt(0).cloneRange();
+            if (range.getClientRects) {
+                range.collapse(true);
+                rects = range.getClientRects();
+                if (rects.length > 0) {
+                    rect = rects[0];
+                }
+                x = rect.left;
+                y = rect.top;
+            }
+            // Fall back to inserting a temporary element
+            if (x == 0 && y == 0) {
+                var span = doc.createElement("span");
+                if (span.getClientRects) {
+                    // Ensure span has dimensions and position by
+                    // adding a zero-width space character
+                    span.appendChild( doc.createTextNode("\u200b") );
+                    range.insertNode(span);
+                    rect = span.getClientRects()[0];
+                    x = rect.left;
+                    y = rect.top;
+                    var spanParent = span.parentNode;
+                    spanParent.removeChild(span);
 
-                      // Glue any broken text nodes back together
-                      spanParent.normalize();
-                  }
-              }
-          }
-      }
-      return [x,y];
+                    // Glue any broken text nodes back together
+                    spanParent.normalize();
+                }
+            }
+        }
+    }
+    return { x: x, y: y };
   }
 
 });
