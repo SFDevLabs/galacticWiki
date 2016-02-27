@@ -65,8 +65,8 @@ const ArticleSection = React.createClass({
 
     const linkLocation = this.state.linkLocation?this.state.linkLocation:null;
 
-    // if (page===null){return <NotFound />}//null means the api gave us a 404.
-    // else if (!page){return <Loader />}//undefined means that no request for the article has been made.
+    if (page===null){return <NotFound />}//null means the api gave us a 404.
+    else if (!page){return <Loader />}//undefined means that no request for the article has been made.
 
     const errorMessage = this.state._messages? (
      <Messages messages={this.state._messages} type="warning" />
@@ -89,16 +89,16 @@ const ArticleSection = React.createClass({
       const prettyLink = url.host+url.pathname;
 
       var image;
-      if ( page.imageCDN.url ){
+      if ( page.imageCDN.url ){ // Create the image and set the height from the DB before we load it.
         const imgHeight = 700<page.imageCDN.dimensions[0]?
           700/page.imageCDN.dimensions[0]*page.imageCDN.dimensions[1]:
           page.imageCDN.dimensions[1];
 
-      image = 
-        <div className="page-img" style={{height:imgHeight}} >
-          <img onError={this._imgError} src={page.imageCDN.url} style={{maxWidth:'100%'}} />
-        </div>
-      } else {
+        image = 
+          <div className="page-img" style={{height:imgHeight}} >
+            <img onError={this._imgError} src={page.imageCDN.url} style={{maxWidth:'100%'}} />
+          </div>
+      } else { // We dont have an image.
         image = 
           null
       }

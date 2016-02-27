@@ -55,7 +55,7 @@ const Para = React.createClass({
       nodes.push(afterText);
     });
     const lastIndex = tags.length>0?tags[tags.length-1].index[1]:0;
-    const afterText = text.slice(lastIndex, text.length-1);// Get the trailing text for the paragraph.
+    const afterText = text.slice(lastIndex, text.length);// Get the trailing text for the paragraph.
     nodes.push(afterText);
     return nodes;
   },
