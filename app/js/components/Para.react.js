@@ -70,8 +70,12 @@ const Para = React.createClass({
    */
   _up: function(e){
     const text = this._getSelectionText()  
+
+    const startIndex = this.props.text.search(text);
+    const endIndex = startIndex + this.props.text.length;
+
     if (this.down){
-      this.props.onUp(text);
+      this.props.onUp(text, startIndex, endIndex);
     }
   },
   /**

@@ -151,15 +151,13 @@ const ArticleSection = React.createClass({
   /**
    * Event handler for 'change' events coming from the Paragraph
    */
-  _onUp: function(selectedText){
+  _onUp: function(selectedText, start, end){
       const that = this;
       setTimeout(function(){
         if (selectedText.length){
-          const coords = that._getSelectionCoords();
-          const x = coords.x + document.body.scrollLeft;
-          const y = coords.y + document.body.scrollTop;
+          console.log(start, end);
           that.setState({
-            selectionLocation: [x, y]
+            selectionLocation: that._calculatePageCoords()
           })   
         }
       }, 1);
@@ -199,6 +197,12 @@ const ArticleSection = React.createClass({
    */
   _imgError:function(e){
     e.target.remove();//
+  },
+  _calculatePageCoords: function(){
+    const coords = this._getSelectionCoords()
+    const x = coords.x + document.body.scrollLeft;
+    const y = coords.y + document.body.scrollTop;
+    return [x, y]
   },
    /**
    * Event handler for 'imgError' events coming from the Page DOM
