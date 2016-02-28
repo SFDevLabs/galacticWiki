@@ -109,7 +109,7 @@ const ArticleSection = React.createClass({
       //     onClick={this._onToolTipClick} />:
       //   null;
 
-      mainPage =  <PageArticle page={page} />;
+      mainPage =  <PageArticle onSelectionClick={this._onClick} page={page} />;
 
       // const m = <div className="row">
       //   <div className="page-main">
@@ -154,7 +154,17 @@ const ArticleSection = React.createClass({
         </section>
       </div>
   },
-
+  /**
+   * Event handler for 'change' events coming from the PageStore
+   */
+  _onClick: function(data) {
+    console.log(data)
+        // that.setState({
+        //   selectedParagraphIndex: paragraphIndex,
+        //   selectedIndex: [start, end],
+        //   selectionLocation: getSelectionCoords() // wee use the timeout to make sure the dom has time register the selection 
+        // })
+  },
   /**
    * Event handler for 'change' events coming from the PageStore
    */

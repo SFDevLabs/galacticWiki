@@ -17,7 +17,8 @@ const getSelectionCoords = Utils.getSelectionCoords;
 const PageArticle = React.createClass({
 
   propTypes:{
-    page: React.PropTypes.object.isRequired
+    page: React.PropTypes.object.isRequired,
+    onSelectionClick: React.PropTypes.func.isRequired
   },
 
   getInitialState: function() {
@@ -100,15 +101,24 @@ const PageArticle = React.createClass({
         that.setState({
           selectedParagraphIndex: paragraphIndex,
           selectedIndex: [start, end],
-          selectionLocation: getSelectionCoords()
+          selectionLocation: getSelectionCoords() // wee use the timeout to make sure the dom has time register the selection 
         })
-      }, 1);
+        // that.data={
+        //   selectedParagraphIndex: paragraphIndex,
+        //   selectedIndex: [start, end],
+        //   selectionLocation: getSelectionCoords() // wee use the timeout to make sure the dom has time register the selection 
+        // }
+      }, 1); //See timout comment above.
   },
 	/**
 	 * Event handler for 'change' events coming from the Paragraph
 	*/
   _onToolTipClick: function(e){
-    
+    this.setState({
+      selectionLocation: null
+    });
+
+    this.props.onSelectionClick('jeff');
   },
 	/**
 	* Event handler for 'change' events coming from the Paragraph
