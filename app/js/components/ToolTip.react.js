@@ -11,6 +11,7 @@ const Markdown = require('react-remarkable');
 const ToolTip = React.createClass({
   propTypes: {
     location: React.PropTypes.array.isRequired,
+    onClick: React.PropTypes.func.isRequired
   },
 
   render: function() {
@@ -40,7 +41,7 @@ const ToolTip = React.createClass({
     return <div style={postionStyle} className="popover top">
       <div className="arrow arrow-link"></div>
       <div className="btn-group">
-        <button onClick={function(){alert()}} className="btn btn-primary">
+        <button onClick={this.props.onClick} className="btn btn-primary">
           <span className="glyphicon glyphicon-link" aria-hidden="true"></span>
         </button>
       </div>

@@ -53,7 +53,7 @@ const ArticleSection = React.createClass({
 
   componentWillUnmount: function() {
     ArticleStore.removeChangeListener(this._onChange);
-    document.removeEventListener("click", this._screenMousedown)
+    document.removeEventListener("mousedown", this._screenMousedown)
   },
   /**
    * @return {object}
@@ -104,7 +104,11 @@ const ArticleSection = React.createClass({
       }
 
       const location = this.state.selectionLocation;
-      const toolTip = location ?<ToolTip location={location} />:null;
+      const toolTip = location ?
+        <ToolTip 
+          location={location} 
+          onClick={this._onToolTipClick} />:
+        null;
 
       mainPage = <div className="row">
         <div className="page-main">
@@ -151,32 +155,35 @@ const ArticleSection = React.createClass({
   /**
    * Event handler for 'change' events coming from the Paragraph
    */
-  _onUp: function(selectedText, start, end){
+  _onUp: function(paragraphIndex, start, end, ){
       const that = this;
       setTimeout(function(){
-        if (selectedText.length){
-          console.log(start, end);
-          that.setState({
-            selectionLocation: that._calculatePageCoords()
-          })   
-        }
+        that.setState({
+          selectedParagraphIndex: paragraphIndex,
+          selectedIndex: [start, end],
+          selectionLocation: that._calculatePageCoords()
+        })
       }, 1);
   },
   /**
    * Event handler for 'change' events coming from the Paragraph
    */
-  _onDown: function(){
-
-
+  _onToolTipClick: function(e){
+    this.setState({
+      page: null
+    })
   },
   /**
    * Event handler for 'change' events coming from the Paragraph
    */
 
-  _screenMousedown: function(){
+  _screenMousedown: function(e){
+    const toolTip = this.closest(e.target, '.popover');
+    if (toolTip==null) {
       this.setState({
         selectionLocation: null
-      })
+      });
+    }
   },
   /**
    * Event handler for 'change' events coming from the PageStore
@@ -253,6 +260,29 @@ const ArticleSection = React.createClass({
         }
     }
     return { x: x, y: y };
+  },
+  closest: function(el, selector) {
+      var matchesFn;
+
+      // find vendor prefix
+      ['matches','webkitMatchesSelector','mozMatchesSelector','msMatchesSelector','oMatchesSelector'].some(function(fn) {
+          if (typeof document.body[fn] == 'function') {
+              matchesFn = fn;
+              return true;
+          }
+          return false;
+      })
+
+      // traverse parents
+      while (el!==null) {
+          parent = el.parentElement;
+          if (parent!==null && parent[matchesFn](selector)) {
+              return parent;
+          }
+          el = parent;
+      }
+
+      return null;
   }
 
 });
