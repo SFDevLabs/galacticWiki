@@ -8,8 +8,9 @@ const Actions = require('../actions/ArticleActions');
 const ArticleStore = require('../stores/ArticleStore');
 const NotFound = require('./NotFound.react');
 const Messages = require('./Messages.react');
-const Para = require('./Para.react');
 const PageConnect = require('./PageConnect.react');
+const PageArticle = require('./PageArticle.react');
+
 const ToolTip = require('./ToolTip.react');
 
 const PageSearch = require('./PageSearch.react');
@@ -48,12 +49,10 @@ const ArticleSection = React.createClass({
       Actions.getById(this.props.params.id);
     }
     ArticleStore.addChangeListener(this._onChange);
-    document.addEventListener("mousedown", this._screenMousedown)
   },
 
   componentWillUnmount: function() {
     ArticleStore.removeChangeListener(this._onChange);
-    document.removeEventListener("mousedown", this._screenMousedown)
   },
   /**
    * @return {object}
@@ -74,62 +73,65 @@ const ArticleSection = React.createClass({
 
     var mainPage
     if ( page ) {
-      const favicon = page.faviconCDN?<img onError={this._imgError} src={page.faviconCDN} className="favicon" />:null;
-      const text = _.map(page.text, function(val, i){
-          return <Para 
-            key={i} 
-            _key={i}
-            onDown={that._onDown}
-            onUp={that._onUp}
-            text={val}
-            tags={_.filter(page.links,{paragraphIndex:i})} />
-      });
+      // const favicon = page.faviconCDN?<img onError={this._imgError} src={page.faviconCDN} className="favicon" />:null;
+      // const text = _.map(page.text, function(val, i){
+      //     return <Para 
+      //       key={i} 
+      //       _key={i}
+      //       onDown={that._onDown}
+      //       onUp={that._onUp}
+      //       text={val}
+      //       tags={_.filter(page.links,{paragraphIndex:i})} />
+      // });
 
-      const url = parse(page.canonicalLink, true);
-      const prettyLink = url.host+url.pathname;
+      // const url = parse(page.canonicalLink, true);
+      // const prettyLink = url.host+url.pathname;
 
-      var image;
-      if ( page.imageCDN.url ){ // Create the image and set the height from the DB before we load it.
-        const imgHeight = 700<page.imageCDN.dimensions[0]?
-          700/page.imageCDN.dimensions[0]*page.imageCDN.dimensions[1]:
-          page.imageCDN.dimensions[1];
+      // var image;
+      // if ( page.imageCDN.url ){ // Create the image and set the height from the DB before we load it.
+      //   const imgHeight = 700<page.imageCDN.dimensions[0]?
+      //     700/page.imageCDN.dimensions[0]*page.imageCDN.dimensions[1]:
+      //     page.imageCDN.dimensions[1];
 
-        image = 
-          <div className="page-img" style={{height:imgHeight}} >
-            <img onError={this._imgError} src={page.imageCDN.url} style={{maxWidth:'100%'}} />
-          </div>
-      } else { // We dont have an image.
-        image = 
-          null
-      }
+      //   image = 
+      //     <div className="page-img" style={{height:imgHeight}} >
+      //       <img onError={this._imgError} src={page.imageCDN.url} style={{maxWidth:'100%'}} />
+      //     </div>
+      // } else { // We dont have an image.
+      //   image = 
+      //     null
+      // }
 
-      const location = this.state.selectionLocation;
-      const toolTip = location ?
-        <ToolTip 
-          location={location} 
-          onClick={this._onToolTipClick} />:
-        null;
+      // const location = this.state.selectionLocation;
+      // const toolTip = location ?
+      //   <ToolTip 
+      //     location={location} 
+      //     onClick={this._onToolTipClick} />:
+      //   null;
 
-      mainPage = <div className="row">
-        <div className="page-main">
-          <div className="header">
-            <h1>{page.title}</h1>
-            <div className="page-link">
-              {favicon}
-              &nbsp;
-              <a href={page.canonicalLink} target="_blank">{prettyLink}</a>
-            </div>
-            <p style={{color:"#999", marginBottom:"24px"}}>{page.description}</p>
-            {image}
-          </div>
-          <div className="page-text">
-            <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={200} transitionEnterTimeout={200} transitionLeaveTimeout={1} >
-              {toolTip}
-            </ReactCSSTransitionGroup>
-            {text}
-          </div>
-        </div>
-      </div>
+      mainPage =  <PageArticle page={page} />;
+
+      // const m = <div className="row">
+      //   <div className="page-main">
+      //     <div className="header">
+      //       <h1>{page.title}</h1>
+      //       <div className="page-link">
+      //         {favicon}
+      //         &nbsp;
+      //         <a href={page.canonicalLink} target="_blank">{prettyLink}</a>
+      //       </div>
+      //       <p style={{color:"#999", marginBottom:"24px"}}>{page.description}</p>
+      //       {image}
+      //     </div>
+      //     <div className="page-text">
+      //       <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={200} transitionEnterTimeout={200} transitionLeaveTimeout={1} >
+      //         {toolTip}
+      //       </ReactCSSTransitionGroup>
+      //       {text}
+      //     </div>
+      //   </div>
+      // </div>
+
       } else {
         mainPage = <PageSearch />
       }
@@ -152,39 +154,7 @@ const ArticleSection = React.createClass({
         </section>
       </div>
   },
-  /**
-   * Event handler for 'change' events coming from the Paragraph
-   */
-  _onUp: function(paragraphIndex, start, end, ){
-      const that = this;
-      setTimeout(function(){
-        that.setState({
-          selectedParagraphIndex: paragraphIndex,
-          selectedIndex: [start, end],
-          selectionLocation: that._calculatePageCoords()
-        })
-      }, 1);
-  },
-  /**
-   * Event handler for 'change' events coming from the Paragraph
-   */
-  _onToolTipClick: function(e){
-    this.setState({
-      page: null
-    })
-  },
-  /**
-   * Event handler for 'change' events coming from the Paragraph
-   */
 
-  _screenMousedown: function(e){
-    const toolTip = this.closest(e.target, '.popover');
-    if (toolTip==null) {
-      this.setState({
-        selectionLocation: null
-      });
-    }
-  },
   /**
    * Event handler for 'change' events coming from the PageStore
    */
@@ -204,85 +174,6 @@ const ArticleSection = React.createClass({
    */
   _imgError:function(e){
     e.target.remove();//
-  },
-  _calculatePageCoords: function(){
-    const coords = this._getSelectionCoords()
-    const x = coords.x + document.body.scrollLeft;
-    const y = coords.y + document.body.scrollTop;
-    return [x, y]
-  },
-   /**
-   * Event handler for 'imgError' events coming from the Page DOM
-   */ 
-  _getSelectionCoords: function() {
-    var win = win || window;
-    var doc = win.document;
-    var sel = doc.selection, range, rects, rect;
-    var x = 0, y = 0;
-    if (sel) {
-        if (sel.type != "Control") {
-            range = sel.createRange();
-            range.collapse(true);
-            x = range.boundingLeft;
-            y = range.boundingTop;
-        }
-    } else if (win.getSelection) {
-        sel = win.getSelection();
-        if (sel.rangeCount) {
-            range = sel.getRangeAt(0).cloneRange();
-            if (range.getClientRects) {
-                range.collapse(true);
-                rects = range.getClientRects();
-                if (rects.length > 0) {
-                    rect = rects[0];
-                }
-                x = rect.left;
-                y = rect.top;
-            }
-            // Fall back to inserting a temporary element
-            if (x == 0 && y == 0) {
-                var span = doc.createElement("span");
-                if (span.getClientRects) {
-                    // Ensure span has dimensions and position by
-                    // adding a zero-width space character
-                    span.appendChild( doc.createTextNode("\u200b") );
-                    range.insertNode(span);
-                    rect = span.getClientRects()[0];
-                    x = rect.left;
-                    y = rect.top;
-                    var spanParent = span.parentNode;
-                    spanParent.removeChild(span);
-
-                    // Glue any broken text nodes back together
-                    spanParent.normalize();
-                }
-            }
-        }
-    }
-    return { x: x, y: y };
-  },
-  closest: function(el, selector) {
-      var matchesFn;
-
-      // find vendor prefix
-      ['matches','webkitMatchesSelector','mozMatchesSelector','msMatchesSelector','oMatchesSelector'].some(function(fn) {
-          if (typeof document.body[fn] == 'function') {
-              matchesFn = fn;
-              return true;
-          }
-          return false;
-      })
-
-      // traverse parents
-      while (el!==null) {
-          parent = el.parentElement;
-          if (parent!==null && parent[matchesFn](selector)) {
-              return parent;
-          }
-          el = parent;
-      }
-
-      return null;
   }
 
 });
