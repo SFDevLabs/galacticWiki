@@ -3,35 +3,23 @@
  * The MIT License (MIT)
  * Copyright (c) 2016, Jeff Jenkins @jeffj.
 */
-
 const React = require('react');
 const parse = require('url-parse');
 const Para = require('./Para.react');
 const ToolTip = require('./ToolTip.react');
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-const Utils = require('../lib/domUtility');
-const closest = Utils.closest;
-const getSelectionCoords = Utils.getSelectionCoords;
-
 
 const PageArticle = React.createClass({
 
   propTypes:{
     page: React.PropTypes.object.isRequired,
-    onSelectionClick: React.PropTypes.func.isRequired
+    onUp: React.PropTypes.func.isRequired
   },
 
   getInitialState: function() {
     return {
     }
   },
-  componentDidMount: function() {
-    document.addEventListener("mousedown", this._screenMousedown)
-  },
 
-  componentWillUnmount: function() {
-    document.removeEventListener("mousedown", this._screenMousedown)
-  },
   render :function() {
   	const that = this;
   	const page = this.props.page;
@@ -41,7 +29,7 @@ const PageArticle = React.createClass({
           key={i} 
           _key={i}
           onDown={that._onDown}
-          onUp={that._onUp}
+          onUp={that.props.onUp}
           text={val}
           tags={_.filter(page.links,{paragraphIndex:i})} />
     });
@@ -64,13 +52,6 @@ const PageArticle = React.createClass({
         null
     }
 
-    const location = this.state.selectionLocation;
-    const toolTip = location ?
-      <ToolTip 
-        location={location} 
-        onClick={this._onToolTipClick} />:
-      null;
-
     return <div className="row">
 			<div className="page-main">
 			  <div className="header">
@@ -84,53 +65,12 @@ const PageArticle = React.createClass({
 			    {image}
 			  </div>
 			  <div className="page-text">
-			    <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={200} transitionEnterTimeout={200} transitionLeaveTimeout={1} >
-			      {toolTip}
-			    </ReactCSSTransitionGroup>
 			    {text}
 			  </div>
 			</div>
 		</div>
-  },
-  /**
-   * Event handler for 'change' events coming from the Paragraph
-  */
-  _onUp: function(paragraphIndex, start, end, ){
-      const that = this;
-      setTimeout(function(){
-        that.setState({
-          selectedParagraphIndex: paragraphIndex,
-          selectedIndex: [start, end],
-          selectionLocation: getSelectionCoords() // wee use the timeout to make sure the dom has time register the selection 
-        })
-        // that.data={
-        //   selectedParagraphIndex: paragraphIndex,
-        //   selectedIndex: [start, end],
-        //   selectionLocation: getSelectionCoords() // wee use the timeout to make sure the dom has time register the selection 
-        // }
-      }, 1); //See timout comment above.
-  },
-	/**
-	 * Event handler for 'change' events coming from the Paragraph
-	*/
-  _onToolTipClick: function(e){
-    this.setState({
-      selectionLocation: null
-    });
-
-    this.props.onSelectionClick('jeff');
-  },
-	/**
-	* Event handler for 'change' events coming from the Paragraph
-	*/
-  _screenMousedown: function(e){
-    const toolTip = closest(e.target, '.popover');
-    if (toolTip==null) {
-      this.setState({
-        selectionLocation: null
-      });
-    }
   }
+
 })
 
 module.exports = PageArticle;

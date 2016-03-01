@@ -21,6 +21,10 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 const Loader = require('react-loader');
 const _ = require('lodash');
 
+const Utils = require('../lib/domUtility');
+const closest = Utils.closest;
+const getSelectionCoords = Utils.getSelectionCoords;
+
 import { Link } from 'react-router';
 
 /**
@@ -39,7 +43,7 @@ const ArticleSection = React.createClass({
   contextTypes:{
     router: React.PropTypes.object.isRequired
   },
-  
+
   getInitialState: function() {
     return getState(this.props.params.id); //Using the antipattern to pass the id from the URL
   },
@@ -49,11 +53,16 @@ const ArticleSection = React.createClass({
       Actions.getById(this.props.params.id);
     }
     ArticleStore.addChangeListener(this._onChange);
+    document.addEventListener("mousedown", this._screenMousedown)
+
   },
 
   componentWillUnmount: function() {
     ArticleStore.removeChangeListener(this._onChange);
+    document.removeEventListener("mousedown", this._screenMousedown)
+
   },
+
   /**
    * @return {object}
    */
@@ -71,9 +80,17 @@ const ArticleSection = React.createClass({
      <Messages messages={this.state._messages} type="warning" />
     ) : null; //Rendering a warning message.
 
+    const location = this.state.selectionLocation;
+    const toolTip = location ?
+      <ToolTip 
+        location={location} 
+        onClick={this._onToolTipClick}
+        />:
+      null;
+
     var mainPage
     if ( page ) {
-    mainPage =  <PageArticle onSelectionClick={this._onClick} page={page} />;
+    mainPage =  <PageArticle onSelectionClick={this._onClick} page={page} onUp={this._onUp} />;
     } else {
       mainPage = <PageSearch />
     }
@@ -83,8 +100,6 @@ const ArticleSection = React.createClass({
       <section className="container ease">
         {errorMessage}
         <div className="content main">
-          <button onClick={this._createLink} type="button" className="btn btn-default">
-          </button>
           <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500} >
             {pageConnect}
           </ReactCSSTransitionGroup>
@@ -92,6 +107,10 @@ const ArticleSection = React.createClass({
             <a style={{width:'300px', margin: 'auto', fontSize:'2rem'}} className="btn btn-default" > Create Link </a>
           </div>
           {mainPage}
+          <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={200} transitionEnterTimeout={200} transitionLeaveTimeout={1} >
+            {toolTip}
+          </ReactCSSTransitionGroup>
+
         </div>
       </section>
     </div>
@@ -99,13 +118,21 @@ const ArticleSection = React.createClass({
   /**
    * Event handler for 'change' events coming from the PageStore
    */
-  _onClick: function(data) {
-    console.log(data)
-    that.setState({
-      selectedParagraphIndex: paragraphIndex,
-      selectedIndex: [start, end],
-      selectionLocation: getSelectionCoords() // wee use the timeout to make sure the dom has time register the selection 
-    })
+  _onToolTipClick: function(data) {
+   alert()
+  },
+  /**
+   * Event handler for 'change' events coming from the Paragraph
+  */
+  _onUp: function(paragraphIndex, start, end, ){
+      const that = this;
+      setTimeout(function(){
+        that.setState({
+          selectedParagraphIndex: paragraphIndex,
+          selectedIndex: [start, end],
+          selectionLocation: getSelectionCoords() // wee use the timeout to make sure the dom has time register the selection 
+        })
+      }, 1); //See timout comment above.
   },
   /**
    * Event handler for 'change' events coming from the PageStore
@@ -126,7 +153,19 @@ const ArticleSection = React.createClass({
    */
   _imgError:function(e){
     e.target.remove();//
+  },
+  /**
+  * Event handler for 'change' events coming from the Paragraph
+  */
+  _screenMousedown: function(e){
+    const toolTip = closest(e.target, '.popover');
+    if (toolTip==null) {
+      this.setState({
+        selectionLocation: null
+      });
+    }
   }
+
 
 });
 

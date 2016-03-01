@@ -6,8 +6,6 @@
 const React = require('react');
 const Markdown = require('react-remarkable');
 
-
-
 const ToolTip = React.createClass({
   propTypes: {
     location: React.PropTypes.array.isRequired,
@@ -38,6 +36,7 @@ const ToolTip = React.createClass({
       top:this.props.location[1],
       left:this.props.location[0] 
     };
+
     return <div style={postionStyle} className="popover top">
       <div className="arrow arrow-link"></div>
       <div className="btn-group">
