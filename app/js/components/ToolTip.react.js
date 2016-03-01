@@ -5,6 +5,7 @@
 
 const React = require('react');
 const Markdown = require('react-remarkable');
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 const ToolTip = React.createClass({
   propTypes: {
@@ -37,14 +38,17 @@ const ToolTip = React.createClass({
       left:this.props.location[0] 
     };
 
-    return <div style={postionStyle} className="popover top">
-      <div className="arrow arrow-link"></div>
-      <div className="btn-group">
-        <button onClick={this.props.onClick} className="btn btn-primary">
-          <span className="glyphicon glyphicon-link" aria-hidden="true"></span>
-        </button>
+    return <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={200} transitionEnterTimeout={200} transitionLeaveTimeout={200}  >
+      <div style={postionStyle} className="popover top">
+        <div className="arrow arrow-link"></div>
+        <div className="btn-group">
+          <button onClick={this.props.onClick} className="btn btn-primary">
+            <span className="glyphicon glyphicon-link" aria-hidden="true"></span>
+          </button>
+        </div>
       </div>
-    </div>
+    </ReactCSSTransitionGroup>
+
   }
 })
 

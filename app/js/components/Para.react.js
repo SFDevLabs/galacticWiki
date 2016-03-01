@@ -71,7 +71,7 @@ const Para = React.createClass({
   _up: function(e){
     const text = this._getSelectionText();
     const startIndex = this.props.text.indexOf(text)    
-    const endIndex = startIndex + this.props.text.length;
+    const endIndex = startIndex + text.length;
     if ( this.down &&  startIndex!==-1 && text.length>0) {
       this.props.onUp(this.props._key, startIndex, endIndex);
     }

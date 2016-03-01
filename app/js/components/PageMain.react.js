@@ -10,16 +10,13 @@ const NotFound = require('./NotFound.react');
 const Messages = require('./Messages.react');
 const PageConnect = require('./PageConnect.react');
 const PageArticle = require('./PageArticle.react');
-
 const ToolTip = require('./ToolTip.react');
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 const PageSearch = require('./PageSearch.react');
 const parse = require('url-parse');
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
-
 
 const Loader = require('react-loader');
-const _ = require('lodash');
 
 const Utils = require('../lib/domUtility');
 const closest = Utils.closest;
@@ -88,29 +85,22 @@ const ArticleSection = React.createClass({
         />:
       null;
 
-    var mainPage
-    if ( page ) {
-    mainPage =  <PageArticle onSelectionClick={this._onClick} page={page} onUp={this._onUp} />;
-    } else {
-      mainPage = <PageSearch />
-    }
+      var mainPage
+      if ( this.state.linkMode ) {
+        mainPage = <PageConnect  page={page} paragraph={this.selectedParagraphIndex} index={this.selectedIndex}  onCancel={this._onCancelClick} />
+      } else {
+        mainPage = <PageArticle onSelectionClick={this._onClick} page={page} onUp={this._onUp} />;
+      }
       
-    const pageConnect = linkedPage?<PageConnect page={linkedPage} />:null;
+    // const pageConnect = linkedPage?<PageConnect page={linkedPage} />:null;
+
+
     return <div>
       <section className="container ease">
         {errorMessage}
         <div className="content main">
-          <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500} >
-            {pageConnect}
-          </ReactCSSTransitionGroup>
-          <div className="row connect-action" style={{display:'none'}}>
-            <a style={{width:'300px', margin: 'auto', fontSize:'2rem'}} className="btn btn-default" > Create Link </a>
-          </div>
           {mainPage}
-          <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={200} transitionEnterTimeout={200} transitionLeaveTimeout={1} >
-            {toolTip}
-          </ReactCSSTransitionGroup>
-
+          {toolTip}
         </div>
       </section>
     </div>
@@ -118,20 +108,31 @@ const ArticleSection = React.createClass({
   /**
    * Event handler for 'change' events coming from the PageStore
    */
+  _onCancelClick: function(data) {
+    this.setState({
+      linkMode: false
+    });
+  },
+  /**
+   * Event handler for 'change' events coming from the PageStore
+   */
   _onToolTipClick: function(data) {
-   alert()
+    this.setState({
+      linkMode: true,
+      selectionLocation: null
+    });
   },
   /**
    * Event handler for 'change' events coming from the Paragraph
   */
   _onUp: function(paragraphIndex, start, end, ){
       const that = this;
+      this.selectedParagraphIndex = paragraphIndex;
+      this.selectedIndex = [start, end];
       setTimeout(function(){
         that.setState({
-          selectedParagraphIndex: paragraphIndex,
-          selectedIndex: [start, end],
           selectionLocation: getSelectionCoords() // wee use the timeout to make sure the dom has time register the selection 
-        })
+        });
       }, 1); //See timout comment above.
   },
   /**
@@ -159,13 +160,12 @@ const ArticleSection = React.createClass({
   */
   _screenMousedown: function(e){
     const toolTip = closest(e.target, '.popover');
-    if (toolTip==null) {
+    if (toolTip==null && this.state.selectionLocation !== null) {
       this.setState({
         selectionLocation: null
       });
     }
   }
-
 
 });
 

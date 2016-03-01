@@ -6,7 +6,6 @@
 
 const React = require('react');
 const SearchInput = require('./SearchInput.react');
-const ENTER_KEY_CODE = 13;
 
 const searchHeader = {
   borderBottom:'none'
