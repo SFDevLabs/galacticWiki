@@ -6,20 +6,7 @@
 
 const React = require('react');
 const SearchInput = require('./SearchInput.react');
-
-const searchHeader = {
-  borderBottom:'none'
-}
-
-const searchRow = {
-  paddingTop:'25px'
-}
-
-const searchButton = {
-  marginRight:'30px',
-  padding: '8px 20px',
-  fontSize: '1.1em'
-}
+const SearchResults = require('./SearchResults.react');
 
 const Search = React.createClass({
   
@@ -30,26 +17,41 @@ const Search = React.createClass({
   getInitialState: function() {
     return {};
   },
+
+  // componentWillMount: function() {
+  //   const q = this.location.query.q;
+  //   const clearData = true;
+  //   fetch(q, clearData)
+  // },
   
+  componentWillReceiveProps: function(newProps){
+    const q = newProps.location.query.q;
+    console.log
+  },
+
   render :function() {
-    return <section className="container">
-        <div className="page-header" style={searchHeader}>
-        </div>
-        <div className="content" >
-          <div className="col-md-2" />
-          <div className="col-md-8">
-            <div className="row">
-              <SearchInput 
-                onSave={this._save}
-              />
-            </div>
-            <div className="row text-center" style={searchRow}>
-              <button style={searchButton} type="button" className="btn btn-default">
-                Make A Connection
-              </button>
-            </div>
-          </div>  
-        </div>
+
+     const q = this.props.location.query.q
+     console.log(q)
+     const seachMain = q ?
+     <SearchResults q={q} />: //Give the search result with the q
+     <div> 
+      <div className="row">
+        <SearchInput 
+          onSave={this._save}
+        />
+      </div>
+      <div className="row text-center search-actions">
+        <button type="button" className="btn btn-default">
+          Make A Connection
+        </button>
+      </div>
+    </div>;//Give the static search bar.
+      
+
+
+    return <section className="container search-main">
+      {seachMain}
     </section>;
   },
 
@@ -59,7 +61,7 @@ const Search = React.createClass({
    */
   _save: function (url) {
     if (url && url.length>0){
-      this.context.router.push('/search?q='+url);
+      this.context.router.push('/?q='+url);
     }
   }
 

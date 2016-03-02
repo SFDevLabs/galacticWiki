@@ -7,7 +7,7 @@
 const React = require('react');
 const SearchActions = require('../actions/SearchActions');
 const ArticleActions = require('../actions/ArticleActions');
-const SearchItem = require('./SearchItem.react');
+const PageSearchItem = require('./PageSearchItem.react');
 
 const SearchStore = require('../stores/SearchStore');
 const _ = require('lodash');
@@ -26,7 +26,7 @@ const fetch = function(q, skip, clearData) {
    SearchActions.getList(_count, skip, q, clearData);
 }
 
-const SearchResults = React.createClass({
+const PageSearchResults = React.createClass({
   
   contextTypes:{
     router: React.PropTypes.object.isRequired
@@ -64,7 +64,7 @@ const SearchResults = React.createClass({
     //const create =  <input onClick={this._onPost} value={this.state.url} /> ;
 
     const results = length>0?_.map(data, function(result, i) {
-        return <SearchItem key={i} item={result} />
+        return <PageSearchItem key={i} item={result} />
     }):
     <div clasName="row">
       No Results Found.
@@ -91,4 +91,4 @@ const SearchResults = React.createClass({
 
 })
 
-module.exports = SearchResults;
+module.exports = PageSearchResults;
