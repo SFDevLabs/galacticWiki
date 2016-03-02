@@ -25,7 +25,6 @@ exports.getListController = function (req, res) {
     count: count,
     skip: skip,
   };
-  console.log(isURL)
 
   if(isURL){
     options.criteria = {canonicalLink:q};

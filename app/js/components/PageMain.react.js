@@ -11,6 +11,7 @@ const Messages = require('./Messages.react');
 const PageConnect = require('./PageConnect.react');
 const PageArticle = require('./PageArticle.react');
 const ToolTip = require('./ToolTip.react');
+
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 const PageSearch = require('./PageSearch.react');
@@ -30,10 +31,8 @@ import { Link } from 'react-router';
 function getState(id, lid) {
   return {
     page: ArticleStore.getById(id),
-    linkedPage: ArticleStore.getById(lid)
   };
 }
-
 
 const ArticleSection = React.createClass({
   
@@ -66,7 +65,6 @@ const ArticleSection = React.createClass({
   render :function() {
     const that = this;
     const page = this.state.page;
-    const linkedPage = this.state.linkedPage;
 
     const linkLocation = this.state.linkLocation?this.state.linkLocation:null;
 
@@ -85,21 +83,27 @@ const ArticleSection = React.createClass({
         />:
       null;
 
-      var mainPage
-      if ( this.state.linkMode ) {
-        mainPage = <PageConnect  page={page} paragraph={this.selectedParagraphIndex} index={this.selectedIndex}  onCancel={this._onCancelClick} />
-      } else {
-        mainPage = <PageArticle onSelectionClick={this._onClick} page={page} onUp={this._onUp} />;
-      }
-      
-    // const pageConnect = linkedPage?<PageConnect page={linkedPage} />:null;
+      const mainPage = this.state.linkMode?
+        <PageConnect  
+          page={page}
+          paragraph={this.selectedParagraphIndex}
+          index={this.selectedIndex}
+          onCancel={this._onCancelClick}
+          onSelect={this._onSelectLinkedPage} />:
+        <PageArticle 
+          onSelectionClick={this._onClick} 
+          page={page} 
+          onUp={this._onUp} />;
 
+    const q = this.state.q;
+    const linkedPage = q? <SearchResults q={q} />:null;
 
     return <div>
       <section className="container ease">
         {errorMessage}
         <div className="content main">
           {mainPage}
+          {linkedPage}
           {toolTip}
         </div>
       </section>
@@ -121,6 +125,16 @@ const ArticleSection = React.createClass({
       linkMode: true,
       selectionLocation: null
     });
+  },
+  /**
+   * Event handler for 'change' events coming from the PageStore
+   */
+  _onSelectLinkedPage: function(data) {
+    console.log(data)
+    // this.setState({
+    //   linkMode: true,
+    //   selectionLocation: null
+    // });
   },
   /**
    * Event handler for 'change' events coming from the Paragraph

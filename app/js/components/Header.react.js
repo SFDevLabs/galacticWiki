@@ -59,13 +59,16 @@ const Header = React.createClass({
     const url = parse(window.location.search, true);
     const query = url.query.q;
 
-    const searchBar = this._activeURL('/')?null:
+    const searchBarTest =(window.location.href.search(/q=/)!==-1 || !this._activeURL('/'));
+
+    const searchBar = searchBarTest?
     <Navbar.Form pullLeft>
               <SearchInput 
                 onSave={this._save}
                 value={query}
                 width="350px"/>
-    </Navbar.Form>;
+    </Navbar.Form>:
+    null;
 
     // Create the right side based on logged in state. (Notice the react.js required unique keys placed in each item)
     var navItemsLeft = isLoggedIn?
@@ -98,13 +101,14 @@ const Header = React.createClass({
       <div className="container">
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to="/" className="navbar-brand">Galactic</ Link>
+            <Link to="/" className="navbar-brand">Galactic</Link>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
         {navBar}
       </div>
     </Navbar>
+
   },
 
   /**
@@ -113,7 +117,7 @@ const Header = React.createClass({
    */
   _save: function (url) {
     if (url && url.length>0){
-      this.context.router.push('/search?q='+url, {q:url});
+      this.context.router.push('/?q='+url, {q:url});
     }
   },
 

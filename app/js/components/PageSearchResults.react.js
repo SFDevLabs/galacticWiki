@@ -33,7 +33,8 @@ const PageSearchResults = React.createClass({
   },
 
   propTypes:{
-    q: React.PropTypes.string.isRequired
+    q: React.PropTypes.string.isRequired,
+    onSelect: React.PropTypes.func.isRequired
   },
 
   getInitialState: function() {
@@ -58,13 +59,14 @@ const PageSearchResults = React.createClass({
   },
 
   render :function() {
+    const that = this;
     const data = this.state.results;
     const length = Object.keys(data).length;
 
     //const create =  <input onClick={this._onPost} value={this.state.url} /> ;
 
     const results = length>0?_.map(data, function(result, i) {
-        return <PageSearchItem key={i} item={result} />
+        return <PageSearchItem key={i} item={result} onSelect={that.props.onSelect} />
     }):
     <div clasName="row">
       No Results Found.

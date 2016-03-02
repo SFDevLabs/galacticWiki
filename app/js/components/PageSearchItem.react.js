@@ -10,6 +10,7 @@ const SearchItem = React.createClass({
 
   propTypes: {
    item: React.PropTypes.object.isRequired,
+   onSelect: React.PropTypes.func.isRequired
   },
 
   /**
@@ -25,17 +26,19 @@ const SearchItem = React.createClass({
 
     return <div className="article" >
       <h3 style={overflow} >
-        <Link to={"/"+item._id}>
+        <a onClick={this._onClick} to={"/"+item._id} href="javascript:void(0);" >
           {item.title}
-        </Link>
+        </a>
       </h3>
       <img src={item.favicon}/>
       &nbsp;
       <a href={item.canonicalLink} >{host}</a>
       <p style={overflow}>{item.description}</p>
     </div>;
+  },
+  _onClick: function() {
+    this.props.onSelect(this.props.item._id);
   }
-
 });
 
 module.exports = SearchItem;

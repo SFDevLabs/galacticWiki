@@ -37,7 +37,6 @@ const Root = React.createClass({
       <Router history={browserHistory}>
         <Route path="/" component={Main} >
           <IndexRoute component={Search} />
-          <Route path="search" component={SearchResults} />
           <Route path=":id" component={PageMain}/>
           <Route path="users/:id" component={User}/>
           <Route path="*" component={NotFound}  />

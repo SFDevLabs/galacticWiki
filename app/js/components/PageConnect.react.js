@@ -7,6 +7,7 @@
 const React = require('react');
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 const SearchInput = require('./SearchInput.react');
+const PageSearchResults = require('./PageSearchResults.react');
 
 const PageConnect = React.createClass({
 
@@ -14,7 +15,12 @@ const PageConnect = React.createClass({
     page: React.PropTypes.object.isRequired,
     paragraph: React.PropTypes.number.isRequired,
     index: React.PropTypes.array.isRequired,
-    onCancel: React.PropTypes.func.isRequired
+    onCancel: React.PropTypes.func.isRequired,
+    onSelect: React.PropTypes.func.isRequired
+  },
+
+  getInitialState: function() {
+    return {}; 
   },
 
   render :function() {
@@ -28,6 +34,10 @@ const PageConnect = React.createClass({
     const selectedText = paragraph.slice(index[0], index[1]);
     
     const favicon = page.faviconCDN?<img onError={this._imgError} src={page.faviconCDN} style={{width:'16px', height:"16px", marginBottom: '2px'}} />:null;
+
+    const q = this.state.q;
+    const results = q ? <PageSearchResults q={q} onSelect={this.props.onSelect} />:null;
+
     return <ReactCSSTransitionGroup 
         transitionEnterTimeout={500}
         transitionLeaveTimeout={500}
@@ -37,6 +47,9 @@ const PageConnect = React.createClass({
       <div className="row">
         <div className="connect-main">
           <div className="header">
+            <a onClick={this.props.onCancel} href="javascript:void(0);"> 
+              <span className="glyphicon glyphicon-arrow-left" /> back
+            </a>
             <h2>
               {favicon}
               &nbsp;
@@ -50,16 +63,15 @@ const PageConnect = React.createClass({
           <div>
             <p className="connect-surrounding-text" style={{borderBottom: '1px solid #eee'}}>
               {beforeText}
-              <a className="link-text" href="javascript:void(0);">{selectedText}</a>
+              <a className="link-text" href="javascript:void(0);" >{selectedText}</a>
               {afterText}
             </p>
           </div>
-          <div className="row connect-action">
-            <a onClick={this.props.onCancel}  className="btn btn-default" > Cancel </a>
-          </div>
           <SearchInput 
-            onSave={this._save}
+            onSave={this._onSearch}
+            value={this.state.q}
           />
+          {results}
         </div>
       </div>
     </ReactCSSTransitionGroup>
@@ -68,8 +80,10 @@ const PageConnect = React.createClass({
    * @name   _onSave event from dom
    * @desc   Calls a debounced function
    */
-  _save: function (url) {
-    console.log(url);
+  _onSearch: function (q) {
+    this.setState({
+      q:q
+    });
   }
 
 })
