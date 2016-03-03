@@ -35,8 +35,8 @@ const Search = React.createClass({
      console.log(q)
      const seachMain = q ?
      <SearchResults q={q} />: //Give the search result with the q
-     <div> 
-      <div className="row">
+     <div className="container"> 
+      <div className="row search-input">
         <SearchInput 
           onSave={this._save}
         />
@@ -47,8 +47,6 @@ const Search = React.createClass({
         </button>
       </div>
     </div>;//Give the static search bar.
-      
-
 
     return <section className="container search-main">
       {seachMain}

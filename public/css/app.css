@@ -10,7 +10,7 @@
   margin: auto;
   width: 700px; }
   .main .row {
-    margin: 0; }
+    margin: 0px auto; }
   .main .page-main p, .main .connect-main p {
     font-family: 'Brela', serif;
     font-size: 2rem;
@@ -55,7 +55,12 @@
     height: auto !important;
     margin-bottom: 2rem; } }
 .search-main {
-  margin: 100px 15px 0px; }
+  margin: auto; }
+  .search-main .search-input {
+    margin: 150px 150px 0px; }
+  @media (max-width: 767px) {
+    .search-main .search-input {
+      margin: 0px 10px; } }
   .search-main .search-actions {
     margin-top: 4rem; }
     .search-main .search-actions button {
@@ -71,6 +76,9 @@
 
 .connect-main a {
   font-weight: 900; }
+
+.connect-search-input {
+  margin: 10px 0px; }
 
 .page-link {
   margin-bottom: 3rem;

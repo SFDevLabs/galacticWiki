@@ -36,7 +36,7 @@ const PageConnect = React.createClass({
     const favicon = page.faviconCDN?<img onError={this._imgError} src={page.faviconCDN} style={{width:'16px', height:"16px", marginBottom: '2px'}} />:null;
 
     const q = this.state.q;
-    const results = q ? <PageSearchResults q={q} onSelect={this.props.onSelect} />:null;
+    const results = q ? <PageSearchResults className="connect-search-input" q={q} onSelect={this.props.onSelect} />:null;
 
     return <ReactCSSTransitionGroup 
         transitionEnterTimeout={500}

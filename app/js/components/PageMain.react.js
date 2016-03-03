@@ -28,14 +28,15 @@ import { Link } from 'react-router';
 /**
  * Retrieve the current ARTICLES data from the ArticleStore
  */
-function getState(id, lid) {
+function getState(id, Cid) {
   return {
     page: ArticleStore.getById(id),
+    connectedPage: ArticleStore.getById(Cid)
   };
 }
 
 const ArticleSection = React.createClass({
-  
+
   contextTypes:{
     router: React.PropTypes.object.isRequired
   },
@@ -50,13 +51,11 @@ const ArticleSection = React.createClass({
     }
     ArticleStore.addChangeListener(this._onChange);
     document.addEventListener("mousedown", this._screenMousedown)
-
   },
 
   componentWillUnmount: function() {
     ArticleStore.removeChangeListener(this._onChange);
     document.removeEventListener("mousedown", this._screenMousedown)
-
   },
 
   /**
@@ -83,27 +82,27 @@ const ArticleSection = React.createClass({
         />:
       null;
 
-      const mainPage = this.state.linkMode?
-        <PageConnect  
-          page={page}
-          paragraph={this.selectedParagraphIndex}
-          index={this.selectedIndex}
-          onCancel={this._onCancelClick}
-          onSelect={this._onSelectLinkedPage} />:
-        <PageArticle 
-          onSelectionClick={this._onClick} 
-          page={page} 
-          onUp={this._onUp} />;
+    const mainPage = this.state.linkMode?
+      <PageConnect  
+        page={page}
+        paragraph={this.selectedParagraphIndex}
+        index={this.selectedIndex}
+        onCancel={this._onCancelClick}
+        onSelect={this._onSelectLinkedPage} />:
+      <PageArticle 
+        onSelectionClick={this._onClick} 
+        page={page} 
+        onUp={this._onUp} />;
 
     const q = this.state.q;
-    const linkedPage = q? <SearchResults q={q} />:null;
+    const search = q? <SearchResults q={q} />:null;
 
     return <div>
       <section className="container ease">
         {errorMessage}
         <div className="content main">
           {mainPage}
-          {linkedPage}
+          {search}
           {toolTip}
         </div>
       </section>
@@ -129,12 +128,12 @@ const ArticleSection = React.createClass({
   /**
    * Event handler for 'change' events coming from the PageStore
    */
-  _onSelectLinkedPage: function(data) {
-    console.log(data)
+  _onSelectLinkedPage: function(id) {
     // this.setState({
-    //   linkMode: true,
-    //   selectionLocation: null
+    //   linkMode: false
     // });
+    this.connectedID = id;
+    Actions.getById(id);
   },
   /**
    * Event handler for 'change' events coming from the Paragraph
@@ -153,7 +152,9 @@ const ArticleSection = React.createClass({
    * Event handler for 'change' events coming from the PageStore
    */
   _onChange: function() {
-    const state = getState(this.props.params.id)//getState(null, this.props.params.id)//
+    const id = this.props.params.id;
+    const connectedID = this.connectedID;
+    const state = getState(id, connectedID)//getState(null, this.props.params.id)//
     const errors = ArticleStore.getErrors()
     if (errors.length>0) { //Errors from page action need to be displayed.
       this.setState({
