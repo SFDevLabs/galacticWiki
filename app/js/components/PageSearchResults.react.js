@@ -21,7 +21,7 @@ const getState = function() {
     url: SearchStore.getURL()
   }
 }
-///Move Mee to another file
+//Fetch search results
 const fetch = function(q, skip, clearData) {
    SearchActions.getList(_count, skip, q, clearData);
 }
@@ -43,9 +43,6 @@ const PageSearchResults = React.createClass({
 
   componentDidMount: function() {
     SearchStore.addChangeListener(this._onChange);
-    const q = this.props.q;
-    const clearData = true;
-    fetch(q, _initalSkip, clearData)
   },
 
   componentWillUnmount: function() {
@@ -55,7 +52,9 @@ const PageSearchResults = React.createClass({
   componentWillReceiveProps: function(newProps){
     const q = newProps.q;
     const clearData = true;
-    fetch(q, _initalSkip, clearData)
+    if ( q !== this.props.q ){ //This makes a fetch only when we input a new prop.
+      fetch(q, _initalSkip, clearData);
+    }
   },
 
   render :function() {
@@ -63,16 +62,17 @@ const PageSearchResults = React.createClass({
     const data = this.state.results;
     const length = Object.keys(data).length;
 
-    //const create =  <input onClick={this._onPost} value={this.state.url} /> ;
-
     const results = length>0?_.map(data, function(result, i) {
-        return <PageSearchItem key={i} item={result} onSelect={that.props.onSelect} />
+      return <PageSearchItem 
+        key={i}
+        item={result}
+        onSelect={that.props.onSelect} />
     }):
-    <div clasName="row">
+    <div>
       No Results Found.
     </div>;
 
-    return <div className="row">
+    return <div className="row" >
       {results}        
     </div>
   },

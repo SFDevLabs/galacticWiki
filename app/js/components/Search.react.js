@@ -32,7 +32,6 @@ const Search = React.createClass({
   render :function() {
 
      const q = this.props.location.query.q
-     console.log(q)
      const seachMain = q ?
      <SearchResults q={q} />: //Give the search result with the q
      <div className="container"> 

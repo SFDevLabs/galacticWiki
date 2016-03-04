@@ -7,22 +7,8 @@
 const React = require('react');
 const SearchInput = require('./SearchInput.react');
 const SearchItem = require('./SearchItem.react');
+const PageSearchResults = require('./PageSearchResults.react');
 
-const ENTER_KEY_CODE = 13;
-
-const searchHeader = {
-  borderBottom:'none'
-}
-
-const searchRow = {
-  paddingTop:'25px'
-}
-
-const searchButton = {
-  marginRight:'30px',
-  padding: '8px 20px',
-  fontSize: '1.1em'
-}
 
 const PageSearch = React.createClass({
   
@@ -30,27 +16,27 @@ const PageSearch = React.createClass({
     router: React.PropTypes.object.isRequired
   },
 
+  propTypes:{
+    onSelect: React.PropTypes.func.isRequired
+  },
+
   getInitialState: function() {
-    return {
-      results:[{
-        title: 'ya'
-      }]
-    };
+    return {};
   },
   
   render :function() {
-    const data = this.state.results;
-    const length = Object.keys(data).length;
+    const q = this.state.q;
+    const results = q ? <PageSearchResults 
+      className= "connect-search-input"
+      q= {q}
+      onSelect= {this.props.onSelect} />:
+      null;
 
-    const results = length>0?_.map(data, function(result, i) {
-        return <SearchItem key={i} item={result} />
-    }):
-    <div>
-      No Results Found.
-    </div>;
-
-    return <div className="row" style={searchRow} >
-      <SearchInput onSave={this._save} />
+    return <div>
+      <SearchInput 
+        onSave={this._onSearch}
+        value={this.state.q}
+      />
       {results}
     </div>
   },
@@ -63,6 +49,15 @@ const PageSearch = React.createClass({
     if (url && url.length>0){
       this.context.router.push('/search?q='+url);
     }
+  },
+  /**
+   * @name   _onSave event from dom
+   * @desc   Calls a debounced function
+   */
+  _onSearch: function (q) {
+    this.setState({
+      q:q
+    });
   }
 
 })

@@ -11,14 +11,15 @@
   width: 700px; }
   .main .row {
     margin: 0px auto; }
+  .main .page-search {
+    margin-top: 3rem; }
   .main .page-main p, .main .connect-main p {
     font-family: 'Brela', serif;
     font-size: 2rem;
     line-height: 2.8rem;
     letter-spacing: 0.02em;
     color: rgba(0, 0, 0, 0.8);
-    font-weight: 600;
-    margin-bottom: 2.5rem; }
+    font-weight: 600; }
   .main .page-main .connect-surrounding-text, .main .connect-main .connect-surrounding-text {
     color: rgba(0, 0, 0, 0.2); }
   .main .page-main a.link-text, .main .connect-main a.link-text {
@@ -71,8 +72,7 @@
 .connect-main p {
   color: #888;
   font-weight: 100;
-  margin: 1rem 0rem;
-  padding-bottom: 2rem; }
+  margin: 1rem 0rem; }
 
 .connect-main a {
   font-weight: 900; }

@@ -8,11 +8,15 @@ const parse = require('url-parse');
 const Para = require('./Para.react');
 const ToolTip = require('./ToolTip.react');
 
+const Utils = require('../lib/domUtility');
+const closest = Utils.closest;
+const getSelectionCoords = Utils.getSelectionCoords;
+
 const PageArticle = React.createClass({
 
   propTypes:{
     page: React.PropTypes.object.isRequired,
-    onUp: React.PropTypes.func.isRequired
+    onToolTipClick: React.PropTypes.func.isRequired
   },
 
   getInitialState: function() {
@@ -20,16 +24,32 @@ const PageArticle = React.createClass({
     }
   },
 
+  componentDidMount: function() {
+    document.addEventListener("mousedown", this._screenMousedown)
+  },
+
+  componentWillUnmount: function() {
+    document.removeEventListener("mousedown", this._screenMousedown)
+  },
+
   render :function() {
   	const that = this;
   	const page = this.props.page;
     const favicon = page.faviconCDN?<img onError={this._imgError} src={page.faviconCDN} className="favicon" />:null;
+
+    const location = this.state.selectionLocation;
+    const toolTip = location ?
+      <ToolTip 
+        location={location} 
+        onClick={that.onToolTipClick} />:
+      null;
+
     const text = _.map(page.text, function(val, i){
         return <Para 
           key={i} 
           _key={i}
           onDown={that._onDown}
-          onUp={that.props.onUp}
+          onUp={that._onUp}
           text={val}
           tags={_.filter(page.links,{paragraphIndex:i})} />
     });
@@ -68,9 +88,41 @@ const PageArticle = React.createClass({
 			    {text}
 			  </div>
 			</div>
+      {toolTip}
 		</div>
+  },
+  /**
+  * Event handler for 'change' events coming from the Paragraph
+  */
+  _screenMousedown: function(e){
+    const toolTip = closest(e.target, '.popover');
+    if (toolTip==null && this.state.selectionLocation !== null) {
+      this.setState({
+        selectionLocation: null
+      });
+    }
+  },
+  /**
+  * Event handler for 'change' events coming from the Paragraph
+  */
+  _onUp: function(paragraphIndex, start, end){
+    const that = this;
+    this.selectedParagraphIndex = paragraphIndex;
+    this.selectedIndex = [start, end];
+    setTimeout(function(){
+      that.setState({
+        selectionLocation: getSelectionCoords() // wee use the timeout to make sure the dom has time register the selection 
+      });
+    }, 1); //See timout comment above.
+  },
+  /**
+  * Event handler for 'change' events coming from the Paragraph
+  */
+  onToolTipClick:  function(){
+    const selectedParagraphIndex = this.selectedParagraphIndex;
+    const selectedIndex = this.selectedIndex;
+    this.props.onToolTipClick(selectedParagraphIndex, selectedIndex)
   }
-
 })
 
 module.exports = PageArticle;
