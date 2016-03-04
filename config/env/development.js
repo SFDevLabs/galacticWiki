@@ -23,9 +23,11 @@ if (fs.existsSync(envFile)) {
  * Expose
  */
 const url = 'http://localhost:3000'
+
 module.exports = {
   url : url,
   db: 'mongodb://localhost/galactic_dev',
+  neo4jdb: process.env.GRAPHENEDB_URL,
   facebook: {
     clientID: process.env.FACEBOOK_CLIENTID,
     clientSecret: process.env.FACEBOOK_SECRET,

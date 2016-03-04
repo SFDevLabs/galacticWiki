@@ -21,10 +21,6 @@ const Loader = require('react-loader');
 const MAIN_KEY ='MAIN_KEY';
 const CONNECTED_KEY ='CONNECTED_KEY';
 
-// var data ={};
-// data[MAIN_KEY]={};
-// data[CONNECTED_KEY]={};
-
 import { Link } from 'react-router';
 
 /**
@@ -159,12 +155,10 @@ const ArticleSection = React.createClass({
    */
   _onToolTipClick: function(key ,selectedParagraphIndex, selectedIndex) {
     var data = this.state.selection || {};
-    
     data[key]={};
-
     data[key].selectedParagraphIndex = selectedParagraphIndex;
     data[key].selectedIndex = selectedIndex;
-  
+
     this.setState({
       selection: data
     });

@@ -11,8 +11,7 @@ const utils = require('../../lib/utils');
 const extract = require('../../lib/extract')
 const URLParse =extract.URLParse
 const async = require('async');
-const validUrl = require('valid-url');
-const urlFix = extract.urlFix
+const Connection = require('../models/connection');
 
 const pageRequester = function(url, article, cb){
   if (article){
@@ -24,36 +23,45 @@ const pageRequester = function(url, article, cb){
   }
 }
 
-/**
- * Example
- */
-
-// exports.example = function (req, res){
-//   const url = 'https://my.modulus.io/img/modulus-logoSmall-gray20.png';
-//   const uID=(new Date).getTime().toString();
-//   upload(url, uID, function(err, result){
-//     res.send({
-//       err:err,
-//       result: result
-//     })
-//   });
-
-// };
-
-
 
 /**
  * Example
  */
-
 exports.example = function (req, res){
-  const extractor = require('../../node-unfluff/');
+
+const q = [
+  'CREATE (Keanu:Person {name:"Keanu Reeves", born:1964})',
+  'CREATE (TheMatrix:Movie {title:"The Matrix", released:1999})',
+  'CREATE (Keanu)-[:ACTED_IN {roles:["Neo"]}]->(TheMatrix)',
+  'RETURN Keanu'].join('\n');
+
+  console.log
+
+
+  Connection.db.cypher({
+      query: q,
+      params: {
+          title: 'The Matrix',
+      },
+  }, function (err, results) {
+      if (err) throw err;
+      var result = results[0];
+      if (!result) {
+        res.send({
+          err:null,
+          message: 'No Result'
+        })
+      } else {
+        //var user = result['u'];
+        res.send(result)
+      }
+  });
+  
 };
 
 /**
  * Load
  */
-
 exports.load = function (req, res, next, id){
   Article.load(id, function (err, article) {
     if (!article || (err && err.message==='Cast to ObjectId failed')) return  res.status(404).send(utils.errsForApi('Article not found'));
