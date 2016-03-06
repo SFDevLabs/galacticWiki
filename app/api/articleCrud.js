@@ -29,33 +29,41 @@ const pageRequester = function(url, article, cb){
  */
 exports.example = function (req, res){
 
-const q = [
-  'CREATE (Keanu:Person {name:"Keanu Reeves", born:1964})',
-  'CREATE (TheMatrix:Movie {title:"The Matrix", released:1999})',
-  'CREATE (Keanu)-[:ACTED_IN {roles:["Neo"]}]->(TheMatrix)',
-  'RETURN Keanu'].join('\n');
+// const q = [
+//   'CREATE (Page:page {_id:{_idOne}})-[Link:sref {textIndexFrom:{_textIndexFrom},textIndexTo:{_textIndexTo}, pIndexTo:{_pIndexTo},pIndexFrom:{_pIndexFrom} } ]->(Page2:page {_id:{_idTwo}})',
+//   'RETURN Page, Link'].join('\n');
 
-  console.log
+// const q = [
+//   'MATCH (Page:page {_id:{_idOne}})',
+//   'MATCH (Page2:page {_id:{_idTwo}})',
+//   'CREATE Page-[Link:sref {textIndexFrom:{_textIndexFrom},textIndexTo:{_textIndexTo}, pIndexTo:{_pIndexTo},pIndexFrom:{_pIndexFrom} } ]->Page2',
+//   'RETURN Page, Link, Page2'].join('\n');
 
 
-  Connection.db.cypher({
-      query: q,
-      params: {
-          title: 'The Matrix',
-      },
-  }, function (err, results) {
-      if (err) throw err;
-      var result = results[0];
-      if (!result) {
-        res.send({
-          err:null,
-          message: 'No Result'
-        })
-      } else {
-        //var user = result['u'];
-        res.send(result)
-      }
-  });
+//   //
+//   Connection.db.cypher({
+//       query: q,
+//       params: {
+//           _idOne: '123a',
+//           _idTwo: '456b',
+//           _textIndexFrom: [1,2],
+//           _pIndexFrom: 1,
+//           _textIndexTo: [1,2],
+//           _pIndexTo: 1
+//       },
+//   }, function (err, results) {
+//       if (err) throw err;
+//       var result = results[0];
+//       if (!result) {
+//         res.send({
+//           err:null,
+//           message: 'No Result'
+//         })
+//       } else {
+//         //var user = result['u'];
+//         res.send(result)
+//       }
+//   });
   
 };
 
@@ -132,9 +140,7 @@ exports.getCreateController = function (req, res) {
         const status = err.status || 500;
         res.status(err.status).send({errors:utils.errsForApi(err.errors || err)});
       } else {
-        
         var article = new Article(result);
-
         if (article.favicon)
         extract.copyAssets(
           article.favicon, 
@@ -142,7 +148,6 @@ exports.getCreateController = function (req, res) {
           article._id,
           function(err, results){
             article.imageCDN = results[0];
-            console.log(results, 'results results')
             if (results[1]===null){
               article.favicon = null
             }
@@ -160,6 +165,41 @@ exports.getCreateController = function (req, res) {
         });
       }
   });
+};
+
+
+
+
+/**
+ * Create Connection
+ */
+exports.getCreateSREFController = function (req, res) {
+
+  const body = req.body;
+
+  const idOne = body.idOne;
+  const idTwo = body.idTwo;
+
+  const textIndexFrom = body.textIndexFrom;
+  const pIndexFrom = body.pIndexFrom;
+
+  const textIndexTo = body.textIndexTo;
+  const pIndexTo = body.pIndexTo;
+
+  Connection.createSREF(
+    idOne,
+    idTwo,
+    textIndexFrom,
+    pIndexFrom,
+    textIndexTo,
+    pIndexTo,
+    function(err, result){
+      if (!err) {
+        res.send(article);
+      } else {
+        res.status(400).send(utils.errsForApi(err.errors || err));
+      }
+  })
 };
 
 /**

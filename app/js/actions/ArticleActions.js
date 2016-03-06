@@ -46,6 +46,13 @@ const Actions = {
   },
 
   /**
+   * @param  {obj} article data
+   */
+  createLink: function(idOne, idTwo, textIndexFrom, pIndexFrom, textIndexTo, pIndexTo) {
+    ArticleApi.postEntityLinkData(idOne, idTwo, textIndexFrom, pIndexFrom, textIndexTo, pIndexTo);
+  },
+
+  /**
    * @param  {string} id
    * @param  {obj} article data
    */

@@ -93,7 +93,8 @@ module.exports = function (app, passport) {
   app.get('/pwreset/:token', users.pwResetLink);
   app.post('/pwreset/:token', users.pwResetLinkSumbmit);
 
-  app.get('/api/example', articleCrud.example);
+  app.get('/api/example', articleCrud.getCreateSREFController);
+  app.post('/api/example', articleCrud.getCreateSREFController);
 
 
   // API Search

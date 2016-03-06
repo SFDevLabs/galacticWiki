@@ -50,46 +50,56 @@ var ArticleApi = {
       RequestAPI.makeResponseCallback(key, params)
     );
   },
-  deleteEntityData: function(id) {
-    const url = makeUrl("/"+id);
-    const key = Constants.DELETE_ARTICLE;
-    const params = {};
-    RequestAPI.abortPendingRequests(key, _pendingRequests);
-    RequestAPI.dispatch(Constants.PENDING, params);
-    _pendingRequests[key] = RequestAPI.del(url, params).end(
-      RequestAPI.makeResponseCallback(key, params)
-    );
-  },
-  putEntityData: function(id, data) {
-    const url = makeUrl('/'+id);
-    const key = Constants.POST_ARTICLE_DATA;
-    const params = data;
-    RequestAPI.abortPendingRequests(key, _pendingRequests);
-    RequestAPI.dispatch(Constants.PENDING, params);
-    _pendingRequests[key] = RequestAPI.put(url, params).end(
-      RequestAPI.makeResponseCallback(key, params)
-    );
-  },
-  postEntityCommentData: function(id, data) {
-    const url = makeUrl('/'+id+'/comments');
-    const key = Constants.POST_ARTICLE_COMMENT_DATA;
-    const params = data;
+  postEntityLinkData: function(q) {
+    const url = makeUrl('');
+    const key = Constants.POST_ARTICLE_URL_DATA;
+    const params = {url:q};
     RequestAPI.abortPendingRequests(key, _pendingRequests);
     RequestAPI.dispatch(Constants.PENDING, params);
     _pendingRequests[key] = RequestAPI.post(url, params).end(
       RequestAPI.makeResponseCallback(key, params)
-    ); 
-  },
-  deleteEntityCommentData: function(id, commentId) {
-    const url = makeUrl('/'+ id +'/comments/'+ commentId);
-    const key = Constants.DELETE_ARTICLE_COMMENT_DATA;
-    const params = {};
-    RequestAPI.abortPendingRequests(key, _pendingRequests);
-    RequestAPI.dispatch(Constants.PENDING, params);
-    _pendingRequests[key] = RequestAPI.del(url, params).end(
-      RequestAPI.makeResponseCallback(key, params)
     );
-  }
+  },
+  // deleteEntityData: function(id) {
+  //   const url = makeUrl("/"+id);
+  //   const key = Constants.DELETE_ARTICLE;
+  //   const params = {};
+  //   RequestAPI.abortPendingRequests(key, _pendingRequests);
+  //   RequestAPI.dispatch(Constants.PENDING, params);
+  //   _pendingRequests[key] = RequestAPI.del(url, params).end(
+  //     RequestAPI.makeResponseCallback(key, params)
+  //   );
+  // },
+  // putEntityData: function(id, data) {
+  //   const url = makeUrl('/'+id);
+  //   const key = Constants.POST_ARTICLE_DATA;
+  //   const params = data;
+  //   RequestAPI.abortPendingRequests(key, _pendingRequests);
+  //   RequestAPI.dispatch(Constants.PENDING, params);
+  //   _pendingRequests[key] = RequestAPI.put(url, params).end(
+  //     RequestAPI.makeResponseCallback(key, params)
+  //   );
+  // },
+  // postEntityCommentData: function(id, data) {
+  //   const url = makeUrl('/'+id+'/comments');
+  //   const key = Constants.POST_ARTICLE_COMMENT_DATA;
+  //   const params = data;
+  //   RequestAPI.abortPendingRequests(key, _pendingRequests);
+  //   RequestAPI.dispatch(Constants.PENDING, params);
+  //   _pendingRequests[key] = RequestAPI.post(url, params).end(
+  //     RequestAPI.makeResponseCallback(key, params)
+  //   ); 
+  // },
+  // deleteEntityCommentData: function(id, commentId) {
+  //   const url = makeUrl('/'+ id +'/comments/'+ commentId);
+  //   const key = Constants.DELETE_ARTICLE_COMMENT_DATA;
+  //   const params = {};
+  //   RequestAPI.abortPendingRequests(key, _pendingRequests);
+  //   RequestAPI.dispatch(Constants.PENDING, params);
+  //   _pendingRequests[key] = RequestAPI.del(url, params).end(
+  //     RequestAPI.makeResponseCallback(key, params)
+  //   );
+  // }
 };
 
 module.exports = ArticleApi;

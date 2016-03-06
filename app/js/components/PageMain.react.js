@@ -125,9 +125,7 @@ const ArticleSection = React.createClass({
       connectedPage = <PageArticle 
         page={connectedPageData} 
         onToolTipClick={this._onToolTipClick.bind(this, CONNECTED_KEY) } />
-
     }
-    
 
     return <div>
       <section className="container ease">
@@ -158,6 +156,10 @@ const ArticleSection = React.createClass({
     data[key]={};
     data[key].selectedParagraphIndex = selectedParagraphIndex;
     data[key].selectedIndex = selectedIndex;
+
+    if (key==CONNECTED_KEY){
+      window.scroll(0,0)      
+    }
 
     this.setState({
       selection: data
@@ -191,7 +193,7 @@ const ArticleSection = React.createClass({
    * Event handler for 'change' events coming from the PageStore
    */
   _save: function() {
-
+    Actions.createLink()
   },
   /**
    * Event handler for 'imgError' events coming from the Page DOM

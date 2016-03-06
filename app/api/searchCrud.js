@@ -34,6 +34,8 @@ exports.getListController = function (req, res) {
 
   Article.list(options, function (err, results) {
     Article.count(options.criteria).exec(function (errCount, count) {
+
+      //here is where we consult the graph URL.
       if (!err) {
         res.send({
           results:results,

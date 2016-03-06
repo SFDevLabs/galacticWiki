@@ -15,7 +15,6 @@ const notify = require('../mailer');
 
 const Schema = mongoose.Schema;
 
-
 /**
  * Article Schema
  */
@@ -70,6 +69,8 @@ ArticleSchema.pre('remove', function (next) {
   next();
 });
 
+// exports.db = db;
+
 /**
  * Methods
  */
@@ -112,24 +113,24 @@ ArticleSchema.methods = {
    * @api private
    */
 
-  addComment: function (user, comment, cb) {
-    this.comments.push({
-      body: comment.body,
-      user: user._id
-    });
+  // addComment: function (user, comment, cb) {
+  //   this.comments.push({
+  //     body: comment.body,
+  //     user: user._id
+  //   });
 
-    if (this.user.email) {
-      notify.comment({
-        article: this,
-        currentUser: user,
-        comment: comment.body
-      }, function(err, status){
-        //no opp
-      });
-    }
+  //   if (this.user.email) {
+  //     notify.comment({
+  //       article: this,
+  //       currentUser: user,
+  //       comment: comment.body
+  //     }, function(err, status){
+  //       //no opp
+  //     });
+  //   }
 
-    this.save(cb);
-  },
+  //   this.save(cb);
+  // },
 
   /**
    * Remove comment
@@ -139,12 +140,12 @@ ArticleSchema.methods = {
    * @api private
    */
 
-  removeComment: function (commentId, cb) {
-    const index = utils.indexof(this.comments, { id: commentId });
-    if (~index) this.comments.splice(index, 1);
-    else return cb('not found');
-    this.save(cb);
-  }
+  // removeComment: function (commentId, cb) {
+  //   const index = utils.indexof(this.comments, { id: commentId });
+  //   if (~index) this.comments.splice(index, 1);
+  //   else return cb('not found');
+  //   this.save(cb);
+  // }
 };
 
 /**
