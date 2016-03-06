@@ -3,7 +3,6 @@
 	margin-top: 70px;
 }
 
-
 .page-img {
 	margin-bottom: 2rem;
 	background-color: #FBFBFB;
@@ -12,10 +11,10 @@
 
 .main {
 
-	margin: auto;
+	margin: 0rem auto 5rem;
 	width: 700px;
 
-	.row{
+	.row {
 		margin: 0px auto;
 	}
 	.page-search {
@@ -23,6 +22,7 @@
 	}
 
 	.page-main, .connect-main {
+
 		p {
 			font-family: 'Brela', serif;
 		    font-size: 2rem;

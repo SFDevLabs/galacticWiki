@@ -20,14 +20,6 @@ const Messages = React.createClass({
     };
   },
 
-  componentDidMount:function(){
-    this._visible();
-  },
-
-  componentWillReceiveProps:function(nextProps){
-    this._visible();
-  },
-
   /**
    * @return {object}
    */
@@ -49,28 +41,12 @@ const Messages = React.createClass({
     return JSX
   },
   /**
-   * _visible
-   */
-  _visible:function(){
-    const that = this;
-    that.setState({removed:false});
-    setTimeout(function(){
-      that.setState({
-        alertVisible: true
-      })      
-    },10)
-  },
-  /**
     * _notVisible
    */
   _notVisible:function(){
-    const that = this;
-    this.setState({alertVisible: false});
-    setTimeout(function(){
-      that.setState({
-        removed: true
-      })      
-    },500)
+    this.setState({
+      removed: true
+    });
   }
 
 });

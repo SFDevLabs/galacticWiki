@@ -4,7 +4,6 @@
 */
 const UserApi = require('../api/UserApi');
 
-
 const Actions = {
 
   /**

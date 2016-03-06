@@ -1,4 +1,4 @@
-const config = require('../../config/config')
+const config = require('../../config/config');
 var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase(config.neo4jdb);
 
@@ -10,7 +10,7 @@ const createSREFQ = [
 
 exports.createSREF = function(idOne, idTwo, textIndexFrom, pIndexFrom, textIndexTo, pIndexTo, cb){
 	db.cypher(
-		{	
+		{
 			params: {
 		  _idOne: idOne,
 		  _idTwo: idTwo,
@@ -19,7 +19,8 @@ exports.createSREF = function(idOne, idTwo, textIndexFrom, pIndexFrom, textIndex
 		  _textIndexTo: textIndexTo,
 		  _pIndexTo: pIndexTo
 		},
-		query: createSREFQ}, 
+		query: createSREFQ
+		},
 	cb
 	);
 };

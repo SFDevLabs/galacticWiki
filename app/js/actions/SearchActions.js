@@ -7,7 +7,6 @@ const AppDispatcher = require('../dispatcher/AppDispatcher');
 const Constants = require('../constants/Constants');
 const SearchApi = require('../api/SearchApi');
 
-
 const Actions = {
 
   /**

@@ -2,9 +2,11 @@
  * The MIT License (MIT)
  * Copyright (c) 2016, Jeff Jenkins @jeffj.
 */
-
 const React = require('react');
-const Actions = require('../actions/ArticleActions');
+
+const ArticleActions = require('../actions/ArticleActions');
+const LinkActions = require('../actions/LinkActions');
+
 const ArticleStore = require('../stores/ArticleStore');
 const NotFound = require('./NotFound.react');
 const Messages = require('./Messages.react');
@@ -45,7 +47,7 @@ const ArticleSection = React.createClass({
 
   componentDidMount: function() {
     if (!this.state.page){
-      Actions.getById(this.props.params.id);
+      ArticleActions.getById(this.props.params.id);
     }
     ArticleStore.addChangeListener(this._onChange);
   },
@@ -62,7 +64,6 @@ const ArticleSection = React.createClass({
     const pageData = this.state.page;
     const connectedPageData = this.state.connectedPage;
     const selection = this.state.selection;
-
 
     if (pageData===null){return <NotFound />}//null means the api gave us a 404.
     else if (!pageData){return <Loader />}//undefined means that no request for the article has been made.
@@ -128,7 +129,7 @@ const ArticleSection = React.createClass({
     }
 
     return <div>
-      <section className="container ease">
+      <section className="container">
         {errorMessage}
         <div className="content main">
           {mainPage}
@@ -138,6 +139,7 @@ const ArticleSection = React.createClass({
       </section>
     </div>
   },
+
   /**
    * Event handler for 'change' events coming from the PageStore
    */
@@ -148,6 +150,7 @@ const ArticleSection = React.createClass({
       connectedPage: undefined
     });
   },
+
   /**
    * Event handler for 'change' events coming from the PageStore
    */
@@ -164,15 +167,16 @@ const ArticleSection = React.createClass({
     this.setState({
       selection: data
     });
-
   },
+
   /**
    * Event handler for 'change' events coming from the PageStore
    */
   _onSelectLinkedPage: function(id) {
     this.connectedID = id;
-    Actions.getById(id);
+    ArticleActions.getById(id);
   },
+
   /**
    * Event handler for 'change' events coming from the PageStore
    */
@@ -189,12 +193,14 @@ const ArticleSection = React.createClass({
       this.setState(state);
     }
   },
+
   /**
    * Event handler for 'change' events coming from the PageStore
    */
   _save: function() {
-    Actions.createLink()
+    LinkActions.create('jeff', 'jeff2');
   },
+
   /**
    * Event handler for 'imgError' events coming from the Page DOM
    */

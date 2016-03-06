@@ -91,6 +91,7 @@ const PageArticle = React.createClass({
       {toolTip}
 		</div>
   },
+
   /**
   * Event handler for 'change' events coming from the Paragraph
   */
@@ -102,6 +103,7 @@ const PageArticle = React.createClass({
       });
     }
   },
+
   /**
   * Event handler for 'change' events coming from the Paragraph
   */
@@ -115,6 +117,7 @@ const PageArticle = React.createClass({
       });
     }, 1); //See timout comment above.
   },
+
   /**
   * Event handler for 'change' events coming from the Paragraph
   */

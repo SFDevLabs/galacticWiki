@@ -7,7 +7,7 @@
   text-align: center; }
 
 .main {
-  margin: auto;
+  margin: 0rem auto 5rem;
   width: 700px; }
   .main .row {
     margin: 0px auto; }

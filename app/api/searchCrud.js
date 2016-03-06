@@ -13,7 +13,6 @@ const validator = require('validator');
 /**
  * List
  */
-
 exports.getListController = function (req, res) {
 
   var skip = Number(req.query.skip)

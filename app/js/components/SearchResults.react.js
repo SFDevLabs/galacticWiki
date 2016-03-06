@@ -21,7 +21,7 @@ const getState = function() {
     url: SearchStore.getURL()
   }
 }
-///Move Mee to another file
+
 const fetch = function(q, skip, clearData) {
    SearchActions.getList(_count, skip, q, clearData);
 }

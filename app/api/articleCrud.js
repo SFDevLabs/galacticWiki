@@ -23,7 +23,6 @@ const pageRequester = function(url, article, cb){
   }
 }
 
-
 /**
  * Example
  */
@@ -167,9 +166,6 @@ exports.getCreateController = function (req, res) {
   });
 };
 
-
-
-
 /**
  * Create Connection
  */
@@ -185,6 +181,9 @@ exports.getCreateSREFController = function (req, res) {
 
   const textIndexTo = body.textIndexTo;
   const pIndexTo = body.pIndexTo;
+
+  console.log(body);
+  return body
 
   Connection.createSREF(
     idOne,
@@ -209,7 +208,6 @@ exports.getCreateSREFController = function (req, res) {
  * @param  {Function}    cb  a callback for the data.
  */
 function pageDBSearch(url, cb) {
-  console.log(url)
   Article
     .findOne({'$or':[{ canonicalLink: url }, { queryLink: url }]})
     .exec(function(err, result){
@@ -222,7 +220,6 @@ function pageDBSearch(url, cb) {
         }
     });
 }
-
 
 /**
  * Load

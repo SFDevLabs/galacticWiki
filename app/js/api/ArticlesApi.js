@@ -59,7 +59,7 @@ var ArticleApi = {
     _pendingRequests[key] = RequestAPI.post(url, params).end(
       RequestAPI.makeResponseCallback(key, params)
     );
-  },
+  }
   // deleteEntityData: function(id) {
   //   const url = makeUrl("/"+id);
   //   const key = Constants.DELETE_ARTICLE;

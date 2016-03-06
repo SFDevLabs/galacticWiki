@@ -34,6 +34,7 @@ const Para = React.createClass({
       {text}
     </p>
   },
+
   /**
    * Builds a Paragraphs text.
    */
@@ -59,12 +60,14 @@ const Para = React.createClass({
     nodes.push(afterText);
     return nodes;
   },
+
   /**
    * Gets the page's selected text.
    */
   _down: function(e){
     this.down = true;
   },
+
   /**
    * Gets the page's selected text.
    */
@@ -76,12 +79,14 @@ const Para = React.createClass({
       this.props.onUp(this.props._key, startIndex, endIndex);
     }
   },
+
   /**
    * Gets the page's selected text.
    */
   _leave: function(e){
     this.down = false;
   },
+
   /**
    * Gets the page's selected text.
    */
