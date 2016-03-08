@@ -13,20 +13,15 @@ const URLParse =extract.URLParse
 const async = require('async');
 const Connection = require('../models/connection');
 
-const pageRequester = function(url, article, cb){
-  if (article){
-    cb(null, url, article)
-  } else{
-    extract.pageRequester(url, function(err, extractedArticle){
-      cb(err, url, extractedArticle)
-    });
-  }
-}
-
 /**
  * Example
  */
 exports.example = function (req, res){
+
+  Connection.getNode('56de491de5c0175d09fa1064', function(err, result){
+    console.log(err, result)
+    res.send(JSON.stringify(result))
+  })
 
 // const q = [
 //   'CREATE (Page:page {_id:{_idOne}})-[Link:sref {textIndexFrom:{_textIndexFrom},textIndexTo:{_textIndexTo}, pIndexTo:{_pIndexTo},pIndexFrom:{_pIndexFrom} } ]->(Page2:page {_id:{_idTwo}})',
@@ -74,6 +69,8 @@ exports.load = function (req, res, next, id){
     if (!article || (err && err.message==='Cast to ObjectId failed')) return  res.status(404).send(utils.errsForApi('Article not found'));
     if (err) return  res.status(500).send( utils.errsForApi(err.errors || err) );
     req.article = article;
+
+
     next();
   });
 };
@@ -133,73 +130,19 @@ exports.getCreateController = function (req, res) {
         }       
       },
       pageDBSearch,
-      pageRequester,
-  ], function(err, url, result){
+      pageExtractor,
+      pageSaver,
+      connectionCreator,
+  ], function(err, url, resultDB, extractedPageData){
       if (err){
         const status = err.status || 500;
         res.status(err.status).send({errors:utils.errsForApi(err.errors || err)});
       } else {
-        var article = new Article(result);
-        if (article.favicon)
-        extract.copyAssets(
-          article.favicon, 
-          article.image, 
-          article._id,
-          function(err, results){
-            article.imageCDN = results[0];
-            if (results[1]===null){
-              article.favicon = null
-            }
-            article.faviconCDN = results[1];
-            article.save(function(err){
-              if(err){
-                console.log(err);
-              }
-            });
-        });
-
-        article.save(function(err){
-          if(err) return res.status(500).send({errors:utils.errsForApi(err.errors || err)});
-          res.send(article);
-        });
+        res.send(resultDB);
       }
   });
 };
 
-/**
- * Create Connection
- */
-exports.getCreateSREFController = function (req, res) {
-
-  const body = req.body;
-
-  const idOne = body.idOne;
-  const idTwo = body.idTwo;
-
-  const textIndexFrom = body.textIndexFrom;
-  const pIndexFrom = body.pIndexFrom;
-
-  const textIndexTo = body.textIndexTo;
-  const pIndexTo = body.pIndexTo;
-
-  console.log(body);
-  return body
-
-  Connection.createSREF(
-    idOne,
-    idTwo,
-    textIndexFrom,
-    pIndexFrom,
-    textIndexTo,
-    pIndexTo,
-    function(err, result){
-      if (!err) {
-        res.send(article);
-      } else {
-        res.status(400).send(utils.errsForApi(err.errors || err));
-      }
-  })
-};
 
 /**
  * @name   pageDBSearch
@@ -220,6 +163,123 @@ function pageDBSearch(url, cb) {
         }
     });
 }
+
+
+/**
+ * @name   pageExtractor
+ * @desc   Logic to extact page data if we did not get a db response.
+ * @param  {string}      url
+ * @param  {object}    resultDB
+ * @param  {Function}    cb  a callback for the data.
+ */
+const pageExtractor = function(url, resultDB, cb){
+  if (resultDB){
+    cb(null, url, resultDB, null);
+  } else {
+    extract.pageRequester(url, function(err, extractedPageData){
+      cb(err, url, resultDB, extractedPageData);
+    });
+  }
+}
+
+/**
+ * @name   pageSaver
+ * @desc   Logic to extact save page data from extracted text data
+ * @param  {string}      url
+ * @param  {object}    resultDB
+ * @param  {object}    extractedPageData
+ * @param  {Function}    cb  a callback for the data.
+ */
+const pageSaver = function(url, resultDB, extractedPageData, cb){
+  if (!resultDB){
+    saveArticleToDB(extractedPageData, function(err, savedResultDB){
+      cb(err, url, savedResultDB, extractedPageData);
+    });
+  } else {
+    cb(null, url, resultDB);
+  }
+}
+
+/**
+ * @name   Creates a connection
+ * @desc   Saves the db to the article
+ * @param  {object}      result
+ * @param  {Function}    cb  a callback for the data.
+ */
+const connectionCreator = function(url, resultDB, extractedPageData, cb){
+  if (extractedPageData){
+    Connection.createNode(
+      resultDB._id,
+      function (err, results) {
+        cb(err, url, resultDB, extractedPageData);
+    })
+  }
+}
+
+
+
+/**
+ * @name   saveArticleToDB
+ * @desc   Saves the db to the article
+ * @param  {object}      result
+ * @param  {Function}    cb  a callback for the data.
+ */
+const saveArticleToDB = function(result, cb){
+  var article = new Article(result);
+  extract.copyAssets(
+    article.image, 
+    article.favicon,
+    article._id,
+    function(err, results){
+      article.imageCDN = results[0];
+      if (results[1]===null){
+        article.favicon = null
+      }
+      article.faviconCDN = results[1];
+      article.save(function(err){
+        if(err){
+          console.log(err);
+        }
+      });
+  });
+
+  article.save(function(err){
+    cb(err, article);
+  });
+}
+
+
+/**
+ * Create Connection
+ */
+exports.getCreateSREFController = function (req, res) {  
+
+  const body = req.body;
+
+  const idFrom = req.article._id;
+  const idTo = body.idTo;
+
+  const textIndexFrom = _.map(body.textIndexFrom, function(val){ return Number(val) });
+  const pIndexFrom =  Number(body.pIndexFrom);
+
+  const textIndexTo = _.map(body.textIndexTo, function(val){ return Number(val) });
+  const pIndexTo = Number(body.pIndexTo);
+
+  Connection.createSREF(
+    idFrom,
+    idTo,
+    textIndexFrom,
+    pIndexFrom,
+    textIndexTo,
+    pIndexTo,
+    function(err, result){
+      if (!err) {
+        res.send(result);
+      } else {
+        res.status(400).send(utils.errsForApi(err.errors || err));
+      }
+  })
+};
 
 /**
  * Load

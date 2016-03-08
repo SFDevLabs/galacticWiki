@@ -41,7 +41,7 @@ const PageArticle = React.createClass({
     const toolTip = location ?
       <ToolTip 
         location={location} 
-        onClick={that.onToolTipClick} />:
+        onClick={that._onToolTipClick} />:
       null;
 
     const text = _.map(page.text, function(val, i){
@@ -121,7 +121,7 @@ const PageArticle = React.createClass({
   /**
   * Event handler for 'change' events coming from the Paragraph
   */
-  onToolTipClick:  function(){
+  _onToolTipClick:  function(){
     const selectedParagraphIndex = this.selectedParagraphIndex;
     const selectedIndex = this.selectedIndex;
     this.props.onToolTipClick(selectedParagraphIndex, selectedIndex)

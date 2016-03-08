@@ -50,10 +50,18 @@ var ArticleApi = {
       RequestAPI.makeResponseCallback(key, params)
     );
   },
-  postEntityLinkData: function(q) {
-    const url = makeUrl('');
-    const key = Constants.POST_ARTICLE_URL_DATA;
-    const params = {url:q};
+  postEntityLinkData: function(idFrom, idTo, pIndexFrom, textIndexFrom, pIndexTo, textIndexTo) {
+    const url = makeUrl('/'+idFrom+'/link');
+    const key = Constants.POST_ARTICLE_LINKURL_DATA;
+    const params = {
+      idTo: idTo,
+      'textIndexFrom[0]': textIndexFrom[0],
+      'textIndexFrom[1]': textIndexFrom[1],
+      pIndexFrom: pIndexFrom,
+      'textIndexTo[0]': textIndexTo[0],
+      'textIndexTo[1]': textIndexTo[1],
+      pIndexTo: pIndexTo
+    };
     RequestAPI.abortPendingRequests(key, _pendingRequests);
     RequestAPI.dispatch(Constants.PENDING, params);
     _pendingRequests[key] = RequestAPI.post(url, params).end(

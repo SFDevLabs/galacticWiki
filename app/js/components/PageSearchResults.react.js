@@ -6,7 +6,6 @@
 
 const React = require('react');
 const SearchActions = require('../actions/SearchActions');
-const ArticleActions = require('../actions/ArticleActions');
 const PageSearchItem = require('./PageSearchItem.react');
 
 const SearchStore = require('../stores/SearchStore');
@@ -83,13 +82,6 @@ const PageSearchResults = React.createClass({
   _onChange: function() {
     this.setState(getState())
   },
-
-  /**
-   * Event handler for 'save' events coming from the SearchStore
-   */
-  _onPost: function(){
-    ArticleActions.create(this.state.url);
-  }
 
 })
 

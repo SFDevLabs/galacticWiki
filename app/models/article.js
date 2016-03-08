@@ -12,6 +12,7 @@ const config = require('../../config/config');
 const imagerConfig = require(config.root + '/config/imager.js');
 const utils = require('../../lib/utils');
 const notify = require('../mailer');
+const Connection = require('../models/connection');
 
 const Schema = mongoose.Schema;
 
@@ -50,8 +51,8 @@ const ArticleSchema = new Schema({
  * Validations
  */
 
-ArticleSchema.path('title').required(true, 'Article title cannot be blank');
-ArticleSchema.path('text').required(true, 'Article text cannot be blank');
+// ArticleSchema.path('title').required(true, 'Article title cannot be blank');
+// ArticleSchema.path('text').required(true, 'Article text cannot be blank');
 
 /**
  * Pre-remove hook
@@ -68,8 +69,6 @@ ArticleSchema.pre('remove', function (next) {
 
   next();
 });
-
-// exports.db = db;
 
 /**
  * Methods

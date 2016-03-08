@@ -5,7 +5,6 @@
 const React = require('react');
 
 const ArticleActions = require('../actions/ArticleActions');
-const LinkActions = require('../actions/LinkActions');
 
 const ArticleStore = require('../stores/ArticleStore');
 const NotFound = require('./NotFound.react');
@@ -50,6 +49,20 @@ const ArticleSection = React.createClass({
       ArticleActions.getById(this.props.params.id);
     }
     ArticleStore.addChangeListener(this._onChange);
+
+    //Manual data entry for dev
+    // const data = {"MAIN_KEY":{"selectedParagraphIndex":0,"selectedIndex":[105,119]},"CONNECTED_KEY":{"selectedParagraphIndex":1,"selectedIndex":[0,13]}}
+    
+    // this.connectedID = '56de491de5c0175d09fa1064';
+    // this.setState({
+    //   selection:data
+    // });
+    // const that= this;
+    // setTimeout(function(){
+    //   ArticleActions.getById(that.connectedID);
+    // },500)
+    //End Manual data entry for dev
+
   },
 
   componentWillUnmount: function() {
@@ -161,7 +174,7 @@ const ArticleSection = React.createClass({
     data[key].selectedIndex = selectedIndex;
 
     if (key==CONNECTED_KEY){
-      window.scroll(0,0)      
+      window.scroll(0,0);      
     }
 
     this.setState({
@@ -198,7 +211,28 @@ const ArticleSection = React.createClass({
    * Event handler for 'change' events coming from the PageStore
    */
   _save: function() {
-    LinkActions.create('jeff', 'jeff2');
+    const id = this.props.params.id;
+
+    const cId = this.connectedID;
+
+    
+    const data = this.state.selection;
+
+    const selectedParagraphIndexMain = data[MAIN_KEY].selectedParagraphIndex;
+    const selectedIndexMain = data[MAIN_KEY].selectedIndex;
+
+    const selectedParagraphIndexConnected = data[CONNECTED_KEY].selectedParagraphIndex;
+    const selectedIndexConnected = data[CONNECTED_KEY].selectedIndex;
+
+
+    ArticleActions.createLink(
+        id,
+        cId,
+        selectedParagraphIndexMain,
+        selectedIndexMain,
+        selectedParagraphIndexConnected,
+        selectedIndexConnected
+      );
   },
 
   /**

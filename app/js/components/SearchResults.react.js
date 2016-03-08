@@ -61,7 +61,7 @@ const SearchResults = React.createClass({
     const data = this.state.results;
     const length = Object.keys(data).length;
 
-    //const create =  <input onClick={this._onPost} value={this.state.url} /> ;
+    const create =  <input className='btn btn-default' onClick={this._onPost} value={this.state.url} /> ;
 
     const results = length>0?_.map(data, function(result, i) {
         return <SearchItem key={i} item={result} />
@@ -72,6 +72,7 @@ const SearchResults = React.createClass({
 
     return <div className="row">
       {results}        
+      {create}
     </div>
   },
 
