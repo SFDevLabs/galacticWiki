@@ -51,7 +51,8 @@ const PageArticle = React.createClass({
           onDown={that._onDown}
           onUp={that._onUp}
           text={val}
-          tags={_.filter(page.links,{paragraphIndex:i})} />
+          tags={_.filter(page.links,{paragraphIndex:i})}
+          sref={_.filter(page.sref,{paragraphIndex:i})} />
     });
 
     const url = parse(page.canonicalLink, true);

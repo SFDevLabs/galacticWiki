@@ -68,10 +68,37 @@ exports.load = function (req, res, next, id){
   Article.load(id, function (err, article) {
     if (!article || (err && err.message==='Cast to ObjectId failed')) return  res.status(404).send(utils.errsForApi('Article not found'));
     if (err) return  res.status(500).send( utils.errsForApi(err.errors || err) );
-    req.article = article;
+
+    Connection.getNode(article._id, function(err, results){
+      req.article = article;
+      
+      req.sref = _.map(results, function(r, i){
+        
 
 
-    next();
+        const pageID = r.PageTwo.properties._id; //Get the other articles uid
+
+
+        const outBound = r.Link._fromId === r.PageOne._id; // See if the link is inbound or outbound
+       
+
+        console.log(r.Link._fromId,'-',r.PageOne._id, outBound )
+
+        const link = r.Link.properties; //Get the link properties
+        const textIndex = outBound?link.textIndexFrom:link.textIndexTo; //Get the text index
+        const paragraphIndex = outBound?link.pIndexFrom:link.pIndexTo; //Get the p index
+        console.log(textIndex, paragraphIndex, 'load')
+          return {
+            index: textIndex,
+            paragraphIndex: paragraphIndex,
+            sref: pageID,
+            outbound: outBound
+          }
+      });
+      next();
+    })
+
+    
   });
 };
 
@@ -285,11 +312,14 @@ exports.getCreateSREFController = function (req, res) {
  * Load
  */
 exports.getReadController = function (req, res) {
-  var article = req.article
+  const article = req.article
+  const sref = req.sref
   if (!article) {
     res.status(404).send(utils.errsForApi('Article not found!!'));
   } else if (article) {
-    res.send(article);
+    const object = article.toJSON();
+    object.sref = sref;
+    res.send(object);
   }
 };
 

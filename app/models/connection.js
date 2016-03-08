@@ -106,5 +106,5 @@ exports.getNode = function(id, cb){
 
 //get Node Query
 const getNodeQ = [
-  'MATCH (PageOne:page {_id:{_id}})<-[Link]-(PageTwo)',
+  'MATCH (PageOne:page {_id:{_id}})-[Link]-(PageTwo)',
   'RETURN PageOne, Link, PageTwo'].join('\n');

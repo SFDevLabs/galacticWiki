@@ -19,13 +19,16 @@ const Para = React.createClass({
 
   propTypes:{
     text: React.PropTypes.string.isRequired,
+    sref: React.PropTypes.array.isRequired,
     tags: React.PropTypes.array.isRequired,
     onUp: React.PropTypes.func.isRequired,
     _key: React.PropTypes.number.isRequired
   },
 
   render: function() {
-    const text = this.buildParagraphs(this.props.tags, this.props.text);
+    const tags = this.props.tags.concat(this.props.sref);
+
+    const text = this.buildParagraphs(tags, this.props.text);
     return <p
       className="page-para" 
       onMouseDown={this._down} 
@@ -39,6 +42,9 @@ const Para = React.createClass({
    * Builds a Paragraphs text.
    */
   buildParagraphs: function(tags, text){
+
+    tags = _.sortBy(tags, function(tag){return tag.index[1]});
+    
     var nodes=[];
     var beforeIndex = 0;
     //Iterate over the tags and add links to them.
@@ -46,7 +52,14 @@ const Para = React.createClass({
       // Get the text and node surrounding the tags
       const beforeText = text.slice(beforeIndex, tag.index[0]);
       const nodeText = text.slice(tag.index[0], tag.index[1]);
-      const node = React.createElement(tag.name, {key: nodes.length-1, href: tag.href, target: '_blank'}, nodeText);
+      const node = React.createElement(
+        'a', 
+        { key: nodes.length-1, 
+          href: 'javascript:void(0);',
+          target: '_blank', 
+          className:'href-link'},
+        nodeText
+      );
 
       // Hold and index of the last node.
       beforeIndex = tag.index[1]
