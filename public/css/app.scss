@@ -1,4 +1,6 @@
 
+$navbar-background-color: rgba(255,255,255,.95);
+
 #app{
 	margin-top: 70px;
 }
@@ -21,7 +23,17 @@
 		margin-top: 3rem;
 	}
 
-	.page-main, .connect-main {
+	.connect-fixed .connect-surrounding-text{
+		color: rgba(0, 0, 0, 0.45);
+		white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	}
+	.connect-main .connect-surrounding-text{
+		color: rgba(0, 0, 0, 0.3);
+	}
+
+	.page-main, .connect-main, .connect-fixed {
 
 		p {
 			font-family: 'Brela', serif;
@@ -31,9 +43,6 @@
 		    color: rgba(0,0,0,0.8);
 		    font-weight: 600;
 
-		}
-		.connect-surrounding-text{
-			color: rgba(0, 0, 0, 0.2);
 		}
 
 		a.link-text {
@@ -46,6 +55,13 @@
 			font-weight: 600;
 			font-size: 2rem;
 			color: rgba(0,0,0,0.75);
+		}
+		h3 {
+			font-family: "medium-content-sans-serif-font","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+			font-weight: 600;
+			font-size: 1.6rem;
+			color: rgba(0,0,0,0.75);
+			margin: 10px 0 5px;
 		}
 	}
 
@@ -116,6 +132,14 @@
 	}
 }
 
+.connect-fixed {
+	padding: 10px 0 0;
+	position: fixed;
+	width: 700px;
+	background-color: $navbar-background-color;
+	top: 50px;
+}
+
 .connect-main p{
 	color: #888;
     font-weight: 100;
@@ -160,7 +184,7 @@
 
 
 .navbar-default{
-	background: rgba(255,255,255,.95);
+	background: $navbar-background-color;
 	border-bottom: none;
 }
 
@@ -218,6 +242,22 @@
     transform: translate(0, 0);
     transform: translate3d(0, 0, 0);
     transition: transform 200ms ease-out, opacity 50ms ease-out;
+}
+
+
+/* Rise for linked item*/
+.connection-appear {
+	opacity: 0;
+	transform: translate(0, -500px);
+	transform: translate3d(0, -500px, 0);
+}
+
+.connection-appear.connection-appear-active {
+	opacity: 1;
+    transform: translate(0, 0);
+    transform: translate3d(0, 0, 0);
+    transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000); /* easeOutCubic */
+    transition: all 500ms cubic-bezier(0.215, 0.610, 0.355, 1.000), opacity 200ms ease-in; /* easeOutCubic */
 }
 
 /* Rise for linked item*/

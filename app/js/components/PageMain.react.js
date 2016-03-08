@@ -51,18 +51,21 @@ const ArticleSection = React.createClass({
     ArticleStore.addChangeListener(this._onChange);
 
     //Manual data entry for dev
-    // const data = {"MAIN_KEY":{"selectedParagraphIndex":0,"selectedIndex":[105,119]},"CONNECTED_KEY":{"selectedParagraphIndex":1,"selectedIndex":[0,13]}}
-    
-    // this.connectedID = '56de491de5c0175d09fa1064';
-    // this.setState({
-    //   selection:data
-    // });
-    // const that= this;
-    // setTimeout(function(){
-    //   ArticleActions.getById(that.connectedID);
-    // },500)
-    //End Manual data entry for dev
+    const data = {
+      "MAIN_KEY":{"selectedParagraphIndex":0,"selectedIndex":[105,119]}
+      }
 
+    //"CONNECTED_KEY":{"selectedParagraphIndex":1,"selectedIndex":[0,13]}
+    
+    this.connectedID = '56de491de5c0175d09fa1064';
+    this.setState({
+      selection:data
+    });
+    const that= this;
+    setTimeout(function(){
+      ArticleActions.getById(that.connectedID);
+    },500)
+    //End Manual data entry for dev
   },
 
   componentWillUnmount: function() {
@@ -212,10 +215,7 @@ const ArticleSection = React.createClass({
    */
   _save: function() {
     const id = this.props.params.id;
-
     const cId = this.connectedID;
-
-    
     const data = this.state.selection;
 
     const selectedParagraphIndexMain = data[MAIN_KEY].selectedParagraphIndex;
@@ -223,7 +223,6 @@ const ArticleSection = React.createClass({
 
     const selectedParagraphIndexConnected = data[CONNECTED_KEY].selectedParagraphIndex;
     const selectedIndexConnected = data[CONNECTED_KEY].selectedIndex;
-
 
     ArticleActions.createLink(
         id,

@@ -18,10 +18,10 @@ const Connection = require('../models/connection');
  */
 exports.example = function (req, res){
 
-  Connection.getNode('56de491de5c0175d09fa1064', function(err, result){
-    console.log(err, result)
-    res.send(JSON.stringify(result))
-  })
+
+ // Connection.getNode('56de491de5c0175d09fa1064', function(err, results){
+ //  res.send(results)
+ // })
 
 // const q = [
 //   'CREATE (Page:page {_id:{_idOne}})-[Link:sref {textIndexFrom:{_textIndexFrom},textIndexTo:{_textIndexTo}, pIndexTo:{_pIndexTo},pIndexFrom:{_pIndexFrom} } ]->(Page2:page {_id:{_idTwo}})',

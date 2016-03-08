@@ -13,23 +13,34 @@
     margin: 0px auto; }
   .main .page-search {
     margin-top: 3rem; }
-  .main .page-main p, .main .connect-main p {
+  .main .connect-fixed .connect-surrounding-text {
+    color: rgba(0, 0, 0, 0.45);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
+  .main .connect-main .connect-surrounding-text {
+    color: rgba(0, 0, 0, 0.3); }
+  .main .page-main p, .main .connect-main p, .main .connect-fixed p {
     font-family: 'Brela', serif;
     font-size: 2rem;
     line-height: 2.8rem;
     letter-spacing: 0.02em;
     color: rgba(0, 0, 0, 0.8);
     font-weight: 600; }
-  .main .page-main .connect-surrounding-text, .main .connect-main .connect-surrounding-text {
-    color: rgba(0, 0, 0, 0.2); }
-  .main .page-main a.link-text, .main .connect-main a.link-text {
+  .main .page-main a.link-text, .main .connect-main a.link-text, .main .connect-fixed a.link-text {
     font-weight: 900;
     font-size: 2.1rem; }
-  .main .page-main h2, .main .connect-main h2 {
+  .main .page-main h2, .main .connect-main h2, .main .connect-fixed h2 {
     font-family: "medium-content-sans-serif-font","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
     font-weight: 600;
     font-size: 2rem;
     color: rgba(0, 0, 0, 0.75); }
+  .main .page-main h3, .main .connect-main h3, .main .connect-fixed h3 {
+    font-family: "medium-content-sans-serif-font","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+    font-weight: 600;
+    font-size: 1.6rem;
+    color: rgba(0, 0, 0, 0.75);
+    margin: 10px 0 5px; }
   .main .page-main h1 {
     font-family: "medium-content-sans-serif-font","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
     font-weight: 600;
@@ -68,6 +79,13 @@
       margin-right: 30px;
       padding: 8px 20px;
       fontssize: 1.1em; }
+
+.connect-fixed {
+  padding: 10px 0 0;
+  position: fixed;
+  width: 700px;
+  background-color: rgba(255, 255, 255, 0.95);
+  top: 50px; }
 
 .connect-main p {
   color: #888;
@@ -149,6 +167,21 @@
   transform: translate(0, 0);
   transform: translate3d(0, 0, 0);
   transition: transform 200ms ease-out, opacity 50ms ease-out; }
+
+/* Rise for linked item*/
+.connection-appear {
+  opacity: 0;
+  transform: translate(0, -500px);
+  transform: translate3d(0, -500px, 0); }
+
+.connection-appear.connection-appear-active {
+  opacity: 1;
+  transform: translate(0, 0);
+  transform: translate3d(0, 0, 0);
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  /* easeOutCubic */
+  transition: all 500ms cubic-bezier(0.215, 0.61, 0.355, 1), opacity 200ms ease-in;
+  /* easeOutCubic */ }
 
 /* Rise for linked item*/
 .link-appear {
