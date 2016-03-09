@@ -1,3 +1,7 @@
+d {
+  cursor: pointer;
+  color: #8723B5; }
+
 #app {
   margin-top: 70px; }
 
@@ -85,7 +89,8 @@
   position: fixed;
   width: 700px;
   background-color: rgba(255, 255, 255, 0.95);
-  top: 50px; }
+  top: 50px;
+  z-index: 1; }
 
 .connect-main p {
   color: #888;
@@ -125,11 +130,12 @@
 .navbar-brand {
   font-weight: 500; }
 
-.popover {
+.main-popover.popover {
   padding: 0;
   border: none;
   margin-top: -50px !important;
-  margin-left: -15px !important; }
+  margin-left: -15px !important;
+  z-index: 0; }
 
 .popover.top > .btn-group > .btn-primary {
   background-color: #21224E;

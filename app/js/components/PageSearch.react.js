@@ -36,7 +36,8 @@ const PageSearch = React.createClass({
       <SearchInput 
         onSave={this._onSearch}
         value={this.state.q}
-      />
+        placeholder={'Link or Article Text'}
+        autoFocus={true} />
       {results}
     </div>
   },

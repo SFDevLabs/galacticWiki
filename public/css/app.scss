@@ -1,6 +1,12 @@
 
 $navbar-background-color: rgba(255,255,255,.95);
 
+
+d {
+	cursor: pointer;
+	color: #8723B5;
+}
+
 #app{
 	margin-top: 70px;
 }
@@ -138,6 +144,7 @@ $navbar-background-color: rgba(255,255,255,.95);
 	width: 700px;
 	background-color: $navbar-background-color;
 	top: 50px;
+	z-index: 1;
 }
 
 .connect-main p{
@@ -193,11 +200,13 @@ $navbar-background-color: rgba(255,255,255,.95);
 }
 
 
-.popover {
+
+.main-popover.popover {
 	padding:0;
 	border:none;
 	margin-top: -50px !important; 
 	margin-left: -15px !important; 
+	z-index: 0;
 }
 
 .popover.top > .btn-group > .btn-primary{
@@ -216,6 +225,8 @@ $navbar-background-color: rgba(255,255,255,.95);
     z-index: 1;
     bottom: 2px;
 }
+
+
 
 .fall-enter {
 	opacity: .6;

@@ -63,14 +63,13 @@ const PageSelection = React.createClass({
           </h3>
           <p className="connect-surrounding-text">
             ...{beforeText.slice(beforeText.length-20)}
-            <a className="link-text" href="javascript:void(0);" > {selectedText} </a>
+            <a className="link-text" href="javascript:void(0);" >{selectedText}</a>
             {afterText.slice(0,60)}
           </p>
         </div>
       </ReactCSSTransitionGroup>:
       null;
 
-    console.log('render')
     return <div className="row">
       {fixed}
       <div className="connect-main">
@@ -88,7 +87,7 @@ const PageSelection = React.createClass({
         <div>
           <p className="connect-surrounding-text">
             {beforeText}
-            <a className="link-text" href="javascript:void(0);" > {selectedText} </a>
+            <a className="link-text" href="javascript:void(0);" >{selectedText}</a>
             {afterText}
           </p>
         </div>

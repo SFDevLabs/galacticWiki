@@ -38,6 +38,7 @@ const Root = React.createClass({
         <Route path="/" component={Main} >
           <IndexRoute component={Search} />
           <Route path=":id" component={PageMain}/>
+          <Route path=":id/link/:lid" component={PageMain}/>
           <Route path="users/:id" component={User}/>
           <Route path="*" component={NotFound}  />
         </Route>

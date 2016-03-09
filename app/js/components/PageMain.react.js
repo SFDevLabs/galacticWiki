@@ -49,27 +49,33 @@ const ArticleSection = React.createClass({
       ArticleActions.getById(this.props.params.id);
     }
     ArticleStore.addChangeListener(this._onChange);
-
     //Manual data entry for dev
-    const data = {
-      "MAIN_KEY":{"selectedParagraphIndex":0,"selectedIndex":[105,119]}
-      }
+    // const data = {
+    //   "MAIN_KEY":{"selectedParagraphIndex":0,"selectedIndex":[105,119]}
+    //   }
 
-    //"CONNECTED_KEY":{"selectedParagraphIndex":1,"selectedIndex":[0,13]}
+    // //"CONNECTED_KEY":{"selectedParagraphIndex":1,"selectedIndex":[0,13]}
     
-    this.connectedID = '56de491de5c0175d09fa1064';
-    this.setState({
-      selection:data
-    });
-    const that= this;
-    setTimeout(function(){
-      ArticleActions.getById(that.connectedID);
-    },500)
+    // this.connectedID = '56de491de5c0175d09fa1064';
+    // this.setState({
+    //   selection:data
+    // });
+    // const that= this;
+    // setTimeout(function(){
+    //   ArticleActions.getById(that.connectedID);
+    // },500)
     //End Manual data entry for dev
   },
 
   componentWillUnmount: function() {
     ArticleStore.removeChangeListener(this._onChange);
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    if (nextProps.params.id !== this.props.params.id){
+      ArticleActions.getById(nextProps.params.id);
+    }
+    //ArticleStore.addChangeListener(this._onChange);
   },
 
   /**
@@ -106,8 +112,8 @@ const ArticleSection = React.createClass({
           index={mainSelection.selectedIndex}/>
           <hr className="divider"/>
       </ReactCSSTransitionGroup>:
-
-      <PageArticle 
+      <PageArticle
+        linkId={this.state.lid}
         page={pageData} 
         onToolTipClick={this._onToolTipClick.bind(this, MAIN_KEY)} />;
 
@@ -196,10 +202,11 @@ const ArticleSection = React.createClass({
   /**
    * Event handler for 'change' events coming from the PageStore
    */
-  _onChange: function() {
+  _onChange: function() { 
     const id = this.props.params.id;
     const connectedID = this.connectedID;
     const state = getState(id, connectedID)//getState(null, this.props.params.id)//
+    state.lid=this.props.params.lid;
     const errors = ArticleStore.getErrors()
     if (errors.length>0) { //Errors from page action need to be displayed.
       this.setState({
@@ -217,10 +224,8 @@ const ArticleSection = React.createClass({
     const id = this.props.params.id;
     const cId = this.connectedID;
     const data = this.state.selection;
-
     const selectedParagraphIndexMain = data[MAIN_KEY].selectedParagraphIndex;
     const selectedIndexMain = data[MAIN_KEY].selectedIndex;
-
     const selectedParagraphIndexConnected = data[CONNECTED_KEY].selectedParagraphIndex;
     const selectedIndexConnected = data[CONNECTED_KEY].selectedIndex;
 

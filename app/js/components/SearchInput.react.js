@@ -21,7 +21,8 @@ const SearchInput = React.createClass({
     placeholder: React.PropTypes.string,
     onSave: React.PropTypes.func.isRequired,
     value: React.PropTypes.string,
-    width: React.PropTypes.string
+    width: React.PropTypes.string,
+    autoFocus: React.PropTypes.bool
   },
   
 
@@ -42,7 +43,9 @@ const SearchInput = React.createClass({
         className="form-control"
         onChange={this._onChange}
         onKeyDown={this._onKeyDown}
-        value={this.state.value} />
+        value={this.state.value}
+        placeholder={this.props.placeholder}
+        autoFocus={this.props.autoFocus} />
       <span className="input-group-btn">
         <button onClick={this._save} className="btn btn-default">
           <span className="glyphicon glyphicon-search"></span>

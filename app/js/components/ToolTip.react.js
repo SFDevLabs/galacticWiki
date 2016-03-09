@@ -14,23 +14,6 @@ const ToolTip = React.createClass({
   },
 
   render: function() {
-    // const toolTipEnable = this.state.toolTipEnable
-    // var toolTipStyle;
-    // var toolTipClass = ''
-    // if (toolTipEnable){
-    //   toolTipStyle = {
-    //     display:"block",
-    //     // top: this.toolTipPosition?this.toolTipPosition[1]-40:null,
-    //     // left: this.toolTipPosition?this.toolTipPosition[0]-30:null,//'calc(50% - 150px)',
-    //   }
-    //   toolTipClass += 'in'
-    // } else {
-    //   toolTipStyle = {
-    //     display:'block',
-    //  //   top:'-100px'
-    //   }
-   // }
-
    
     const postionStyle = {
       display:'block',
@@ -39,7 +22,7 @@ const ToolTip = React.createClass({
     };
 
     return <ReactCSSTransitionGroup transitionAppear={true} transitionName="fall" transitionAppearTimeout={200} transitionEnterTimeout={200} transitionLeaveTimeout={200}  >
-      <div style={postionStyle} className="popover top">
+      <div style={postionStyle} className="popover top main-popover">
         <div className="arrow arrow-link"></div>
         <div className="btn-group">
           <button onClick={this.props.onClick} className="btn btn-primary">

@@ -16,6 +16,7 @@ const PageArticle = React.createClass({
 
   propTypes:{
     page: React.PropTypes.object.isRequired,
+    linkId: React.PropTypes.string,
     onToolTipClick: React.PropTypes.func.isRequired
   },
 
@@ -46,6 +47,7 @@ const PageArticle = React.createClass({
 
     const text = _.map(page.text, function(val, i){
         return <Para 
+          linkId={that.props.linkId}
           key={i} 
           _key={i}
           onDown={that._onDown}
@@ -109,6 +111,7 @@ const PageArticle = React.createClass({
   * Event handler for 'change' events coming from the Paragraph
   */
   _onUp: function(paragraphIndex, start, end){
+    if (this.props.linkId) return;
     const that = this;
     this.selectedParagraphIndex = paragraphIndex;
     this.selectedIndex = [start, end];

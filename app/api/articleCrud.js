@@ -74,21 +74,15 @@ exports.load = function (req, res, next, id){
       
       req.sref = _.map(results, function(r, i){
         
-
-
         const pageID = r.PageTwo.properties._id; //Get the other articles uid
-
-
         const outBound = r.Link._fromId === r.PageOne._id; // See if the link is inbound or outbound
-       
-
         console.log(r.Link._fromId,'-',r.PageOne._id, outBound )
-
         const link = r.Link.properties; //Get the link properties
         const textIndex = outBound?link.textIndexFrom:link.textIndexTo; //Get the text index
         const paragraphIndex = outBound?link.pIndexFrom:link.pIndexTo; //Get the p index
         console.log(textIndex, paragraphIndex, 'load')
           return {
+            _id: link._id,
             index: textIndex,
             paragraphIndex: paragraphIndex,
             sref: pageID,
