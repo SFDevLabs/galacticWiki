@@ -5,13 +5,10 @@
 */
 
 const React = require('react');
-const ReactDOM = require('react-dom');
 const _ = require('lodash');
 const Markdown = require('react-remarkable');
 import { OverlayTrigger, Popover } from 'react-bootstrap'; 
-import { Link } from 'react-router';
-
-function createMarkup(text) { return {__html: text}; };
+import { Link } from 'react-router'; 
 
 const Para = React.createClass({
   getInitialState: function() {
@@ -26,35 +23,16 @@ const Para = React.createClass({
     tags: React.PropTypes.array.isRequired,
     onUp: React.PropTypes.func.isRequired,
     _key: React.PropTypes.number.isRequired,
-    linkId: React.PropTypes.string.isRequired
-  },
-  componentDidMount() {
-    const that = this;
-    if (this.state.srefObject){
-      setTimeout(function(){
-        const node = ReactDOM.findDOMNode(that);
-        window.scroll(0, node.offsetTop-150);
-      },100)
-    }
+    linkId: React.PropTypes.string,
+    scrollID: React.PropTypes.bool
   },
   render: function() {
     const tags = this.props.tags.concat(this.props.sref);
-
-
-    console.log(tags, this.props.linkId, _.find(this.props.sref, {_id:linkId}))
-    const linkId = this.props.linkId;
-    
-    let style = this.state.srefObject?null: {color:'#999'};
-    // if (linkId){
-    //   //const linkIdData = _.find(tags, {_id:linkId})
-    //   style = this.state.srefObject?{color:'#999'}:{color:'#eee'};
-    // } else{
-    //   style = null;
-    // }
     
     const text = this.buildParagraphs(tags, this.props.text);
+    const scroll = this.props.scrollID?'scroll':null;
     return <p
-      style={style}
+      id={scroll}
       className="page-para" 
       onMouseDown={this._down} 
       onMouseLeave={this._leave} 
@@ -79,9 +57,14 @@ const Para = React.createClass({
       const nodeText = text.slice(tag.index[0], tag.index[1]);
       //const className = 
 
+      
+      const key = nodes.length-1;
+      var linkClass = tag.sref?'link-sref':'link-href';
+      if (tag._id === that.props.linkId)linkClass += ' highlight';
+
       const node = tag.sref?
-        <Link to={'/'+tag.sref+'/link/'+tag._id} key={nodes.length-1} className='href-link'>{nodeText}</Link>:
-        <a key={nodes.length-1}>{nodeText}</a>
+      <Link to={'/'+tag.sref+'/link/'+tag._id} key={key} className={linkClass} >{nodeText}</Link>:
+      <a target="_blank" href={tag.href} key={key} className={linkClass}> {nodeText} </a>
 
       // React.createElement(
       //   tag.name, 
@@ -94,15 +77,15 @@ const Para = React.createClass({
       //   },
       //   nodeText
       // );
-    // const popover = <Popover 
-    //   id="popover-link">
-    //     <strong>Holy guacamole!</strong> Check this info.
-    // </Popover>
-    //  const overLay =  <OverlayTrigger
-    //     key={nodes.length-1} 
-    //     placement="top" overlay={popover}>
-    //     {node}
-    //   </OverlayTrigger>
+    const popover = <Popover 
+      id="popover-link">
+        <strong>Holy guacamole!</strong> Check this info.
+    </Popover>
+     const overLay = <OverlayTrigger
+        key={key} 
+        placement="top" overlay={popover}>
+        {node}
+      </OverlayTrigger>
 
 
       // Hold and index of the last node.
@@ -155,15 +138,7 @@ const Para = React.createClass({
         text = document.selection.createRange().text;
     }
     return text;
-  },
-  /**
-   * Enter
-   */
-  _onClick: function(e){
-    // this.refs.popover.show();
-    //console.log(e, 'l')
   }
-
 })
 
 module.exports = Para;

@@ -14,7 +14,6 @@ const ToolTip = React.createClass({
   },
 
   render: function() {
-   
     const postionStyle = {
       display:'block',
       top:this.props.location[1],

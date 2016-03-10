@@ -1,11 +1,16 @@
 
 $navbar-background-color: rgba(255,255,255,.95);
+$main-black: rgba(0, 0, 0, 0.75);
 
-
-d {
-	cursor: pointer;
+.link-sref {
 	color: #8723B5;
 }
+.link-sref.highlight {
+	color: #8723B5;
+	text-shadow : -1px -1px 5px #98CFFF, 1px 1px 5px #96CAF8, 0px 0px 5px #96CAF8
+
+}
+
 
 #app{
 	margin-top: 70px;
@@ -25,15 +30,35 @@ d {
 	.row {
 		margin: 0px auto;
 	}
+
 	.page-search {
 		margin-top: 3rem;
+	}
+	.cancel-search{
+		font-size: 2rem;
+		color: $main-black;
+	}
+
+	.connect-action {
+	    position: absolute;
+	    margin: auto;
+	    left: calc(50% - 50px);
+	    width: 100px;
+	    margin-top: -40px;
+	}
+
+	.link-loader {
+	    position: absolute;
+	    left: 50%;
+	    margin-top: -20px;
 	}
 
 	.connect-fixed .connect-surrounding-text{
 		color: rgba(0, 0, 0, 0.45);
 		white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+
 	}
 	.connect-main .connect-surrounding-text{
 		color: rgba(0, 0, 0, 0.3);
@@ -77,7 +102,7 @@ d {
 			font-family:"medium-content-sans-serif-font","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
 			font-weight:600;
 			font-size: 3rem;
-			color: rgba(0,0,0,0.75);
+			color: $main-black
 		}
 
 		.page-header{

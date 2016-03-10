@@ -7,6 +7,7 @@ const React = require('react');
 const parse = require('url-parse');
 const Para = require('./Para.react');
 const ToolTip = require('./ToolTip.react');
+const ReactDOM = require('react-dom');
 
 const Utils = require('../lib/domUtility');
 const closest = Utils.closest;
@@ -27,12 +28,17 @@ const PageArticle = React.createClass({
 
   componentDidMount: function() {
     document.addEventListener("mousedown", this._screenMousedown)
+    this._scrollToLinkedPara();
   },
 
   componentWillUnmount: function() {
     document.removeEventListener("mousedown", this._screenMousedown)
   },
-
+  componentWillReceiveProps: function(newProps){
+    if (newProps.linkId !== this.props.linkId){
+      this._scrollToLinkedPara();   
+    }
+  },
   render :function() {
   	const that = this;
   	const page = this.props.page;
@@ -45,10 +51,15 @@ const PageArticle = React.createClass({
         onClick={that._onToolTipClick} />:
       null;
 
+    const linkId = this.props.linkId;
+    var linkData = _.find(page.sref, {_id:linkId});
+
     const text = _.map(page.text, function(val, i){
-        return <Para 
-          linkId={that.props.linkId}
-          key={i} 
+        let scroll = linkData && linkData.paragraphIndex == i;
+        return <Para
+          scrollID={scroll}
+          key={i}
+          linkId = {linkId}
           _key={i}
           onDown={that._onDown}
           onUp={that._onUp}
@@ -111,7 +122,6 @@ const PageArticle = React.createClass({
   * Event handler for 'change' events coming from the Paragraph
   */
   _onUp: function(paragraphIndex, start, end){
-    if (this.props.linkId) return;
     const that = this;
     this.selectedParagraphIndex = paragraphIndex;
     this.selectedIndex = [start, end];
@@ -129,6 +139,22 @@ const PageArticle = React.createClass({
     const selectedParagraphIndex = this.selectedParagraphIndex;
     const selectedIndex = this.selectedIndex;
     this.props.onToolTipClick(selectedParagraphIndex, selectedIndex)
+  },
+  /**
+   * Enter
+   */
+  _scrollToLinkedPara: function(sref) { 
+    const that = this;
+    // const node = ReactDOM.findDOMNode(that);
+    // const linkId = this.props.linkId;
+    // const linkIdData =_.find(sref, {_id:linkId});
+   
+    setTimeout(function(){
+      const node = document.getElementById('scroll');
+      if (node) {
+        window.scroll(0, node.offsetTop-150);          
+      }
+    },100)
   }
 })
 

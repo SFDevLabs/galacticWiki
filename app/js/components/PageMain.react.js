@@ -50,20 +50,20 @@ const ArticleSection = React.createClass({
     }
     ArticleStore.addChangeListener(this._onChange);
     //Manual data entry for dev
-    // const data = {
-    //   "MAIN_KEY":{"selectedParagraphIndex":0,"selectedIndex":[105,119]}
-    //   }
+    const data = {
+      "MAIN_KEY":{"selectedParagraphIndex":0,"selectedIndex":[105,119]},
+      "CONNECTED_KEY":{"selectedParagraphIndex":1,"selectedIndex":[0,13]}
+      }
 
-    // //"CONNECTED_KEY":{"selectedParagraphIndex":1,"selectedIndex":[0,13]}
     
-    // this.connectedID = '56de491de5c0175d09fa1064';
-    // this.setState({
-    //   selection:data
-    // });
-    // const that= this;
-    // setTimeout(function(){
-    //   ArticleActions.getById(that.connectedID);
-    // },500)
+    this.connectedID = '56de491de5c0175d09fa1064';
+    this.setState({
+      selection:data
+    });
+    const that= this;
+    setTimeout(function(){
+      ArticleActions.getById(that.connectedID);
+    },500)
     //End Manual data entry for dev
   },
 
@@ -103,7 +103,7 @@ const ArticleSection = React.createClass({
         transitionAppear={true}
         transitionName="link"
         transitionAppearTimeout={500} >
-          <a onClick={this._onCancelClick} href="javascript:void(0);"> 
+          <a onClick={this._onCancelSelectionMain} href="javascript:void(0);"> 
             <span className="glyphicon glyphicon-arrow-left" /> back
           </a>
           <PageSelection  
@@ -130,26 +130,41 @@ const ArticleSection = React.createClass({
 
     const connectedSelection = selection && selection[CONNECTED_KEY]? selection[CONNECTED_KEY]: null;
 
+    const button = this.state.saving? 
+      <div className='link-loader'><Loader /></div>:
+      <button  onClick={this._save} className="btn btn-primary connect-action" >Create Link</button>;
+
     var connectedPage;
     if (connectedPageData && connectedSelection){
-      connectedPage = <ReactCSSTransitionGroup 
-        transitionEnterTimeout={500}
-        transitionLeaveTimeout={500}
-        transitionAppear={true}
-        transitionName="link"
-        transitionAppearTimeout={500} >
-          <PageSelection  
-            page={connectedPageData}
-            paragraph={connectedSelection.selectedParagraphIndex}
-            index={connectedSelection.selectedIndex}/>
-        <button  onClick={this._save} className="btn btn-default" >Connect</button>
-      </ReactCSSTransitionGroup>;
+     
+      connectedPage = <div>
+        {button}
+        <ReactCSSTransitionGroup 
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={500}
+          transitionAppear={true}
+          transitionName="link"
+          transitionAppearTimeout={500} >
+            <a onClick={this._onCancelSearch} href="javascript:void(0);" className="pull-right cancel-search"> 
+              <span className="glyphicon glyphicon-remove-circle" />
+            </a>
+            <PageSelection  
+              page={connectedPageData}
+              paragraph={connectedSelection.selectedParagraphIndex}
+              index={connectedSelection.selectedIndex}/>
+        </ReactCSSTransitionGroup>
+      </div>;
     } else if (connectedPageData){
-      connectedPage = <PageArticle 
-        page={connectedPageData} 
-        onToolTipClick={this._onToolTipClick.bind(this, CONNECTED_KEY) } />
+      connectedPage = <div>
+        {button}
+        <a onClick={this._onCancelSearch} href="javascript:void(0);" className="pull-right cancel-search"> 
+          <span className="glyphicon glyphicon-remove-circle" />
+        </a>
+        <PageArticle 
+          page={connectedPageData} 
+          onToolTipClick={this._onToolTipClick.bind(this, CONNECTED_KEY) } />
+      </div> 
     }
-
     return <div>
       <section className="container">
         {errorMessage}
@@ -165,10 +180,21 @@ const ArticleSection = React.createClass({
   /**
    * Event handler for 'change' events coming from the PageStore
    */
-  _onCancelClick: function(data) {
+  _onCancelSelectionMain: function() {
     this.connectedID = null;
     this.setState({
       selection: null,
+      connectedPage: undefined
+    });
+  },
+  /**
+   * Event handler for 'change' events coming from the PageStore
+   */
+  _onCancelSearch: function() {
+    const selection = this.state.selection;
+    selection[CONNECTED_KEY]=null;
+    this.setState({
+      selection: selection,
       connectedPage: undefined
     });
   },
@@ -226,8 +252,13 @@ const ArticleSection = React.createClass({
     const data = this.state.selection;
     const selectedParagraphIndexMain = data[MAIN_KEY].selectedParagraphIndex;
     const selectedIndexMain = data[MAIN_KEY].selectedIndex;
+    //These need to be.
     const selectedParagraphIndexConnected = data[CONNECTED_KEY].selectedParagraphIndex;
     const selectedIndexConnected = data[CONNECTED_KEY].selectedIndex;
+    
+    this.setState({
+      saving: true
+    });
 
     ArticleActions.createLink(
         id,

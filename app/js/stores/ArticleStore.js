@@ -193,6 +193,18 @@ AppDispatcher.register(function(action) {
       }
       break;
 
+    case Constants.POST_ARTICLE_LINKURL_DATA:
+      var article = action.response.body
+      if (article) {
+        const id =article._id 
+        const data = article;
+        //update(id, data)
+        // set(article);
+        // ArticleStore.emitChange();
+      }
+      break;
+
+
     case Constants.DELETE_ARTICLE:
       var article = action.response.body;
       if (article) {
@@ -210,26 +222,10 @@ AppDispatcher.register(function(action) {
       }
       break;
 
-    case Constants.POST_ARTICLE_COMMENT_DATA:
-      var article = action.response.body
-      if (article) {
-        set(article);
-        ArticleStore.emitChange();
-      }
-      break;
-
     case Constants.ERROR:
       var errors = action.response.errors
       if (errors) {
         setError(errors);
-        ArticleStore.emitChange();
-      }
-      break;
-      
-    case Constants.DELETE_ARTICLE_COMMENT_DATA:
-      var article = action.response.body
-      if (article) {
-        update(article);
         ArticleStore.emitChange();
       }
       break;

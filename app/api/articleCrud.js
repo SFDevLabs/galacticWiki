@@ -68,26 +68,11 @@ exports.load = function (req, res, next, id){
   Article.load(id, function (err, article) {
     if (!article || (err && err.message==='Cast to ObjectId failed')) return  res.status(404).send(utils.errsForApi('Article not found'));
     if (err) return  res.status(500).send( utils.errsForApi(err.errors || err) );
+    req.article = article;
 
     Connection.getNode(article._id, function(err, results){
-      req.article = article;
-      
       req.sref = _.map(results, function(r, i){
-        
-        const pageID = r.PageTwo.properties._id; //Get the other articles uid
-        const outBound = r.Link._fromId === r.PageOne._id; // See if the link is inbound or outbound
-        console.log(r.Link._fromId,'-',r.PageOne._id, outBound )
-        const link = r.Link.properties; //Get the link properties
-        const textIndex = outBound?link.textIndexFrom:link.textIndexTo; //Get the text index
-        const paragraphIndex = outBound?link.pIndexFrom:link.pIndexTo; //Get the p index
-        console.log(textIndex, paragraphIndex, 'load')
-          return {
-            _id: link._id,
-            index: textIndex,
-            paragraphIndex: paragraphIndex,
-            sref: pageID,
-            outbound: outBound
-          }
+        return srefParser(r)
       });
       next();
     })
@@ -95,6 +80,28 @@ exports.load = function (req, res, next, id){
     
   });
 };
+
+
+/**
+ * @name   srefParser
+ * @r     {obj} Neo4j object
+ * @return {obj}    cb  a callback for the data.
+ */
+const srefParser = function(r){
+  const pageID = r.PageTwo.properties._id; //Get the other articles uid
+  const outBound = r.Link._fromId === r.PageOne._id; // See if the link is inbound or outbound
+  console.log(r.Link._fromId,'-',r.PageOne._id, outBound )
+  const link = r.Link.properties; //Get the link properties
+  const textIndex = outBound?link.textIndexFrom:link.textIndexTo; //Get the text index
+  const paragraphIndex = outBound?link.pIndexFrom:link.pIndexTo; //Get the p index
+  return {
+    _id: link._id,
+    index: textIndex,
+    paragraphIndex: paragraphIndex,
+    sref: pageID,
+    outbound: outBound
+  }
+}
 
 /**
  * List
@@ -276,6 +283,9 @@ const saveArticleToDB = function(result, cb){
 exports.getCreateSREFController = function (req, res) {  
 
   const body = req.body;
+  const article = req.article;
+  const sref = req.sref;
+
 
   const idFrom = req.article._id;
   const idTo = body.idTo;
@@ -286,6 +296,7 @@ exports.getCreateSREFController = function (req, res) {
   const textIndexTo = _.map(body.textIndexTo, function(val){ return Number(val) });
   const pIndexTo = Number(body.pIndexTo);
 
+
   Connection.createSREF(
     idFrom,
     idTo,
@@ -295,7 +306,11 @@ exports.getCreateSREFController = function (req, res) {
     pIndexTo,
     function(err, result){
       if (!err) {
-        res.send(result);
+        const object = article.toJSON();
+        object.sref = sref.toJSON();
+        const parsedSREF = srefParser(result);
+        object.sref.push(parsedSREF);
+        res.send(object);
       } else {
         res.status(400).send(utils.errsForApi(err.errors || err));
       }

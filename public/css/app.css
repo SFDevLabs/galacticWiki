@@ -1,6 +1,9 @@
-d {
-  cursor: pointer;
+.link-sref {
   color: #8723B5; }
+
+.link-sref.highlight {
+  color: #8723B5;
+  text-shadow: -1px -1px 5px #98CFFF, 1px 1px 5px #96CAF8, 0px 0px 5px #96CAF8; }
 
 #app {
   margin-top: 70px; }
@@ -17,6 +20,19 @@ d {
     margin: 0px auto; }
   .main .page-search {
     margin-top: 3rem; }
+  .main .cancel-search {
+    font-size: 2rem;
+    color: rgba(0, 0, 0, 0.75); }
+  .main .connect-action {
+    position: absolute;
+    margin: auto;
+    left: calc(50% - 50px);
+    width: 100px;
+    margin-top: -40px; }
+  .main .link-loader {
+    position: absolute;
+    left: 50%;
+    margin-top: -20px; }
   .main .connect-fixed .connect-surrounding-text {
     color: rgba(0, 0, 0, 0.45);
     white-space: nowrap;
