@@ -36,10 +36,10 @@ exports.createSREF = function(idOne, idTwo, textIndexFrom, pIndexFrom, textIndex
 };
 //createSREF Query
 const createSREFQ = [
-  'MATCH (PageFrom:page {_id:{_idOne}})',
-  'MATCH (PageTo:page {_id:{_idTwo}})',
-  'CREATE PageFrom-[Link:sref {_id:{_id}, textIndexFrom:{_textIndexFrom}, textIndexTo:{_textIndexTo}, pIndexTo:{_pIndexTo},pIndexFrom:{_pIndexFrom} } ]->PageTo',
-  'RETURN PageFrom, Link, PageTo'].join('\n');
+  'MATCH (PageOne:page {_id:{_idOne}})',
+  'MATCH (PageTwo:page {_id:{_idTwo}})',
+  'CREATE PageOne-[Link:sref {_id:{_id}, textIndexFrom:{_textIndexFrom}, textIndexTo:{_textIndexTo}, pIndexTo:{_pIndexTo},pIndexFrom:{_pIndexFrom} } ]->PageTwo',
+  'RETURN PageOne, Link, PageTwo'].join('\n');
 
 
 // const createHREFQ = [

@@ -49,13 +49,13 @@ const ArticleSection = React.createClass({
       ArticleActions.getById(this.props.params.id);
     }
     ArticleStore.addChangeListener(this._onChange);
+
     //Manual data entry for dev
     const data = {
       "MAIN_KEY":{"selectedParagraphIndex":0,"selectedIndex":[105,119]},
       "CONNECTED_KEY":{"selectedParagraphIndex":1,"selectedIndex":[0,13]}
-      }
+    }
 
-    
     this.connectedID = '56de491de5c0175d09fa1064';
     this.setState({
       selection:data
@@ -75,7 +75,6 @@ const ArticleSection = React.createClass({
     if (nextProps.params.id !== this.props.params.id){
       ArticleActions.getById(nextProps.params.id);
     }
-    //ArticleStore.addChangeListener(this._onChange);
   },
 
   /**
@@ -86,6 +85,8 @@ const ArticleSection = React.createClass({
     const pageData = this.state.page;
     const connectedPageData = this.state.connectedPage;
     const selection = this.state.selection;
+
+    const id = this.props.params.id;
 
     if (pageData===null){return <NotFound />}//null means the api gave us a 404.
     else if (!pageData){return <Loader />}//undefined means that no request for the article has been made.
@@ -114,6 +115,7 @@ const ArticleSection = React.createClass({
       </ReactCSSTransitionGroup>:
       <PageArticle
         linkId={this.state.lid}
+        id={id}
         page={pageData} 
         onToolTipClick={this._onToolTipClick.bind(this, MAIN_KEY)} />;
 
@@ -160,7 +162,8 @@ const ArticleSection = React.createClass({
         <a onClick={this._onCancelSearch} href="javascript:void(0);" className="pull-right cancel-search"> 
           <span className="glyphicon glyphicon-remove-circle" />
         </a>
-        <PageArticle 
+        <PageArticle
+          id={id}
           page={connectedPageData} 
           onToolTipClick={this._onToolTipClick.bind(this, CONNECTED_KEY) } />
       </div> 
@@ -256,9 +259,9 @@ const ArticleSection = React.createClass({
     const selectedParagraphIndexConnected = data[CONNECTED_KEY].selectedParagraphIndex;
     const selectedIndexConnected = data[CONNECTED_KEY].selectedIndex;
     
-    this.setState({
-      saving: true
-    });
+    // this.setState({
+    //   saving: true
+    // });
 
     ArticleActions.createLink(
         id,

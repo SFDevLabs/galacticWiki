@@ -152,6 +152,8 @@
   margin-top: -50px !important;
   margin-left: -15px !important;
   z-index: 0; }
+  .main-popover.popover .arrow.arrow-link {
+    pointer-events: none; }
 
 .popover.top > .btn-group > .btn-primary {
   background-color: #21224E;

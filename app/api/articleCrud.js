@@ -88,9 +88,10 @@ exports.load = function (req, res, next, id){
  * @return {obj}    cb  a callback for the data.
  */
 const srefParser = function(r){
+  console.log(r, 'r')
   const pageID = r.PageTwo.properties._id; //Get the other articles uid
   const outBound = r.Link._fromId === r.PageOne._id; // See if the link is inbound or outbound
-  console.log(r.Link._fromId,'-',r.PageOne._id, outBound )
+//  console.log(r.Link._fromId,'-',r.PageOne._id, outBound )
   const link = r.Link.properties; //Get the link properties
   const textIndex = outBound?link.textIndexFrom:link.textIndexTo; //Get the text index
   const paragraphIndex = outBound?link.pIndexFrom:link.pIndexTo; //Get the p index
@@ -306,9 +307,11 @@ exports.getCreateSREFController = function (req, res) {
     pIndexTo,
     function(err, result){
       if (!err) {
-        const object = article.toJSON();
-        object.sref = sref.toJSON();
-        const parsedSREF = srefParser(result);
+        const parsedSREF = srefParser(result[0]);
+
+        var object = article.toJSON();
+        object.sref = sref;
+        
         object.sref.push(parsedSREF);
         res.send(object);
       } else {

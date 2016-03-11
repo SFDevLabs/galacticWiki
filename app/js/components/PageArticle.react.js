@@ -34,11 +34,14 @@ const PageArticle = React.createClass({
   componentWillUnmount: function() {
     document.removeEventListener("mousedown", this._screenMousedown)
   },
+
   componentWillReceiveProps: function(newProps){
     if (newProps.linkId !== this.props.linkId){
       this._scrollToLinkedPara();   
     }
+    this.forceUpdate();
   },
+
   render :function() {
   	const that = this;
   	const page = this.props.page;
@@ -140,6 +143,7 @@ const PageArticle = React.createClass({
     const selectedIndex = this.selectedIndex;
     this.props.onToolTipClick(selectedParagraphIndex, selectedIndex)
   },
+
   /**
    * Enter
    */

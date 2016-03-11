@@ -232,6 +232,9 @@ $main-black: rgba(0, 0, 0, 0.75);
 	margin-top: -50px !important; 
 	margin-left: -15px !important; 
 	z-index: 0;
+	.arrow.arrow-link{
+		pointer-events: none;
+	}
 }
 
 .popover.top > .btn-group > .btn-primary{

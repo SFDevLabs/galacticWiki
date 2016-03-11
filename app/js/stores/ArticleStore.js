@@ -198,12 +198,10 @@ AppDispatcher.register(function(action) {
       if (article) {
         const id =article._id 
         const data = article;
-        //update(id, data)
-        // set(article);
-        // ArticleStore.emitChange();
+        update(id, data);
+        ArticleStore.emitChange();
       }
       break;
-
 
     case Constants.DELETE_ARTICLE:
       var article = action.response.body;
