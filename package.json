@@ -2,19 +2,13 @@
   "name": "Galactic",
   "description": "Connected Internet",
   "keywords": [
-    "React",
-    "express",
-    "mongoose",
-    "mongodb",
-    "passport",
-    "demo"
   ],
   "version": "0.1.1",
   "private": false,
   "author": "Jeff Jenkins",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sfdevlabs/reno.git"
+    "url": "https://github.com/sfdevlabs/galactic.git"
   },
   "engines": {
     "node": ">=4.x"
