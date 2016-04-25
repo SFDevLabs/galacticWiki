@@ -22,6 +22,12 @@ $main-black: rgba(0, 0, 0, 0.75);
 	text-align: center;
 }
 
+.favicon{
+	width: 16px;
+	height: 16px;
+	margin-bottom: 2px;
+}
+
 .main {
 
 	margin: 0rem auto 5rem;
@@ -117,12 +123,6 @@ $main-black: rgba(0, 0, 0, 0.75);
 
 		.page-para {
 			
-		}
-
-		.favicon{
-			width: 16px;
-			height: 16px;
-			margin-bottom: 2px;
 		}
 	}
 

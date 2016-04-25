@@ -10,6 +10,7 @@ const Header = require('./Header.react');
 const PageMain = require('./PageMain.react');
 const Search = require('./Search.react');
 const SearchResults = require('./SearchResults.react');
+const NewPage = require('./NewPage.react');
 const NotFound = require('./NotFound.react');
 const User = require('./User.react');
 
@@ -37,6 +38,7 @@ const Root = React.createClass({
       <Router history={browserHistory}>
         <Route path="/" component={Main} >
           <IndexRoute component={Search} />
+          <Route path="new" component={NewPage}/>
           <Route path=":id" component={PageMain}/>
           <Route path=":id/link/:lid" component={PageMain}/>
           <Route path="users/:id" component={User}/>

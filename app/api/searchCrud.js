@@ -9,6 +9,7 @@ const Article = mongoose.model('Article');
 const _ = require('lodash');
 const utils = require('../../lib/utils');
 const validator = require('validator');
+const Connection = require('../models/connection');
 
 /**
  * List
@@ -32,6 +33,8 @@ exports.getListController = function (req, res) {
   }
 
   Article.list(options, function (err, results) {
+
+    //Connection.getNode()
     Article.count(options.criteria).exec(function (errCount, count) {
 
       //here is where we consult the graph URL.

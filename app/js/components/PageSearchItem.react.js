@@ -18,7 +18,7 @@ const SearchItem = React.createClass({
    */
   render: function() {
     const item = this.props.item;
-    const overflow = {overflow: 'hidden', textOverflow: 'ellipsis'};
+    const overflow = {overflow: 'hidden', textOverflow: 'ellipsis', 'lineHeight':'3rem'};
 
     var parser = document.createElement('a');// Stripping the protocol from the link for proper link structure
     parser.href = item.canonicalLink;

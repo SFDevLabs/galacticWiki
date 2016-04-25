@@ -6,8 +6,8 @@
 
 const React = require('react');
 const SearchActions = require('../actions/SearchActions');
-const ArticleActions = require('../actions/ArticleActions');
 const SearchItem = require('./SearchItem.react');
+import { Link } from 'react-router';
 
 const SearchStore = require('../stores/SearchStore');
 const _ = require('lodash');
@@ -58,21 +58,23 @@ const SearchResults = React.createClass({
   },
 
   render :function() {
-    const data = this.state.results;
-    const length = Object.keys(data).length;
+    const resultsData = this.state.results;
+    const isURL = this.state.url;
 
-    const create =  <input className='btn btn-default' onClick={this._onPost} value={this.state.url} /> ;
+    const length = Object.keys(resultsData).length;
+    const createURL = isURL?
+      (<span>But you can <Link to={"/new?site="+this.state.url} >add this site to Galactic.</Link></span>):
+      null;
 
-    const results = length>0?_.map(data, function(result, i) {
+    const results = length>0?_.map(resultsData, function(result, i) {
         return <SearchItem key={i} item={result} />
     }):
     <div clasName="row">
-      No Results Found.
+      No Results Found. {createURL}
     </div>;
 
     return <div className="row">
       {results}        
-      {create}
     </div>
   },
 
@@ -81,13 +83,6 @@ const SearchResults = React.createClass({
    */
   _onChange: function() {
     this.setState(getState())
-  },
-
-  /**
-   * Event handler for 'save' events coming from the SearchStore
-   */
-  _onPost: function(){
-    ArticleActions.create(this.state.url);
   }
 
 })

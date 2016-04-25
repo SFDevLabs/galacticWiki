@@ -7,6 +7,7 @@
 const React = require('react');
 const SearchInput = require('./SearchInput.react');
 const SearchResults = require('./SearchResults.react');
+import { Link } from 'react-router';
 
 const Search = React.createClass({
   
@@ -18,15 +19,8 @@ const Search = React.createClass({
     return {};
   },
 
-  // componentWillMount: function() {
-  //   const q = this.location.query.q;
-  //   const clearData = true;
-  //   fetch(q, clearData)
-  // },
-  
   componentWillReceiveProps: function(newProps){
     const q = newProps.location.query.q;
-    console.log
   },
 
   render :function() {
@@ -41,9 +35,9 @@ const Search = React.createClass({
         />
       </div>
       <div className="row text-center search-actions">
-        <button type="button" className="btn btn-default">
+        <Link to="new" type="button" className="btn btn-default">
           Make A Connection
-        </button>
+        </Link>
       </div>
     </div>;//Give the static search bar.
 
