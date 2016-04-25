@@ -102,9 +102,58 @@ exports.getNode = function(id, cb){
 	  },
 	  cb);
 };
-//  'MATCH (PageTo:page {_id:{_id}})-[Link]->(PageFrom)',
 
 //get Node Query
 const getNodeQ = [
   'MATCH (PageOne:page {_id:{_id}})-[Link]-(PageTwo)',
   'RETURN PageOne, Link, PageTwo'].join('\n');
+
+/**
+ * load a multiple nodes from a MongoId;
+ */
+exports.getNodes = function(ids, cb){
+
+
+	//get Node Query
+
+	
+	
+	//'MATCH ('+ id +':page {_id:{_id}})-[Link]-(PageTwo)',
+
+	var getNodesQ = [];
+
+
+	 //.join('\n');
+
+	db.cypher({
+	      query: getNodeQ,
+	      params: {
+	          _id: id
+	      },
+	  },
+	  cb);
+};
+
+const returnString  = 'RETURN PageOne, Link, PageTwo';
+
+
+/**
+ * @name   srefParser
+ * @r     {obj} Neo4j object
+ * @return {obj}    cb  a callback for the data.
+ */
+const srefParser = function(r){
+  const pageID = r.PageTwo.properties._id; //Get the other articles uid
+  const outBound = r.Link._fromId === r.PageOne._id; // See if the link is inbound or outbound
+  const link = r.Link.properties; //Get the link properties
+  const textIndex = outBound?link.textIndexFrom:link.textIndexTo; //Get the text index
+  const paragraphIndex = outBound?link.pIndexFrom:link.pIndexTo; //Get the p index
+  return {
+    _id: link._id,
+    index: textIndex,
+    paragraphIndex: paragraphIndex,
+    sref: pageID,
+    outbound: outBound
+  }
+}
+//'MATCH (PageOne:page {_id:{_id}})-[Link]-(PageTwo)'

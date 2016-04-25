@@ -5,6 +5,7 @@ const url = 'http://reno-demo.herokuapp.com' //Change to your apps url.
 module.exports = {
   url:url,
   db: process.env.MONGOLAB_URI || 'mongodb://localhost/galactic_prod',
+  neo4jdb: process.env.GRAPHENEDB_URL,
   facebook: {
     clientID: process.env.FACEBOOK_CLIENTID,
     clientSecret: process.env.FACEBOOK_SECRET,
