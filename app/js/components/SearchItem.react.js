@@ -17,14 +17,18 @@ const SearchItem = React.createClass({
    */
   render: function() {
     const item = this.props.item;
-    const overflow = {overflow: 'hidden', textOverflow: 'ellipsis'};
 
     var parser = document.createElement('a');// Stripping the protocol from the link for proper link structure
     parser.href = item.canonicalLink;
     const host = parser.host
 
+
+    const titles = item.connections.map(function(connection, i){
+      return <h4 style={{marginLeft:'40px'}} >{connection.title}</h4>
+    });
+
     return <div className="article" >
-      <h3 style={overflow} >
+      <h3 className="overflow" style={{lineHeight:'2.7rem'}} >
         <Link to={"/"+item._id}>
           {item.title}
         </Link>
@@ -32,7 +36,9 @@ const SearchItem = React.createClass({
       <img className="favicon" src={item.favicon}/>
       &nbsp;
       <a href={item.canonicalLink} >{host}</a>
-      <p style={overflow}>{item.description}</p>
+      <p className="overflow">{item.description}</p>
+
+      {titles}
     </div>;
   }
 

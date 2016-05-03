@@ -5,8 +5,9 @@
  */
 
 const config = require('../../config/config');
-var neo4j = require('neo4j');
-var db = new neo4j.GraphDatabase(config.neo4jdb);
+const neo4j = require('neo4j');
+const db = new neo4j.GraphDatabase(config.neo4jdb);
+const _ = require('lodash');
 
 
 const mongoose = require('mongoose');
@@ -42,36 +43,6 @@ const createSREFQ = [
   'RETURN PageOne, Link, PageTwo'].join('\n');
 
 
-// const createHREFQ = [
-//   'CREATE (Page:page {_id:{_idOne}})',
-//   'CREATE (Page:page {_id:{_idOne}})',
-//   'CREATE PageFrom-[Link:href]->PageTo',
-//   'RETURN PageFrom, Link, PageTo'].join('\n');
-
-// exports.createHREF = function(idOne, idTwo, cb){
-// 	if ([idOne, idTwo].indexOf(undefined)){ return console.log('Required Param is Undfined') }
-// 	db.cypher({
-// 	      params: {
-// 	          _idOne: idOne,
-// 	          _idTwo: idTwo
-// 	      },
-// 	      query: createHREFQ
-// 	  }, 
-// 	  function (err, results) {
-// 	      if (err) throw err;
-// 	      var result = results[0];
-// 	      if (!result) {
-// 	        res.send({
-// 	          err:null,
-// 	          message: 'No Result'
-// 	        })
-// 	      } else {
-// 	      	cb(result);
-// 	      }
-// 	  });
-// };
-
-
 /**
  * Create a node from a MongoId;
  */
@@ -99,8 +70,27 @@ exports.getNode = function(id, cb){
 	      params: {
 	          _id: id
 	      },
-	  },
-	  cb);
+	  }, function(err, results){
+
+	  	if (err) {
+	  	  console.log(err, 'getNode')
+	  		return cb(err, null)
+	  	}
+
+      cb(err,
+				_.chain(results)
+		  	 .filter(function(r, i){
+		  			console.log(r.PageOne._id, 'r')
+
+		  	 	return r.Link._fromId === r.PageOne._id})
+		  	 .map(function(r){return srefParser(r)})
+	       .value(),
+				_.chain(results)
+		  	 .filter(function(r, i){return r.Link._toId === r.PageOne._id})
+		  	 .map(function(r){return inboundSrefParser(r)})
+	       .value()
+       )
+	  });
 };
 
 //get Node Query
@@ -109,32 +99,129 @@ const getNodeQ = [
   'RETURN PageOne, Link, PageTwo'].join('\n');
 
 /**
+ * @name   srefParser
+ * @r     {obj} Neo4j object
+ * @return {obj}    cb  a callback for the data.
+ */
+const srefParser = function(r){
+  const pageID = r.PageTwo.properties._id; //Get the other articles uid
+  const link = r.Link.properties; //Get the link properties
+  const textIndex = link.textIndexFrom;//Get the text index
+  const paragraphIndex = link.pIndexFrom; //Get the p index
+  return {
+    _id: link._id,
+    index: textIndex,
+    paragraphIndex: paragraphIndex,
+    sref: pageID,
+  }
+}
+
+/**
+ * @name   inboundSrefParser
+ * @r     {obj} Neo4j object
+ * @return {obj}    cb  a callback for the data.
+ */
+const inboundSrefParser = function(r){
+  const pageID = r.PageTwo.properties._id; //Get the other articles uid
+  const link = r.Link.properties; //Get the link properties
+  const textIndex = link.textIndexTo;//Get the text index
+  const paragraphIndex = link.pIndexTo; //Get the p index
+  return {
+    _id: link._id,
+    index: textIndex,
+    paragraphIndex: paragraphIndex,
+    sref: pageID,
+  }
+}
+
+  // const textIndex = outBound?link.textIndexFrom:link.textIndexTo; //Get the text index
+  // const paragraphIndex = outBound?link.pIndexFrom:link.pIndexTo; //Get the p index
+
+/**
+ * load a multiple nodes from a MongoId;
+ */
+// exports.getNodes = function(nothing, cb){
+
+
+// 	//get Node Query
+
+// 	var ids = ['571d9c86f2bdef202cbe7e5f', '571d9cbbf2bdef202cbe7e6a']
+
+// 	var params = {};
+// 	var getMultipleNodesQ = []
+// 	var returnString  = 'RETURN ';
+
+// 	_.each(ids, function(val, i){
+// 		const pageOne = 'pageOne'+String(i)
+// 		const link = 'Link'+String(i)
+// 		const pageTwo = 'PageTwo'+String(i)
+// 		getMultipleNodesQ.push('MATCH ('+pageOne+':page {_id:{'+String(i)+'}})-['+link+']-('+pageTwo+')');
+
+// 		if (i>0){ 
+// 			returnString +=', '
+// 		}
+// 		returnString += (link)
+// 		params[i]= val;
+// 	})
+
+
+// 	getMultipleNodesQ.push(returnString)
+// 	getMultipleNodesQ = getMultipleNodesQ.join('\n');
+
+// 	console.log(getMultipleNodesQ)
+
+
+// 	db.cypher({
+// 	      query: getMultipleNodesQ,
+// 	      params: params,
+// 	  },
+// 	  cb);
+// };
+
+
+/**
  * load a multiple nodes from a MongoId;
  */
 exports.getNodes = function(ids, cb){
 
 
-	//get Node Query
+	const getMultipleNodesQ = ['MATCH (pageOne)-[Link]->(pageTwo)',
+		'WHERE pageOne._id IN {_id}',
+		'RETURN pageOne, pageTwo, Link'].join('\n');
 
-	
-	
-	//'MATCH ('+ id +':page {_id:{_id}})-[Link]-(PageTwo)',
+	// getMultipleNodesQ.push(returnString)
+	// getMultipleNodesQ = getMultipleNodesQ.join('\n');
 
-	var getNodesQ = [];
-
-
-	 //.join('\n');
 
 	db.cypher({
-	      query: getNodeQ,
+	      query: getMultipleNodesQ,
 	      params: {
-	          _id: id
+	      	_id:ids
 	      },
 	  },
-	  cb);
-};
+	  function(err, results){
 
-const returnString  = 'RETURN PageOne, Link, PageTwo';
+	  	if (err) {
+	  	  console.log(err)
+	  		return cb(err, null)
+	  	}
+
+      cb(err,
+		  	_.map(ids, function(id){
+		  		return _.chain(results) 
+		  		.filter(function(r){ 
+		  			return id == r.pageOne.properties._id ||
+		  			 id == r.pageTwo.properties._id
+		  		})
+		  		.map(function(r){
+		  			return resultsParser(r, id)
+		  		})
+		  		.uniq()
+		  		.value()
+		  	})
+       )
+	  });
+};
 
 
 /**
@@ -142,18 +229,7 @@ const returnString  = 'RETURN PageOne, Link, PageTwo';
  * @r     {obj} Neo4j object
  * @return {obj}    cb  a callback for the data.
  */
-const srefParser = function(r){
-  const pageID = r.PageTwo.properties._id; //Get the other articles uid
-  const outBound = r.Link._fromId === r.PageOne._id; // See if the link is inbound or outbound
-  const link = r.Link.properties; //Get the link properties
-  const textIndex = outBound?link.textIndexFrom:link.textIndexTo; //Get the text index
-  const paragraphIndex = outBound?link.pIndexFrom:link.pIndexTo; //Get the p index
-  return {
-    _id: link._id,
-    index: textIndex,
-    paragraphIndex: paragraphIndex,
-    sref: pageID,
-    outbound: outBound
-  }
+const resultsParser = function(r, id){
+	const pageID = r.pageOne.properties._id != id ? r.pageOne.properties._id :r.pageTwo.properties._id;
+  return pageID
 }
-//'MATCH (PageOne:page {_id:{_id}})-[Link]-(PageTwo)'

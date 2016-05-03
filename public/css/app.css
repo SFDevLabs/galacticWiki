@@ -90,7 +90,7 @@
 .search-main {
   margin: auto; }
   .search-main .search-input {
-    margin: 150px 150px 0px; }
+    margin: 150px 100px 0px; }
   @media (max-width: 767px) {
     .search-main .search-input {
       margin: 0px 10px; } }
@@ -180,6 +180,10 @@
   transform: translate(0, 0);
   transform: translate3d(0, 0, 0);
   transition: transform 200ms ease-out, opacity 50ms ease-out; }
+
+.overflow {
+  overflow: hidden;
+  text-overflow: ellipsis; }
 
 /* Fall and Opacity for tooltip */
 .fall-appear {

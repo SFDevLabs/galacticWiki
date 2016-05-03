@@ -178,7 +178,8 @@ ArticleSchema.statics = {
 
   list: function (options, cb) {
     const criteria = options.criteria || {};
-    this.find(criteria)
+    const lean = options.lean || false;
+    this.find(criteria, 'title description faviconCDN favicon canonicalLink')
       .populate('user', 'name username')
       .populate('comments.user')
       .sort({'createdAt': -1}) // sort by date

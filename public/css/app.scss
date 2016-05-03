@@ -144,7 +144,7 @@ $main-black: rgba(0, 0, 0, 0.75);
 	 margin: auto;
 	 
 	 .search-input {
-	 	margin: 150px 150px 0px; 
+	 	margin: 150px 100px 0px; 
 	 }
 	@media (max-width: 767px) {
 	 .search-input{
@@ -267,6 +267,11 @@ $main-black: rgba(0, 0, 0, 0.75);
     transform: translate(0, 0);
     transform: translate3d(0, 0, 0);
     transition: transform 200ms ease-out, opacity 50ms ease-out;
+}
+
+.overflow{
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 /* Fall and Opacity for tooltip */

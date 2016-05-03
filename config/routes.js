@@ -106,7 +106,7 @@ module.exports = function (app, passport) {
   const pathWithId = path + '/:id';
 
   app.param('id', articleCrud.load);
-  app.get(path, articleCrud.getListController);
+  //app.get(path, articleCrud.getListController);
   app.post(path, auth.requiresLogin, articleCrud.getCreateController);
 
   app.get(pathWithId, articleCrud.getReadController);

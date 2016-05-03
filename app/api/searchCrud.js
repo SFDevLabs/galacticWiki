@@ -34,20 +34,52 @@ exports.getListController = function (req, res) {
 
   Article.list(options, function (err, results) {
 
-    //Connection.getNode()
+
     Article.count(options.criteria).exec(function (errCount, count) {
+      var ids = _.map(results, '_id')
+      Connection.getNodes(
+        ids
+        , function(err, graphResults) {
 
-      //here is where we consult the graph URL.
-      if (!err) {
-        res.send({
-          results:results,
-          isURL: isURL,
-          total: count
+          
+
+        let graphIDs = _.chain(graphResults)
+          .flatMap()
+          .value()
+            
+
+        Article.list({
+          criteria: {_id:{$in: graphIDs}},
+          lean: true
+        }, function (err, graphPopulateResults) {
+
+          let newResults = _.map(results, function(result, i){
+            let r = result.toJSON()
+            r.connections = _.map(graphResults[i], function(graphResult){
+ 
+              // console.log(typeof graphPopulateResults[0].id)
+              // console.log(_.find(graphPopulateResults, {id:graphResult}))
+
+              return _.find(graphPopulateResults, {id:graphResult});
+            })
+            return r;
+          });
+
+         if (!err) {
+            res.send({
+              results:newResults,
+              isURL: isURL,
+              total: count
+            });
+          } else {
+            res.status(500).send(utils.errsForApi(err.errors || err));
+          }    
+         
+          
         });
-      } else {
-        res.status(500).send(utils.errsForApi(err.errors || err));
-      }
-    });
-  });
 
+
+      });//Connection
+    });//Article.count
+  });//Article.list
 };

@@ -70,10 +70,9 @@ exports.load = function (req, res, next, id){
     if (err) return  res.status(500).send( utils.errsForApi(err.errors || err) );
     req.article = article;
 
-    Connection.getNode(article._id, function(err, results){
-      req.sref = _.map(results, function(r, i){
-        return srefParser(r)
-      });
+    Connection.getNode(article._id, function(err, sref, inboundSref){
+      req.sref = sref
+      req.inboundSref = inboundSref
       next();
     })
 
@@ -81,60 +80,39 @@ exports.load = function (req, res, next, id){
   });
 };
 
-
-/**
- * @name   srefParser
- * @r     {obj} Neo4j object
- * @return {obj}    cb  a callback for the data.
- */
-const srefParser = function(r){
-  const pageID = r.PageTwo.properties._id; //Get the other articles uid
-  const outBound = r.Link._fromId === r.PageOne._id; // See if the link is inbound or outbound
-  const link = r.Link.properties; //Get the link properties
-  const textIndex = outBound?link.textIndexFrom:link.textIndexTo; //Get the text index
-  const paragraphIndex = outBound?link.pIndexFrom:link.pIndexTo; //Get the p index
-  return {
-    _id: link._id,
-    index: textIndex,
-    paragraphIndex: paragraphIndex,
-    sref: pageID,
-    outbound: outBound
-  }
-}
-
 /**
  * List
  */
-exports.getListController = function (req, res) {
-  var skip = Number(req.query.skip)
-  var count = Number(req.query.count)
-  const criteria = req.query.tag?{tags:req.query.tag}:null;
+// exports.getListController = function (req, res) {
+//   var skip = Number(req.query.skip)
+//   var count = Number(req.query.count)
+//   const criteria = req.query.tag?{tags:req.query.tag}:null;
   
-  skip =  !isNaN(skip) ? skip : 0;
-  count =  !isNaN(count) ? count : 30;
+//   skip =  !isNaN(skip) ? skip : 0;
+//   count =  !isNaN(count) ? count : 30;
   
-  var options = {
-    count: count,
-    skip: skip,
-  };
+//   var options = {
+//     count: count,
+//     skip: skip,
+//   };
 
-  if (criteria){
-    options.criteria = criteria
-  }
+//   if (criteria){
+//     options.criteria = criteria
+//   }
 
-  Article.list(options, function (err, result) {
-    Article.count(criteria).exec(function (errCount, count) {
-      if (!err) {
-        res.send({
-          articles:result,
-          total: count
-        });
-      } else {
-        res.status(500).send(utils.errsForApi(err.errors || err));
-      }
-    });
-  });
-};
+//   Article.list(options, function (err, result) {
+//     Article.count(criteria).exec(function (errCount, count) {
+//       if (!err) {
+//         res.send({
+//           articles:result,
+//           total: count
+//         });
+//       } else {
+//         res.status(500).send(utils.errsForApi(err.errors || err));
+//       }
+//     });
+//   });
+// };
 
 /**
  * Create
@@ -317,6 +295,26 @@ exports.getCreateSREFController = function (req, res) {
       }
   })
 };
+
+
+/**
+ * @name   srefParser
+ * @r     {obj} Neo4j object
+ * @return {obj}    cb  a callback for the data.
+ */
+ //Move me!!!! @TODO. Bad Jeff!!!
+const srefParser = function(r){
+  const pageID = r.PageTwo.properties._id; //Get the other articles uid
+  const link = r.Link.properties; //Get the link properties
+  const textIndex = link.textIndexFrom;//Get the text index
+  const paragraphIndex = link.pIndexFrom; //Get the p index
+  return {
+    _id: link._id,
+    index: textIndex,
+    paragraphIndex: paragraphIndex,
+    sref: pageID,
+  }
+}
 
 /**
  * Load
