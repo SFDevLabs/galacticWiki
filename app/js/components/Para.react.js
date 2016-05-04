@@ -64,28 +64,20 @@ const Para = React.createClass({
 
       const node = tag.sref?
       <Link to={'/'+tag.sref+'/link/'+tag._id} key={key} className={linkClass} >{nodeText}</Link>:
-      <a target="_blank" href={tag.href} key={key} className={linkClass}> {nodeText} </a>
+      <a target="_blank" href={tag.href} key={key} className={linkClass}> 
+      {nodeText}
+      <span className="glyphicon glyphicon-new-window" style={{fontSize: "1.3rem", marginLeft:'.4rem'}} />
+      </a>
 
-      // React.createElement(
-      //   tag.name, 
-      //   {
-      //     key: nodes.length-1,
-      //     href: 'javascript:void(0);',
-      //     target: '_blank', 
-      //     className: 'href-link',
-      //     onClick: that._onClick
-      //   },
-      //   nodeText
-      // );
-    const popover = <Popover 
-      id="popover-link">
-        <strong>Holy guacamole!</strong> Check this info.
-    </Popover>
-     const overLay = <OverlayTrigger
-        key={key} 
-        placement="top" overlay={popover}>
-        {node}
-      </OverlayTrigger>
+    // const popover = <Popover 
+    //   id="popover-link">
+    //     <strong>Holy guacamole!</strong> Check this info.
+    // </Popover>
+    //  const overLay = <OverlayTrigger
+    //     key={key} 
+    //     placement="top" overlay={popover}>
+    //     {node}
+    //   </OverlayTrigger>
 
 
       // Hold and index of the last node.
