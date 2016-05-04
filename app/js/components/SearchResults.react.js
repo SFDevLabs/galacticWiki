@@ -69,7 +69,7 @@ const SearchResults = React.createClass({
     const results = length>0?_.map(resultsData, function(result, i) {
         return <SearchItem key={i} item={result} />
     }):
-    <div clasName="row">
+    <div clasName="row" style={{marginTop:'20px'}}>
       No Results Found. {createURL}
     </div>;
 
