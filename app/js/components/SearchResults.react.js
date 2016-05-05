@@ -7,6 +7,7 @@
 const React = require('react');
 const SearchActions = require('../actions/SearchActions');
 const SearchItem = require('./SearchItem.react');
+const Loader = require('react-loader');
 import { Link } from 'react-router';
 
 const SearchStore = require('../stores/SearchStore');
@@ -23,7 +24,7 @@ const getState = function() {
 }
 
 const fetch = function(q, skip, clearData) {
-   SearchActions.getList(_count, skip, q, clearData);
+  SearchActions.getList(_count, skip, q, clearData);
 }
 
 const SearchResults = React.createClass({
@@ -58,6 +59,8 @@ const SearchResults = React.createClass({
   },
 
   render :function() {
+    if (!this.state.results){return <Loader />}//undefined means that no search response has arrived.
+
     const resultsData = this.state.results;
     const isURL = this.state.url;
 

@@ -17,13 +17,13 @@ const SearchItem = React.createClass({
   },
 
 
-  articleFactory: function(item){
+  articleFactory: function(item, i){
 
     var parser = document.createElement('a');// Stripping the protocol from the link for proper link structure
     parser.href = item.canonicalLink;
     const host = parser.host
 
-    return <div>
+    return <div key={i}>
       <h3 className="overflow">
         <Link to={"/"+item._id}>
           {item.title}
@@ -44,7 +44,7 @@ const SearchItem = React.createClass({
     const item = this.props.item;
 
     const connections = item.connections.map(function(connection, i){
-      return that.articleFactory(connection)
+      return that.articleFactory(connection, i)
     });
 
     return <div className="article" >

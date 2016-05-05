@@ -59,7 +59,10 @@ const Header = React.createClass({
     const url = parse(window.location.search, true);
     const query = url.query.q;
 
-    const searchBarTest =(window.location.href.search(/q=/)!==-1 || !this._activeURL('/'));
+    const searchBarTest =( 
+      window.location.href.search(/q=/)!==-1 || 
+      !this._activeURL('/') && !this._activeURL('/new')
+    );
 
     const searchBar = searchBarTest?
     <Navbar.Form pullLeft>

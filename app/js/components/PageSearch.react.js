@@ -32,7 +32,7 @@ const PageSearch = React.createClass({
       onSelect= {this.props.onSelect} />:
       null;
 
-    return <div>
+    return <div className="page-search">
       <SearchInput 
         onSave={this._onSearch}
         value={this.state.q}

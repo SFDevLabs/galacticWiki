@@ -25,7 +25,11 @@
   margin: 0rem auto 5rem;
   width: 700px; }
   .main .page-search {
-    margin-top: 3rem; }
+    margin-top: 3rem;
+    position: relative;
+    min-height: 200px; }
+  .main .page-search-results {
+    margin-top: 1rem; }
   .main .cancel-search {
     font-size: 2rem;
     color: rgba(0, 0, 0, 0.75); }

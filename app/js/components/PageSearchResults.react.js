@@ -7,6 +7,7 @@
 const React = require('react');
 const SearchActions = require('../actions/SearchActions');
 const PageSearchItem = require('./PageSearchItem.react');
+const Loader = require('react-loader');
 
 const SearchStore = require('../stores/SearchStore');
 const _ = require('lodash');
@@ -57,6 +58,8 @@ const PageSearchResults = React.createClass({
   },
 
   render :function() {
+    if (!this.state.results){return <Loader/>}//undefined means that no search response has arrived.
+
     const that = this;
     const data = this.state.results;
     const length = Object.keys(data).length;
@@ -71,7 +74,7 @@ const PageSearchResults = React.createClass({
       No Results Found.
     </div>;
 
-    return <div className="row" >
+    return <div className="row page-search-results">
       {results}        
     </div>
   },

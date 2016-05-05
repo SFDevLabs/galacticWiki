@@ -25,24 +25,25 @@ const Search = React.createClass({
 
   render :function() {
 
-     const q = this.props.location.query.q
-     const seachMain = q ?
-     <SearchResults q={q} />: //Give the search result with the q
-     <div className="container"> 
-      <div className="row search-input">
-        <SearchInput 
-          onSave={this._save}
-        />
-      </div>
-      <div className="row text-center search-actions">
-        <Link to="new" type="button" className="btn btn-default">
-          Make A Connection
-        </Link>
-      </div>
+    const q = this.props.location.query.q
+    const searchMain = q ?
+    <SearchResults q={q} />: //Give the search result with the q
+    <div className="container"> 
+    <div className="row search-input">
+      <SearchInput 
+        onSave={this._save}
+      />
+    </div>
+    <div className="row text-center search-actions">
+      <p className="text-muted">...or</p>
+      <Link to="new" type="button" className="btn btn-default">
+        Create a Connection
+      </Link>
+    </div>
     </div>;//Give the static search bar.
 
     return <section className="container search-main">
-      {seachMain}
+    {searchMain}
     </section>;
   },
 

@@ -10,7 +10,7 @@ const assign = require('object-assign');
 
 const CHANGE_EVENT = 'change';
 
-var _results = {};
+var _results;
 var _total = null;
 var _errors = [];
 var _url = null;
@@ -20,6 +20,7 @@ var _query = null;
  * @param  {string} text The content of the ARTICLES
  */
 function setAll(results) {
+  _results = {};
   for (var i = results.length - 1; i >= 0; i--) {
     var result = results[i]
     var id = result._id
@@ -43,14 +44,12 @@ function setQuery(q) {
   _query = q;
 }
 
-
-
 /**
  * Delete all ARTICLES items.
  * @param  {string} id
  */
 function destroyAll() {
-  _results={};
+  _results = undefined;
 }
 
 
@@ -160,6 +159,7 @@ AppDispatcher.register(function(action) {
 
     case Constants.CLEAR_SEARCH_DATA:
       destroyAll();
+      SearchStore.emitChange();
       break;
 
 

@@ -40,7 +40,14 @@ $main-black: rgba(0, 0, 0, 0.75);
 
 	.page-search {
 		margin-top: 3rem;
+		position: relative;
+		min-height: 200px;
 	}
+
+	.page-search-results{
+		margin-top: 1rem;
+	}
+
 	.cancel-search{
 		font-size: 2rem;
 		color: $main-black;
