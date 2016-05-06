@@ -147,13 +147,10 @@ AppDispatcher.register(function(action) {
       const isURL = action.response.body.isURL
       const q = action.params.q
       const total = action.response.body.total
-      if (!results || results.length==0 && isURL){
-        setURL(q)
-      } else if (results) {
-        setAll(results);
-        setQuery(q);
-        setTotal(total);
-      }
+      setAll(results);
+      setQuery(q);
+      setURL(isURL?q:null);
+      setTotal(total);
       SearchStore.emitChange();
       break;
 

@@ -18,7 +18,8 @@ const PageArticle = React.createClass({
   propTypes:{
     page: React.PropTypes.object.isRequired,
     linkId: React.PropTypes.string,
-    onToolTipClick: React.PropTypes.func.isRequired
+    onToolTipClick: React.PropTypes.func.isRequired,
+    refresh: React.PropTypes.func.isRequired
   },
 
   getInitialState: function() {
@@ -45,7 +46,7 @@ const PageArticle = React.createClass({
   render :function() {
   	const that = this;
   	const page = this.props.page;
-    const favicon = page.faviconCDN?<img onError={this._imgError} src={page.faviconCDN} className="favicon" />:null;
+    const favicon = page.faviconCDN?<img src={page.faviconCDN} className="favicon" />:null;
 
     const location = this.state.selectionLocation;
     const toolTip = location ?
@@ -74,7 +75,7 @@ const PageArticle = React.createClass({
     const url = parse(page.canonicalLink, true);
     const prettyLink = url.host+url.pathname;
 
-    var image;
+    let image = null;
     if ( page.imageCDN.url ){ // Create the image and set the height from the DB before we load it.
       const imgHeight = 700<page.imageCDN.dimensions[0]?
         700/page.imageCDN.dimensions[0]*page.imageCDN.dimensions[1]:
@@ -82,11 +83,13 @@ const PageArticle = React.createClass({
 
       image = 
         <div className="page-img" style={{height:imgHeight}} >
-          <img onError={this._imgError} src={page.imageCDN.url} style={{maxWidth:'100%'}} />
+          <img src={page.imageCDN.url} style={{maxWidth:'100%'}} />
         </div>
-    } else { // We dont have an image.
-      image = 
-        null
+    } else if (page.imageLoading == true) { // We dont have an image.
+      setTimeout(function(){
+        that.props.refresh();
+      },5000);
+      image = <div className="page-img"/>
     }
 
     return <div className="row">

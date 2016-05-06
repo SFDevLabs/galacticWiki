@@ -32,52 +32,43 @@ exports.getListController = function (req, res) {
     options.criteria = {title: new RegExp(q, 'i') };
   }
 
-  Article.list(options, function (err, results) {
-
+  Article.list(options, function (errQ, results) {
+    if (errQ) return res.status(500).send(utils.errsForApi(errQ.errors || errQ));
 
     Article.count(options.criteria).exec(function (errCount, count) {
       var ids = _.map(results, '_id')
       Connection.getNodes(
         ids
-        , function(err, graphResults) {
+        ,function(errConnect, graphResults) {
+          if (errConnect) return res.status(500).send(utils.errsForApi(errQ.errors || errQ));
 
-          
+          let graphIDs = _.chain(graphResults)
+            .flatMap()
+            .value()
+              
 
-        let graphIDs = _.chain(graphResults)
-          .flatMap()
-          .value()
-            
+          Article.list({
+            criteria: {_id:{$in: graphIDs}},
+            lean: true
+          }, function (errPopulate, graphPopulateResults) {
+           if (errPopulate) return res.status(500).send(utils.errsForApi(errPopulate.errors || errPopulate));
 
-        Article.list({
-          criteria: {_id:{$in: graphIDs}},
-          lean: true
-        }, function (err, graphPopulateResults) {
+            let newResults = _.map(results, function(result, i){
+              let r = result.toJSON()
+              r.connections = _.map(graphResults[i], function(graphResult){
+                return _.find(graphPopulateResults, {id:graphResult});
+              })
+              return r;
+            });
 
-          let newResults = _.map(results, function(result, i){
-            let r = result.toJSON()
-            r.connections = _.map(graphResults[i], function(graphResult){
- 
-              // console.log(typeof graphPopulateResults[0].id)
-              // console.log(_.find(graphPopulateResults, {id:graphResult}))
-
-              return _.find(graphPopulateResults, {id:graphResult});
-            })
-            return r;
-          });
-
-         if (!err) {
+            //Make the responser
             res.send({
               results:newResults,
               isURL: isURL,
               total: count
             });
-          } else {
-            res.status(500).send(utils.errsForApi(err.errors || err));
-          }    
-         
-          
-        });
-
+   
+          });
 
       });//Connection
     });//Article.count

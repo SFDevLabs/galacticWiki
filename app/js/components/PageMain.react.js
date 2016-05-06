@@ -34,7 +34,7 @@ function getState(id, Cid) {
   };
 }
 
-const ArticleSection = React.createClass({
+const PageMain = React.createClass({
 
   contextTypes:{
     router: React.PropTypes.object.isRequired
@@ -51,19 +51,19 @@ const ArticleSection = React.createClass({
     ArticleStore.addChangeListener(this._onChange);
 
     //Manual data entry for dev
-    // const data = {
-    //   "MAIN_KEY":{"selectedParagraphIndex":0,"selectedIndex":[105,119]},
-    //   "CONNECTED_KEY":{"selectedParagraphIndex":0,"selectedIndex":[0,100]}
-    // }
+    const data = {
+      "MAIN_KEY":{"selectedParagraphIndex":0,"selectedIndex":[105,119]},
+      "CONNECTED_KEY":{"selectedParagraphIndex":0,"selectedIndex":[0,100]}
+    }
 
-    // this.connectedID = '56f587346bf23da406e2eb3b';
-    // this.setState({
-    //   selection:data
-    // });
-    // const that= this;
-    // setTimeout(function(){
-    //   ArticleActions.getById(that.connectedID);
-    // },500)
+    this.connectedID = '572c11aed64ba8b71f05e831';
+    this.setState({
+      selection:data
+    });
+    const that= this;
+    setTimeout(function(){
+      ArticleActions.getById(that.connectedID);
+    },500)
     //End Manual data entry for dev
   },
 
@@ -92,7 +92,7 @@ const ArticleSection = React.createClass({
     else if (!pageData){return <Loader />}//undefined means that no request for the article has been made.
 
     const errorMessage = this.state._messages? (
-     <Messages messages={this.state._messages} type="warning" />
+     <Messages messages={this.state._messages} type="danger" />
     ) : null; //Rendering a warning message.
 
     const mainSelection = selection && selection[MAIN_KEY]? selection[MAIN_KEY]: null;
@@ -117,6 +117,7 @@ const ArticleSection = React.createClass({
         linkId={this.state.lid}
         id={id}
         page={pageData} 
+        refresh={this._refreshPage}
         onToolTipClick={this._onToolTipClick.bind(this, MAIN_KEY)} />;
 
     const pageSearch = mainSelection && connectedPageData===undefined?
@@ -135,6 +136,8 @@ const ArticleSection = React.createClass({
     const button = this.state.saving? 
       <div className='link-loader'><Loader /></div>:
       <button  onClick={this._save} className="btn btn-primary connect-action" >Create Link</button>;
+
+     //&nbsp;<Loader options={{radius: 4, length:5, color: '#FFF', lines: 10, width: 3}}/>
 
     var connectedPage;
     if (connectedPageData && connectedSelection){
@@ -231,7 +234,15 @@ const ArticleSection = React.createClass({
   /**
    * Event handler for 'change' events coming from the PageStore
    */
-  _onChange: function() { 
+  _refreshPage: function() {
+    let id = this.props.params.id;
+    ArticleActions.getById(id);
+  },
+
+  /**
+   * Event handler for 'change' events coming from the PageStore
+   */
+  _onChange: function() {
     const id = this.props.params.id;
     const connectedID = this.connectedID;
     const state = getState(id, connectedID)//getState(null, this.props.params.id)//
@@ -255,13 +266,14 @@ const ArticleSection = React.createClass({
     const data = this.state.selection;
     const selectedParagraphIndexMain = data[MAIN_KEY].selectedParagraphIndex;
     const selectedIndexMain = data[MAIN_KEY].selectedIndex;
-    //These need to be.
-    const selectedParagraphIndexConnected = data[CONNECTED_KEY].selectedParagraphIndex;
-    const selectedIndexConnected = data[CONNECTED_KEY].selectedIndex;
+    const selectedParagraphIndexConnected = data[CONNECTED_KEY]?data[CONNECTED_KEY].selectedParagraphIndex:null;
+    const selectedIndexConnected = data[CONNECTED_KEY]?data[CONNECTED_KEY].selectedParagraphIndex:null;
     
-    // this.setState({
-    //   saving: true
-    // });
+    this.setState({
+      _saving: true
+    });
+    //Placeholder till we figure out hwo to reset the page and ge tthe link showing
+    this._onCancelSelectionMain();
 
     ArticleActions.createLink(
         id,
@@ -282,4 +294,4 @@ const ArticleSection = React.createClass({
 
 });
 
-module.exports = ArticleSection;
+module.exports = PageMain;

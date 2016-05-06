@@ -119,7 +119,7 @@ exports.load = function (req, res, next, id){
  */
 exports.getCreateController = function (req, res) {
   const q = req.body.url
-  if (!q) return res.status(422).send({errors:utils.errsForApi('No Query or Valid URL')});
+  if (!q) return res.status(422).send(utils.errsForApi('Please Enter a URL'));
 
   async.waterfall([
       function(cb){
@@ -127,11 +127,7 @@ exports.getCreateController = function (req, res) {
         if (url){
            cb(null, url)
         } else {
-          cb({
-            status:422,
-            errors:utils.errsForApi('No Query or Valid URL'), 
-            results:[]
-          })
+          cb(utils.errsForApi('Shucks! This is not a valid URL'))
         }       
       },
       pageDBSearch,
@@ -139,11 +135,16 @@ exports.getCreateController = function (req, res) {
       pageSaver,
       connectionCreator,
   ], function(err, url, resultDB, extractedPageData){
+
+      let payload = resultDB.toObject();
+      payload.imageLoading = true;
+
       if (err){
         const status = err.status || 500;
-        res.status(err.status).send({errors:utils.errsForApi(err.errors || err)});
+        console.log(err, status)
+        res.status(status).json(err);
       } else {
-        res.send(resultDB);
+        res.send(payload);
       }
   });
 };
@@ -201,7 +202,7 @@ const pageSaver = function(url, resultDB, extractedPageData, cb){
       cb(err, url, savedResultDB, extractedPageData);
     });
   } else {
-    cb(null, url, resultDB);
+    cb(null, url, resultDB, extractedPageData);
   }
 }
 
@@ -217,7 +218,9 @@ const connectionCreator = function(url, resultDB, extractedPageData, cb){
       resultDB._id,
       function (err, results) {
         cb(err, url, resultDB, extractedPageData);
-    })
+    });
+  } else{
+    cb(null, url, resultDB, extractedPageData);
   }
 }
 
@@ -237,9 +240,9 @@ const saveArticleToDB = function(result, cb){
     article._id,
     function(err, results){
       article.imageCDN = results[0];
-      if (results[1]===null){
-        article.favicon = null
-      }
+      // if (results[1]===null){
+      //   article.favicon = null
+      // }
       article.faviconCDN = results[1];
       article.save(function(err){
         if(err){

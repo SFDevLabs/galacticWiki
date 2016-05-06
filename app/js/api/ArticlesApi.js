@@ -53,15 +53,15 @@ var ArticleApi = {
   postEntityLinkData: function(idFrom, idTo, pIndexFrom, textIndexFrom, pIndexTo, textIndexTo) {
     const url = makeUrl('/'+idFrom+'/link');
     const key = Constants.POST_ARTICLE_LINKURL_DATA;
-    const params = {
+    var params = {
       idTo: idTo,
       'textIndexFrom[0]': textIndexFrom[0],
       'textIndexFrom[1]': textIndexFrom[1],
-      pIndexFrom: pIndexFrom,
-      'textIndexTo[0]': textIndexTo[0],
-      'textIndexTo[1]': textIndexTo[1],
-      pIndexTo: pIndexTo
+      pIndexFrom: pIndexFrom
     };
+    if (textIndexTo){ params.textIndexTo = textIndexTo};
+    if (pIndexTo){ params.pIndexTo = pIndexTo};     
+
     RequestAPI.abortPendingRequests(key, _pendingRequests);
     RequestAPI.dispatch(Constants.PENDING, params);
     _pendingRequests[key] = RequestAPI.post(url, params).end(

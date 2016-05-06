@@ -78,17 +78,14 @@ exports.getNode = function(id, cb){
 	  	}
 
       cb(err,
-				_.chain(results)
-		  	 .filter(function(r, i){
-		  			console.log(r.PageOne._id, 'r')
-
-		  	 	return r.Link._fromId === r.PageOne._id})
+			_.chain(results)
+		  	 .filter(function(r, i){return r.Link._fromId === r.PageOne._id})
 		  	 .map(function(r){return srefParser(r)})
-	       .value(),
-				_.chain(results)
+		  	 .value(),
+			_.chain(results)
 		  	 .filter(function(r, i){return r.Link._toId === r.PageOne._id})
 		  	 .map(function(r){return inboundSrefParser(r)})
-	       .value()
+		  	 .value()
        )
 	  });
 };

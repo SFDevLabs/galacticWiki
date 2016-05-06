@@ -58,7 +58,7 @@ const PageSearchResults = React.createClass({
   },
 
   render :function() {
-    if (!this.state.results){return <Loader/>}//undefined means that no search response has arrived.
+    if (!this.state.results){return <div style={{minHeight:'200px'}}><Loader/></div>}//undefined means that no search response has arrived.
 
     const that = this;
     const data = this.state.results;

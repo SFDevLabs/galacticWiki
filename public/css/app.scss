@@ -2,9 +2,17 @@
 $navbar-background-color: rgba(255,255,255,.95);
 $main-black: rgba(0, 0, 0, 0.75);
 
+@font-face {
+  font-family: 'Brela';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Brela'), url('./brelaregular.otf') format('truetype');
+}
+
 .link-sref {
 	color: #8723B5;
 }
+
 .link-sref.highlight {
 	color: #8723B5;
 	text-shadow : -1px -1px 5px #98CFFF, 1px 1px 5px #96CAF8, 0px 0px 5px #96CAF8
@@ -13,10 +21,11 @@ $main-black: rgba(0, 0, 0, 0.75);
 
 
 #app{
-	margin-top: 70px;
+	margin-top: 50px;
 }
 
 .page-img {
+	min-height: 150px;
 	margin-bottom: 2rem;
 	background-color: #FBFBFB;
 	text-align: center;
@@ -32,6 +41,20 @@ $main-black: rgba(0, 0, 0, 0.75);
 	margin: 0px auto;
 }
 
+@media (max-width: 767px) {
+	.main {
+		margin-left: 20px;
+		margin-right: 20px;
+		width:auto;
+	}
+	.page-img {
+		min-height: 150px;
+		height:auto !important;
+		margin-bottom: 2rem;
+	}
+}
+
+/*Main*/
 .main {
 
 	margin: 0rem auto 5rem;
@@ -41,7 +64,6 @@ $main-black: rgba(0, 0, 0, 0.75);
 	.page-search {
 		margin-top: 3rem;
 		position: relative;
-		min-height: 200px;
 	}
 
 	.page-search-results{
@@ -136,18 +158,7 @@ $main-black: rgba(0, 0, 0, 0.75);
 
 }
 
-@media (max-width: 767px) {
-	.main {
-		margin-left: 20px;
-		margin-right: 20px;
-		width:auto;
-	}
-	.page-img {
-		height:auto !important;
-		margin-bottom: 2rem;
-	}
-}
-
+/*Search Man*/
 .search-main {
 	 margin: auto;
 	 border-top: 2px solid #EFEFEF;
@@ -182,7 +193,7 @@ $main-black: rgba(0, 0, 0, 0.75);
 	}
 	.connections {
 		border-left: 3px solid #eee;
-		padding-left: 5px;
+		padding-left: 10px;
 		margin-left: 30px;
 		h3 {
 		    line-height: 2rem;
@@ -203,17 +214,16 @@ $main-black: rgba(0, 0, 0, 0.75);
 	z-index: 1;
 }
 
-.connect-main p{
-	color: #888;
-    font-weight: 100;
-    margin: 1rem 0rem;
-}
-
-.connect-main a{
-	font-weight: 900;
-}
-
 .connect-main {
+	p {
+		color: #888;
+		font-weight: 100;
+		margin: 1rem 0rem;		
+	}
+
+	a {
+		font-weight: 900;
+	}
 
 }
 
@@ -227,24 +237,16 @@ $main-black: rgba(0, 0, 0, 0.75);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+	
+	a {
+		font-weight: 500;
+		font-size: 1.7rem;
+		width:100%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }
-
-.page-link a{
-	font-weight: 500;
-	font-size: 1.7rem;
-	width:100%;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-@font-face {
-  font-family: 'Brela';
-  font-style: normal;
-  font-weight: normal;
-  src: local('Brela'), url('./brelaregular.otf') format('truetype');
-}
-
 
 .navbar-default{
 	background: $navbar-background-color;
@@ -254,7 +256,6 @@ $main-black: rgba(0, 0, 0, 0.75);
 .navbar-brand{
 	font-weight: 500;
 }
-
 
 
 .main-popover.popover {
@@ -268,6 +269,7 @@ $main-black: rgba(0, 0, 0, 0.75);
 	}
 }
 
+//Popover
 .popover.top > .btn-group > .btn-primary{
     background-color: #21224E;
     border-color: #828282;
@@ -284,9 +286,9 @@ $main-black: rgba(0, 0, 0, 0.75);
     z-index: 1;
     bottom: 2px;
 }
+//Popover End
 
-
-
+/* Transitions */
 .fall-enter {
 	opacity: .6;
     transform: translate(0, -20%);
@@ -305,7 +307,6 @@ $main-black: rgba(0, 0, 0, 0.75);
 	text-overflow: ellipsis;
 }
 
-/* Fall and Opacity for tooltip */
 .fall-appear {
 	opacity: .6;
 	transform: translate(0, -20%);
@@ -318,7 +319,7 @@ $main-black: rgba(0, 0, 0, 0.75);
     transform: translate3d(0, 0, 0);
     transition: transform 200ms ease-out, opacity 50ms ease-out;
 }
-
+/* Transitions */
 
 /* Rise for linked item*/
 .connection-appear {

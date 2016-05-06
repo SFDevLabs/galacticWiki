@@ -62,11 +62,11 @@ const SearchResults = React.createClass({
     if (!this.state.results){return <Loader />}//undefined means that no search response has arrived.
 
     const resultsData = this.state.results;
-    const isURL = this.state.url;
+    const url = this.state.url;
 
     const length = Object.keys(resultsData).length;
-    const createURL = isURL?
-      (<span>But you can <Link to={"/new?site="+this.state.url} >add this site to Galactic.</Link></span>):
+    const createURL = url?
+      (<span>But you can <Link to={"/new?site="+url} >add this site to Galactic.</Link></span>):
       null;
 
     const results = length>0?_.map(resultsData, function(result, i) {

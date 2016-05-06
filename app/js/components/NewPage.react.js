@@ -5,6 +5,7 @@
 */
 const React = require('react');
 const Messages = require('./Messages.react');
+const Loader = require('react-loader');
 const ArticleActions = require('../actions/ArticleActions');
 const ArticleStore = require('../stores/ArticleStore');
 
@@ -42,6 +43,7 @@ const NewPage = React.createClass({
     const blankMessage = this.state._messages? (
       <Messages messages={this.state._messages} type="danger" />
       ) : null; //Rendering a warning message.
+    if (this.state._saving){return <Loader />}//undefined means that no request for the article has been made.
 
     return <section className="container search-main">
       {blankMessage}
@@ -49,7 +51,7 @@ const NewPage = React.createClass({
         <input
          type="text"
          className="form-control"
-         onChange={this._onChange} 
+         onChange={this._handleChange} 
          value={this.state.input} />
       </div>
       <div className="row" style={urlActionStyle} >
@@ -64,13 +66,17 @@ const NewPage = React.createClass({
    * Event handler for 'save' events coming from the SearchStore
    */
   _save: function(){
+    this.setState({
+      _messages: null,
+      _saving: true
+    });
     ArticleActions.create(this.state.input);
   },
 
   /**
    * Event handler for 'save' events coming from the SearchStore
    */
-  _onKeyDown: function(e){
+  _handleChange: function(e){
     this.setState({
       input: e.currentTarget.value
     })
