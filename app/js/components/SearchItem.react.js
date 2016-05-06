@@ -29,7 +29,7 @@ const SearchItem = React.createClass({
           {item.title}
         </Link>
       </h3>
-      <img className="favicon" src={item.favicon}/>
+      <img className="favicon" src={item.faviconCDN}/>
       &nbsp;
       <a href={item.canonicalLink} >{host}</a>
       <p className="overflow">{item.description}</p>
